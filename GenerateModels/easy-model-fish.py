@@ -6,7 +6,7 @@ import torch.nn.functional as F
 from config import Config
 
 # 定义模型导出位置
-onnx_name="easy-model"                                  # (4,3,14,14) ===> (1,)
+onnx_name="easy-model-fish"                                  # (4,3,14,14) ===> (1,)
 onnx_fold=os.path.join(Config.OnnxSavePath,onnx_name)
 os.makedirs(onnx_fold,exist_ok=True)
 
