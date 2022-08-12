@@ -10,7 +10,7 @@ import tvm_model
 import tvm
 
 # 定义模型导出位置
-onnx_name = "easy-model"
+onnx_name = "easy_model"
 onnx_fold = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), "../onnxs", onnx_name)
 os.makedirs(onnx_fold, exist_ok=True)
@@ -75,7 +75,7 @@ def main():
 
     # tvm model
     shape_dict = {input_name: x.detach().numpy().shape}
-    module = tvm_model.get_tvm_model(
+    module, _ = tvm_model.get_tvm_model(
         onnx_path, shape_dict, target="cuda", dev=tvm.cuda())
 
     # write check data to disk
