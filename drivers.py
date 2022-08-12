@@ -6,5 +6,5 @@ class CPU:
 
 class GPU:
     target= "cuda"
-    device=tvm.cuda(0)
+    device=tvm.gpu(0)
 
