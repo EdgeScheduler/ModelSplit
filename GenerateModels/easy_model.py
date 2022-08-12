@@ -87,6 +87,7 @@ def main():
         torch_out = model(data_input).tolist()[0]
         print("torch %s" % torch_out)
         out["pytorch"] = torch_out
+
         module.set_input(input_name, data_input.numpy())
         module.run()
         tvm_out = module.get_output(0).numpy().tolist()[0]
