@@ -56,7 +56,6 @@ def main():
     x = torch.rand(*input["shape"],requires_grad=True)
     _ = model(x)          # 计算一次前向传播，https://blog.csdn.net/qq_44930937/article/details/109701307
 
-
     torch.onnx.export(model,x,Config.ModelSavePathName(onnx_name),input_names=[input["name"]])  # "edge"使得自定义名称与tvm内部自动命名显示区分，便于理解
 
     # write check data to disk
