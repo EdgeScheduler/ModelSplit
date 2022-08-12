@@ -4,6 +4,7 @@ class Config:
     # static property
     ProjectRootPath=os.path.dirname(os.path.abspath(__file__))
     OnnxSavePath=os.path.join(ProjectRootPath,"onnxs")
+    TestDataCount=10
 
     @staticmethod
     def ModelSavePathName(name)->str:
