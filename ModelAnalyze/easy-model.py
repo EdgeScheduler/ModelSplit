@@ -14,3 +14,4 @@ mod, params = relay.frontend.from_onnx(easy_model, shape_dict)
 
 print(mod)
 print(params)
+print(params['%conv2.weight'])
