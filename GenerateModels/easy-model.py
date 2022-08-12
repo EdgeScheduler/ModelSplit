@@ -11,7 +11,10 @@ onnx_fold=os.path.join(Config.OnnxSavePath,onnx_name)
 os.makedirs(onnx_fold,exist_ok=True)
 
 # 模型定义
-input_shape=(4,3,14,14)
+input={
+    "name": "input_edge",
+    "shape": (4,3,14,14)
+}
 
 random_add1=torch.rand(4,3,14,14)
 random_add2=torch.rand(4,1,6,6)
@@ -50,16 +53,16 @@ def main():
     model=Model()
     model.eval()        # 设置为推理模型
     
-    x = torch.rand(*input_shape,requires_grad=True)
+    x = torch.rand(*input["shape"],requires_grad=True)
     _ = model(x)          # 计算一次前向传播，https://blog.csdn.net/qq_44930937/article/details/109701307
 
 
-    torch.onnx.export(model,x,Config.ModelSavePathName(onnx_name))
+    torch.onnx.export(model,x,Config.ModelSavePathName(onnx_name),input_names=[input["name"]])  # "edge"使得自定义名称与tvm内部自动命名显示区分，便于理解
 
     # write check data to disk
     datas={}
     for _ in range(test_count):
-        data_input=torch.rand(*input_shape)
+        data_input=torch.rand(*input["shape"])
         datas[str(data_input.tolist())]=model(data_input).tolist()[0]
 
     with open(Config.ModelSaveDataPathName(onnx_name),"w",encoding="utf-8") as fp:

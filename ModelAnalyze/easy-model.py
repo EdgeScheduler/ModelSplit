@@ -9,9 +9,7 @@ from config import Config
 name="easy-model"
 
 easy_model=onnx.load(Config.ModelSavePathName(name))
-shape_dict={}
+shape_dict={"input_edge": (4,3,14,14)}
 mod, params = relay.frontend.from_onnx(easy_model, shape_dict)
 
 print(mod)
-print(params)
-print(params['%conv2.weight'])
