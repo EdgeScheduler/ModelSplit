@@ -1,9 +1,8 @@
 # test easy-model
-
 import tvm
 from tvm import relay
 import onnx
-import os
+import drivers
 from config import Config
 
 name="easy-model-fish"
@@ -14,7 +13,6 @@ mod, params = relay.frontend.from_onnx(easy_model, shape_dict)
 
 irModule = relay.transform.InferType()(mod)
 
-# print(model,params)
+print(irModule,params)
 
-
-lib = relay.build(irModule, target=target_, params=params)
+lib = relay.build(irModule, target=drivers.CPU.target, params=params)
