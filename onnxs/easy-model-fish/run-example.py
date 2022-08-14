@@ -1,6 +1,5 @@
 # test easy-model: example for test dataset
 
-from lib2to3.pgen2 import driver
 import tvm
 from tvm import relay
 import onnx
