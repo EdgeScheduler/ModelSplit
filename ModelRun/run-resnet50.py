@@ -2,12 +2,8 @@
 
 import tvm
 from tvm import relay
-import onnx
-import os
-from config import Config
 import drivers
 from tvm.contrib import graph_executor
-import json
 import numpy
 import time
 import load_data
@@ -19,7 +15,8 @@ input_dict={
     "data": (1, 3, 224, 224)
 }
 
-irModule,params= load_data.easy_load_from_onnx(name,input_dict)
+irModule,params,load_time= load_data.easy_load_from_onnx(name,input_dict)
+print("load model cost %ss"%(load_time))
 
 with tvm.transform.PassContext(opt_level=0):
     lib = relay.build(irModule, target=mydriver.target, params=params)

@@ -28,7 +28,11 @@ def easy_load_from_onnx(save_name,input_dict={}, download_url=OnnxModelUrl.Defau
 
     params : dict => {"label": tvm.nd.NDArray}
         The parameter dict to be used by relay
+    load_time: float
+        how long to load onnx
     '''
+
+    start=time.time()
     filepath=save_name
     if auto_path:
         filepath=Config.ModelSavePathName(filepath)
@@ -36,11 +40,11 @@ def easy_load_from_onnx(save_name,input_dict={}, download_url=OnnxModelUrl.Defau
     if not os.path.exists(filepath):
         if len(download_url)<1:
             print("onnx file not exist, you can give download url by set download_url=$URL.")
-            return None,{}
+            return None,{},time.time()-start
         else:
             if not download(download_url,filepath):
                 print("fail to load onnx-model from:",filepath)
-                return None,{}
+                return None,{},time.time()-start
 
     try:
         onnx_model=onnx.load(filepath)
@@ -48,10 +52,10 @@ def easy_load_from_onnx(save_name,input_dict={}, download_url=OnnxModelUrl.Defau
         irModule=relay.transform.InferType()(irModule)                    # tvm.ir.module.IRModule
     except Exception as ex:
         print("fail to load onnx from %s"%(filepath))
-        return None,{}
+        return None,{},time.time()-start
 
     print("success to load onnx from %s"%(filepath))
-    return irModule, params
+    return irModule, params,time.time()-start
 
 def download(url, path)->bool:
     """Downloads the file from the internet.

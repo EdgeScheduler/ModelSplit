@@ -20,7 +20,8 @@ input_info={
     "shape": (4,3,14,14)
 }
 
-irModule,params= load_data.easy_load_from_onnx(name,{input_info["name"]:input_info["shape"]})
+irModule,params,load_time= load_data.easy_load_from_onnx(name,{input_info["name"]:input_info["shape"]})
+print("load model cost %ss"%(load_time))
 
 # print(irModule)
 
