@@ -8,7 +8,7 @@ import requests
 
 def easy_load_from_onnx(save_name,input_dict={}, download_url=OnnxModelUrl.Default, auto_path=True):
     '''
-    load model from "$project_path/onnxs/$save_name/$save_name.onnx" without any redundant operate. It may not fit some complex model.
+    load model from "$project_path/onnxs/$save_name/$save_name.onnx" or "$save_name" without any redundant operate. It may not fit some complex model.
 
     Parameters
     ----------
