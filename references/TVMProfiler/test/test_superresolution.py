@@ -4,8 +4,8 @@ import tvm
 
 from PIL import Image
 from tvm.contrib.download import download_testdata
-from relay_graph import construct_op_graph, profile_resource_usage
-from onnx_profiler import create_onnx_model_from_web,compile_onnx_model,run_relay_mod
+# from relayIR.relay_graph import construct_op_graph, profile_resource_usage
+from relayIR.onnx_profiler import create_onnx_model_from_web,compile_onnx_model,run_relay_mod
 
 def get_superresolution_input():
     img_url = "https://github.com/dmlc/mxnet.js/blob/main/data/cat.png?raw=true"

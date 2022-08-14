@@ -27,16 +27,18 @@ for i in range(1,5):
             f = relay.nn.matmul(a,b)
             func = relay.Function(relay.analysis.free_vars(f),f)
             mod = tvm.ir.IRModule.from_expr(func)
-            mod = relay.transform.InferType()(mod)
-            shape_dict = {
-                v.name_hint: v.checked_type for v in mod["main"].params}
+            mod = relay.transform.InferType()(mod)                                        # 模型加载，实际上为 f=a*b
+            shape_dict = {v.name_hint: v.checked_type for v in mod["main"].params}        # 输入参数 
+
             np.random.seed(0)
+            # 为模型生成随机输入参数
             params = {}
             for k, v in shape_dict.items():
                 if k == "data":
                     continue
                 init_value = np.random.uniform(-1, 1, v.concrete_shape).astype(v.dtype)
                 params[k] = tvm.nd.array(init_value, device=tvm.cpu(0))
+
             call_functions = {"main": func}
             call_ir_module = tvm.ir.IRModule(functions=call_functions)
             with tvm.transform.PassContext(opt_level=1):
@@ -64,5 +66,6 @@ for i in range(1,5):
             metadata = {}
             @operation_time_profile(stream=sys.stdout, operation_meta=metadata)
             def op_time_forward_profile(call_interpreter, call_intput_args, ir_params):
-                return call_interpreter.evaluate()(*call_intput_args, **ir_params)
+                return call_interpreter.evaluate()(*call_intput_args, **ir_params)              # 即 {key: value}  => key=value 传入, [arg1,arg2, ...] => arg1,arg2,... 传入
             op_time_forward_profile(call_interpreter, input_args, {})
+
