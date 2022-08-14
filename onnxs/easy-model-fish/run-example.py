@@ -37,7 +37,7 @@ with tvm.transform.PassContext(opt_level=0):
 
 module = graph_executor.GraphModule(lib["default"](drivers.GPU.device))
 
-
+#############################################################################################################
 # 方法一
 test_data=None
 with open(Config.ModelSaveDataPathName(name),'r') as fp:
@@ -53,24 +53,9 @@ for input_test,output_test in test_data.items():
     else:
         print("error")
 print("way-GraphModule run time: ",time.time()-start)
+#############################################################################################################
 
-# intrp.evaluate()("...")
-
-# with tvm.transform.PassContext(opt_level=0):
-#     lib = relay.build(irModule, target=drivers.CPU.target, params={})
-
-# graphModule = graph_executor.GraphModule(lib["default"](drivers.GPU.device))
-
-# graphModule = graph_runtime.create(graph, lib, drivers.GPU.device)
-
-
-
-#     graphModule.set_input(input_info['name'], numpy.array(list(input_test)))
-#     output = graphModule.get_output(0)
-#     print(output)
-
-
-
+#############################################################################################################
 # 方法二
 start=time.time()
 with tvm.transform.PassContext(opt_level=0):
@@ -87,3 +72,4 @@ for input_test,output_test in test_data.items():
     else:
         print("error")
 print("way-intrp run time: ",time.time()-start)
+#############################################################################################################
