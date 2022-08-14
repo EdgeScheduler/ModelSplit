@@ -10,6 +10,7 @@ from tvm.contrib import graph_executor
 import json
 import numpy
 import time
+import load_data
 
 mydriver=drivers.GPU()
 
@@ -19,12 +20,7 @@ input_info={
     "shape": (4,3,14,14)
 }
 
-print("read model from: ",Config.ModelSavePathName(name))
-
-easy_model=onnx.load(Config.ModelSavePathName(name))
-# mod, params = relay.frontend.from_onnx(easy_model)
-mod, params = relay.frontend.from_onnx(easy_model,{"input_edge": (4,3,14,14)})
-irModule=relay.transform.InferType()(mod)                    # tvm.ir.module.IRModule
+irModule,params= load_data.easy_load_from_onnx(name,{input_info["name"]:input_info["shape"]})
 
 # print(irModule)
 
@@ -34,16 +30,15 @@ irModule=relay.transform.InferType()(mod)                    # tvm.ir.module.IRM
 # for label,type_name in shape_dict.items():
 #     print(label,":",type_name)
 
-with tvm.transform.PassContext(opt_level=0):
-    lib = relay.build(mod, target=mydriver.target, params=params)
-
-module = graph_executor.GraphModule(lib["default"](mydriver.device))
-
 #############################################################################################################
 # 方法一
 test_data=None
 flag=True
 time_first=None
+with tvm.transform.PassContext(opt_level=0):
+    lib = relay.build(irModule, target=mydriver.target, params=params)
+module = graph_executor.GraphModule(lib["default"](mydriver.device))
+
 with open(Config.ModelSaveDataPathName(name),'r') as fp:
     test_data=json.load(fp)
 

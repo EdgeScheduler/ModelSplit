@@ -19,3 +19,10 @@ class Config:
         name is given when you create the data. return "$project_path/onnxs/$name/data.json"
         '''
         return os.path.join(Config.OnnxSavePath,name,"data.json")
+
+class OnnxModelUrl:
+    '''
+    record onnx models URL which can be used to download from internet.
+    '''
+    Default=""
+    Resnet50=""
