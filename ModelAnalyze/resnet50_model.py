@@ -25,7 +25,7 @@ def main():
     input_name = "data"
     shape_dict = {input_name: x.shape}
     module, _ = get_tvm_model(
-        onnx_path, shape_dict, target="cuda", dev=tvm.cuda())
+        onnx_path, shape_dict, target="llvm", dev=tvm.cpu(0))
 
     # write check data to disk
     for _ in range(test_count):
