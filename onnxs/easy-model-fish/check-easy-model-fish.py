@@ -1,4 +1,4 @@
-# test easy-model
+# test easy-model: example for test dataset
 
 from lib2to3.pgen2 import driver
 import tvm
@@ -10,6 +10,7 @@ import drivers
 from tvm.contrib import graph_executor
 import json
 import numpy
+import time
 
 name="easy-model-fish"
 input_info={
@@ -20,26 +21,39 @@ input_info={
 print("read model from: ",Config.ModelSavePathName(name))
 
 easy_model=onnx.load(Config.ModelSavePathName(name))
-mod, params = relay.frontend.from_onnx(easy_model)
-# mod, params = relay.frontend.from_onnx(easy_model,{"input_edge": (4,3,14,14)})
+# mod, params = relay.frontend.from_onnx(easy_model)
+mod, params = relay.frontend.from_onnx(easy_model,{"input_edge": (4,3,14,14)})
 irModule=relay.transform.InferType()(mod)                    # tvm.ir.module.IRModule
 
 print(irModule)
 
-# # print(type(mod))
+print(params.keys())
 
-# shape_dict = {v.name_hint : v.checked_type for v in irModule["main"].params}
-# for label,type_name in shape_dict.items():
-#     print(label,":",type_name)
+shape_dict = {v.name_hint : v.checked_type for v in irModule["main"].params}
+for label,type_name in shape_dict.items():
+    print(label,":",type_name)
+
+with tvm.transform.PassContext(opt_level=0):
+    lib = relay.build(mod, target=drivers.GPU.target, params=params)
+
+module = graph_executor.GraphModule(lib["default"](drivers.GPU.device))
 
 
-# lib = relay.build(mod, target=drivers.GPU.target, params=params)
+# 方法一
+test_data=None
+with open(Config.ModelSaveDataPathName(name),'r') as fp:
+    test_data=json.load(fp)
 
-with relay.build_config(opt_level=0):
-    graph, lib, params2 = relay.build(mod, target=drivers.CPU.target, params=params)
-
-# with tvm.transform.PassContext(opt_level=0):
-#     intrp = relay.build_module.create_executor("graph", irModule, tvm.cpu(0), target=drivers.CPU.target,params=params)
+start=time.time()
+for input_test,output_test in test_data.items():
+    module.set_input(input_info['name'], numpy.array(eval(input_test),dtype="float32"))
+    module.run()
+    tvm_output = module.get_output(0).numpy().tolist()
+    if abs(tvm_output[0][0]-output_test) < 10**-4:
+        print("ok")
+    else:
+        print("error")
+print("way-GraphModule run time: ",time.time()-start)
 
 # intrp.evaluate()("...")
 
@@ -50,13 +64,27 @@ with relay.build_config(opt_level=0):
 
 # graphModule = graph_runtime.create(graph, lib, drivers.GPU.device)
 
-# test_data=None
-# with open(Config.ModelSaveDataPathName(name),'r') as fp:
-#     test_data=json.load(fp)
 
-# for input_test,output_test in test_data.items():
-#     tvm_output = intrp.evaluate()()
 
 #     graphModule.set_input(input_info['name'], numpy.array(list(input_test)))
 #     output = graphModule.get_output(0)
 #     print(output)
+
+
+
+# 方法二
+start=time.time()
+with tvm.transform.PassContext(opt_level=0):
+    intrp = relay.build_module.create_executor("graph", irModule, tvm.cpu(0), target=drivers.CPU.target,params=params)
+
+test_data=None
+with open(Config.ModelSaveDataPathName(name),'r') as fp:
+    test_data=json.load(fp)
+
+for input_test,output_test in test_data.items():
+    tvm_output = intrp.evaluate()(numpy.array(eval(input_test),dtype="float32")).numpy().tolist()
+    if abs(tvm_output[0][0]-output_test) < 10**-4:
+        print("ok")
+    else:
+        print("error")
+print("way-intrp run time: ",time.time()-start)

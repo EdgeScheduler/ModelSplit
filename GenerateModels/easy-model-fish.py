@@ -37,7 +37,7 @@ class Model(nn.Module):
         super(Model, self).__init__()
         self.conv1=nn.Conv2d(in_channels=3,out_channels=1,kernel_size=4,stride=2)
         self.conv2=nn.Conv2d(in_channels=3,out_channels=1,kernel_size=4,stride=2)
-        self.linear=nn.Linear(in_features=4*1*6*6,out_features=10)
+        self.linear=nn.Linear(in_features=4*1*6*6,out_features=1)
         
     def forward(self,x):                            # x: (4,3,14,14)        1, 11 
         x1=x+random_add0
@@ -48,7 +48,7 @@ class Model(nn.Module):
 
         output=F.relu(y)+y+random_add2
 
-        return F.relu(self.linear(torch.reshape(output,(4*1*6*6,))))
+        return F.relu(self.linear(torch.reshape(output,(1,4*1*6*6))))
         # return output
 
 def main():
@@ -58,14 +58,14 @@ def main():
     x = torch.rand(*input["shape"],requires_grad=True)
     _ = model(x)          # 计算一次前向传播，https://blog.csdn.net/qq_44930937/article/details/109701307
 
-    torch.onnx.export(model,x,Config.ModelSavePathName(onnx_name),export_params=True)  # "edge"使得自定义名称与tvm内部自动命名显示区分，便于理解
-    # torch.onnx.export(model,x,Config.ModelSavePathName(onnx_name),input_names=[input["name"]],output_names=["output"],export_params=True)  # "edge"使得自定义名称与tvm内部自动命名显示区分，便于理解
+    # torch.onnx.export(model,x,Config.ModelSavePathName(onnx_name),export_params=True)  # "edge"使得自定义名称与tvm内部自动命名显示区分，便于理解
+    torch.onnx.export(model,x,Config.ModelSavePathName(onnx_name),input_names=[input["name"]],output_names=["output"],export_params=True)  # "edge"使得自定义名称与tvm内部自动命名显示区分，便于理解
 
     # write check data to disk
     datas={}
     for _ in range(Config.TestDataCount):
         data_input=torch.rand(*input["shape"])
-        datas[str(data_input.tolist())]=model(data_input).tolist()
+        datas[str(data_input.tolist())]=model(data_input).tolist()[0][0]
 
     with open(Config.ModelSaveDataPathName(onnx_name),"w",encoding="utf-8") as fp:
         fp.write(json.dumps(datas))
