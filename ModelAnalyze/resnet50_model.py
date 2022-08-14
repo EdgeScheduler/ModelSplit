@@ -11,10 +11,11 @@ import tvm
 import onnxruntime as ort
 from config import Config
 import time
+import drivers
 
 input_shape = (1, 3, 224, 224)
 test_count = 5
-
+mydriver=drivers.CPU()
 
 def main():
 
@@ -25,7 +26,8 @@ def main():
     input_name = "data"
     shape_dict = {input_name: x.shape}
     module, _ = get_tvm_model(
-        onnx_path, shape_dict, target="llvm", dev=tvm.cpu(0))
+
+    onnx_path, shape_dict, target=mydriver.target, dev=mydriver.device)
 
     # write check data to disk
     for _ in range(test_count):
