@@ -6,14 +6,16 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from GenerateModels.tvm_model import get_tvm_model
+from ModelUtils.model_utils import load_onnx_model, onnx2IRModule, build_lib, store_lib, get_lib
 import tvm
 import onnxruntime as ort
 from config import Config
 import time
 import drivers
+from tvm.contrib import graph_executor
 
-input_shape = (1, 3, 224, 224)
+
+input_shape = (25, 3, 224, 224)
 test_count = 5
 mydriver = drivers.CPU()
 
@@ -21,25 +23,25 @@ mydriver = drivers.CPU()
 def main():
 
     # onnx model
-    onnx_path = Config.ModelSavePathName("resnet50-v2-7")
+    model_name = "resnet50-v2-7"
+    onnx_path = Config.ModelSavePathName(model_name)
+    lib_path = Config.TvmLibSavePathName(
+        model_name, mydriver.target, str(input_shape[0]))
     # (N,3,224,224)——need to set input size for tvm model
     x = torch.rand(*input_shape, requires_grad=True)
     input_name = "data"
     shape_dict = {input_name: x.shape}
-    module, _ = get_tvm_model(
-        onnx_path, shape_dict, target=mydriver.target, dev=mydriver.device)
+
+    onnx_model = load_onnx_model(onnx_path)
+    mod, params = onnx2IRModule(onnx_model, shape_dict)
+    lib = build_lib(mod, params, mydriver.target, lib_path)
+    if not os.path.exists(lib_path):
+        store_lib(lib, lib_path)
+    module = graph_executor.GraphModule(lib["default"](mydriver.device))
 
     # write check data to disk
     for _ in range(test_count):
         data_input = torch.rand(*input_shape)
-        # onnx model
-        sess = ort.InferenceSession(onnx_path)
-        print("input name:", sess.get_inputs()[0])
-        input_name = sess.get_inputs()[0].name
-        onnx_out = sess.run(
-            [], {input_name: data_input.numpy()})
-        onnx_out = np.array(onnx_out).flatten()
-        # print("onnx %s" % onnx_out[:10])
 
         # tvm model
         module.set_input(input_name, data_input.numpy())

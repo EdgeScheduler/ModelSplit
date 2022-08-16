@@ -6,7 +6,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from GenerateModels.tvm_model import get_tvm_model
+from ModelSplit.ModelUtils.model_utils import get_tvm_model
 import load_data
 import tvm
 import tvm.relay as relay
