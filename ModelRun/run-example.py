@@ -12,7 +12,7 @@ import numpy
 import time
 import load_data
 
-mydriver=drivers.GPU()
+mydriver=drivers.CPU()
 
 name="easy-model-fish"
 input_info={

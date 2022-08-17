@@ -9,6 +9,7 @@ import time
 import load_data
 
 mydriver=drivers.GPU()
+<<<<<<< HEAD
 Count=4
 name="resnet50-v2-7"
 input_dict={
