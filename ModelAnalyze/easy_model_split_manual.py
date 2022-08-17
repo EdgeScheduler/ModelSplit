@@ -190,3 +190,48 @@ if __name__ == '__main__':
     split_out = run_split_model()
     print("whole_out:", whole_out)
     print("split_out:", split_out)
+
+
+'''
+fn (%input: Tensor[(4, 3, 14, 14), float32], %weight1: Tensor[(1, 3, 4, 4), float32], %bias1: Tensor[(1), float32], %add1: Tensor[(4, 3, 14, 14), float32], %weight2: Tensor[(1, 3, 4, 4), float32], %bias2: Tensor[(1), float32], %add2: Tensor[(4, 1, 6, 6), float32], %weight3: Tensor[(1, 144), float32], %bias3: Tensor[(1), float32]) {
+  %0 = nn.conv2d(%input, %weight1, strides=[2, 2], padding=[0, 0, 0, 0], channels=1, kernel_size=[4, 4]);
+  %1 = nn.bias_add(%0, %bias1);
+  %2 = add(%input, %add1);
+  %3 = nn.conv2d(%2, %weight2, strides=[2, 2], padding=[0, 0, 0, 0], channels=1, kernel_size=[4, 4]);
+  %4 = nn.bias_add(%3, %bias2);
+  %5 = nn.relu(%1);
+  %6 = nn.relu(%4);
+  %7 = add(%5, %6);
+  %8 = nn.relu(%7);
+  %9 = add(%7, %8);
+  %10 = add(%9, %add2);
+  %11 = reshape(%10, newshape=[1, 144]);
+  %12 = nn.batch_flatten(%11);
+  %13 = nn.dense(%12, %weight3, units=1, out_dtype="float32");
+  add(%13, %bias3)
+}
+One or more operators have not been tuned. Please tune your model for better performance. Use DEBUG logging level to see more details.
+[[-41.173133850097656]]
+fn (%part1_input: Tensor[(4, 3, 14, 14), float32], %weight1: Tensor[(1, 3, 4, 4), float32], %bias1: Tensor[(1), float32], %add1: Tensor[(4, 3, 14, 14), float32], %weight2: Tensor[(1, 3, 4, 4), float32], %bias2: Tensor[(1), float32]) {
+  %0 = nn.conv2d(%part1_input, %weight1, strides=[2, 2], padding=[0, 0, 0, 0], channels=1, kernel_size=[4, 4]);
+  %1 = nn.bias_add(%0, %bias1);
+  %2 = add(%part1_input, %add1);
+  %3 = nn.conv2d(%2, %weight2, strides=[2, 2], padding=[0, 0, 0, 0], channels=1, kernel_size=[4, 4]);
+  %4 = nn.bias_add(%3, %bias2);
+  %5 = nn.relu(%1);
+  %6 = nn.relu(%4);
+  %7 = add(%5, %6);
+  %8 = nn.relu(%7);
+  add(%7, %8)
+}
+fn (%part2_input: Tensor[(4, 1, 6, 6), float32], %add2: Tensor[(4, 1, 6, 6), float32], %weight3: Tensor[(1, 144), float32], %bias3: Tensor[(1), float32]) {
+  %0 = add(%part2_input, %add2);
+  %1 = reshape(%0, newshape=[1, 144]);
+  %2 = nn.batch_flatten(%1);
+  %3 = nn.dense(%2, %weight3, units=1, out_dtype="float32");
+  add(%3, %bias3)
+}
+[[-41.173133850097656]]
+whole_out: [[-41.173133850097656]]
+split_out: [[-41.173133850097656]]
+'''
