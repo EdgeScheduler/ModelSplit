@@ -13,11 +13,26 @@ from config import Config
 import time
 import drivers
 from tvm.contrib import graph_executor
+import gc
 
 
-input_shape = (25, 3, 224, 224)
+input_shape = (1, 3, 224, 224)
 test_count = 5
-mydriver = drivers.CPU()
+mydriver = drivers.GPU()
+
+
+def RunModule(lib=None):
+    module = graph_executor.GraphModule(
+        lib["default"](mydriver.device))
+
+    data_input = torch.rand(*input_shape)
+    # tvm model
+    module.set_input(input_name, data_input.numpy())
+    start = time.time()
+    module.run()
+    module.get_output(0).numpy().flatten()
+    print("time=", time.time()-start)
+    gc.collect()
 
 
 def main():
@@ -27,7 +42,7 @@ def main():
     onnx_path = Config.ModelSavePathName(model_name)
     lib_path = Config.TvmLibSavePathName(
         model_name, mydriver.target, str(input_shape[0]))
-    # (N,3,224,224)——need to set input size for tvm model
+    # (N,3,224,224)——need to set input size for tvm
     x = torch.rand(*input_shape, requires_grad=True)
     input_name = "data"
     shape_dict = {input_name: x.shape}
@@ -37,27 +52,18 @@ def main():
     lib = build_lib(mod, params, mydriver.target, lib_path)
     if not os.path.exists(lib_path):
         store_lib(lib, lib_path)
-    module = graph_executor.GraphModule(lib["default"](mydriver.device))
+    start = time.time()
+    print("module time:", time.time()-start)
 
-    # write check data to disk
-    for _ in range(test_count):
-        data_input = torch.rand(*input_shape)
+    for _ in range(10):
+        RunModule(lib=lib)
 
-        # tvm model
-        module.set_input(input_name, data_input.numpy())
-        start = time.time()
-        module.run()
-        print("time=", time.time()-start)
-        tvm_out = module.get_output(0).numpy().flatten()
-        # print("tvm %s" % tvm_out[:10])
-        # print("error: ", (onnx_out[:10]-tvm_out[:10])/tvm_out[:10])
-
-    print("with time_evaluator")
-    ftimer = module.module.time_evaluator(
-        "run", mydriver.device, repeat=test_count, min_repeat_ms=500, number=1)
-    prof_res = np.array(ftimer().results)  # convert to millisecond
-    print("Mean inference time (std dev): %f s (%f s)" %
-          (np.mean(prof_res), np.std(prof_res)))
+    # print("with time_evaluator")
+    # ftimer = module.module.time_evaluator(
+    #     "run", mydriver.device, repeat=test_count, min_repeat_ms=500, number=1)
+    # prof_res = np.array(ftimer().results)  # convert to millisecond
+    # print("Mean inference time (std dev): %f s (%f s)" %
+    #       (np.mean(prof_res), np.std(prof_res)))
 
 
 if __name__ == "__main__":

@@ -50,8 +50,7 @@ class Model(nn.Module):
         y = y1+y2
 
         output = F.relu(y)+y+random_add2
-
-        return self.linear(torch.flatten(output, 0))
+        return self.linear(torch.reshape(output, (1, 4*1*6*6)))
 
 # def to_numpy(tensor):
 #     return tensor.detach().cpu().numpy() if tensor.requires_grad else tensor.cpu().numpy()
@@ -71,7 +70,7 @@ def main():
     onnx_path = Config.ModelSavePathName(onnx_name)
     lib_path = Config.TvmLibSavePathName(
         onnx_name, mydriver.target, str(input_shape[0]))
-    torch.onnx.export(model, x, Config.ModelSavePathName(onnx_path), export_params=True, input_names=[
+    torch.onnx.export(model, x, Config.ModelSavePathName(onnx_name), export_params=True, input_names=[
         input_name], output_names=[output_name])  # "edge"使得自定义名称与tvm内部自动命名显示区分，便于理解
 
     # (N,3,224,224)——need to set input size for tvm model
@@ -101,11 +100,6 @@ def main():
         print("tvm %s" % tvm_out)
         out["tvm"] = tvm_out
         datas[str(data_input.tolist())] = out
-
-    with open(os.path.join(onnx_fold, "data.json"), "w", encoding="utf-8") as fp:
-        fp.write(json.dumps(datas))
-
-    print("datas in:", onnx_fold)
 
 
 if __name__ == "__main__":

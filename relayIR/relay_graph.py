@@ -283,9 +283,14 @@ def construct_op_graph(ir_module):
      :param ir_module: a tvm relayIRModule
     """
     global op_index, computation_graph
+    print("type:", type(ir_module))
+    print(ir_module.get_global_vars())
     print("ir_module.functions items: ", ir_module.functions.items()[0])
     entrance_tuple = ir_module.functions.items()[0]
+    print("functions type:", type(ir_module.functions))
     main_function = entrance_tuple[1]
+    print("main_function type:", type(entrance_tuple[1]))
+    print("main_function:", entrance_tuple[1])
     for each_param in main_function.params:
         temp_op_node = op_node("var", op_index, each_param, attrs=None)
         temp_op_node.print_self()

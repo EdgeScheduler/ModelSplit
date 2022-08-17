@@ -6,7 +6,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from ModelSplit.ModelUtils.model_utils import get_tvm_model
+from ModelUtils.model_utils import load_onnx_model, onnx2IRModule, build_lib, store_lib, get_lib
 import load_data
 import tvm
 import tvm.relay as relay
@@ -34,7 +34,6 @@ def main():
     onnx_model = onnx.load(onnx_path)
     mod, params = relay.frontend.from_onnx(onnx_model, shape_dict)
     # tvm.ir.module.IRModule
-    print(type(mod))
     construct_op_graph(mod)
 
 
