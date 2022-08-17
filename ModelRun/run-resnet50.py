@@ -8,7 +8,7 @@ import numpy
 import time
 import load_data
 
-mydriver=drivers.CPU()
+mydriver=drivers.GPU()
 Count=10
 name="resnet50-v2-7"
 input_dict={
