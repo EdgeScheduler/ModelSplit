@@ -6,20 +6,20 @@ import numpy
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import tvm_model
 import tvm
+from config import Config
+import drivers
+from ModelUtils.model_utils import load_onnx_model, onnx2IRModule, build_lib, store_lib, get_lib
+from tvm.contrib import graph_executor
 
-# 定义模型导出位置
-onnx_name = "easy_model"
-onnx_fold = os.path.join(os.path.dirname(
-    os.path.abspath(__file__)), "../onnxs", onnx_name)
-os.makedirs(onnx_fold, exist_ok=True)
 
 # 模型定义
 input_shape = (4, 3, 14, 14)
-
 random_add1 = torch.rand(4, 3, 14, 14)
 random_add2 = torch.rand(4, 1, 6, 6)
+
+mydriver = drivers.CPU()
+onnx_name = "easy_model"
 
 '''
 x -> conv1 ->y1
@@ -66,17 +66,24 @@ def main():
     # 计算一次前向传播，https://blog.csdn.net/qq_44930937/article/details/109701307
     _ = model(x)
 
-    # onnx model
-    onnx_path = os.path.join(onnx_fold, onnx_name+".onnx")
     input_name = "input"
     output_name = "output"
-    torch.onnx.export(model, x, onnx_path, input_names=[
-                      input_name], output_names=[output_name])
+    onnx_path = Config.ModelSavePathName(onnx_name)
+    lib_path = Config.TvmLibSavePathName(
+        onnx_name, mydriver.target, str(input_shape[0]))
+    torch.onnx.export(model, x, Config.ModelSavePathName(onnx_path), export_params=True, input_names=[
+        input_name], output_names=[output_name])  # "edge"使得自定义名称与tvm内部自动命名显示区分，便于理解
 
-    # tvm model
-    shape_dict = {input_name: x.detach().numpy().shape}
-    module, _ = tvm_model.get_tvm_model(
-        onnx_path, shape_dict, target="cuda", dev=tvm.cuda())
+    # (N,3,224,224)——need to set input size for tvm model
+    x = torch.rand(*input_shape, requires_grad=True)
+    shape_dict = {input_name: x.shape}
+
+    onnx_model = load_onnx_model(onnx_path)
+    mod, params = onnx2IRModule(onnx_model, shape_dict)
+    lib = build_lib(mod, params, mydriver.target, lib_path)
+    if not os.path.exists(lib_path):
+        store_lib(lib, lib_path)
+    module = graph_executor.GraphModule(lib["default"](mydriver.device))
 
     # write check data to disk
     datas = {}

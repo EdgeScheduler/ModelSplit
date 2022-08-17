@@ -2,6 +2,10 @@
 .pkl_memoize_py3
 TVMProfiler
 
+# model
+*.tar
+*.onnx
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
