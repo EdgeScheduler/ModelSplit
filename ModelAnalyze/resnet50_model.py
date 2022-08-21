@@ -19,6 +19,7 @@ import gc
 input_shape = (1, 3, 224, 224)
 test_count = 5
 mydriver = drivers.GPU()
+input_name = "data"
 
 
 def RunModule(lib=None):
@@ -44,16 +45,14 @@ def main():
         model_name, mydriver.target, str(input_shape[0]))
     # (N,3,224,224)——need to set input size for tvm
     x = torch.rand(*input_shape, requires_grad=True)
-    input_name = "data"
     shape_dict = {input_name: x.shape}
 
     onnx_model = load_onnx_model(onnx_path)
     mod, params = onnx2IRModule(onnx_model, shape_dict)
+    print(mod)
     lib = build_lib(mod, params, mydriver.target, lib_path)
     if not os.path.exists(lib_path):
         store_lib(lib, lib_path)
-    start = time.time()
-    print("module time:", time.time()-start)
 
     for _ in range(10):
         RunModule(lib=lib)

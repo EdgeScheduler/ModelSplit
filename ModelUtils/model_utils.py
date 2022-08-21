@@ -17,11 +17,12 @@ def onnx2IRModule(onnx_model, shape_dict):
     return mod, params
 
 
-def build_lib(mod, params, target, lib_path):
-    if (os.path.exists(lib_path)):
-        return get_lib(lib_path)
+def build_lib(mod, params, target, lib_path=None):
+    # if (os.path.exists(lib_path)):
+    # tvm.runtime.module.Module
+    # return get_lib(lib_path)
     # factory_module
-    with tvm.transform.PassContext(opt_level=0):
+    with tvm.transform.PassContext(opt_level=3):
         lib = relay.build(mod, target=target, params=params)
     return lib
 

@@ -68,8 +68,14 @@ input2 = {"part2_input": input_data, "add2": random_add2}
 '''
 
 
+def get_whole_model_params():
+    return params
+
+
 def whole_model():
     input = relay.var("input", shape=input_shape, dtype=_dtype)
+    # add1 = relay.const(tvm.nd.array(random_add1), dtype=_dtype)
+    # add2 = relay.const(tvm.nd.array(random_add2), dtype=_dtype)
     add1 = relay.var("add1", shape=random_add1.shape, dtype=_dtype)
     add2 = relay.var("add2", shape=random_add2.shape, dtype=_dtype)
 
@@ -99,7 +105,7 @@ def whole_model():
     fdense1 = relay.nn.dense(data=freshape1, weight=weight3,
                              units=1, out_dtype=_dtype)
     f = relay.add(fdense1, bias3)
-    return relay.Function(relay.analysis.free_vars(f), f)
+    return tvm.IRModule.from_expr(f)
 
 
 def model_part1():
@@ -123,8 +129,8 @@ def model_part1():
     fadd2 = relay.add(frelu1, frelu2)
     frelu3 = relay.nn.relu(fadd2)
     fadd3 = relay.add(fadd2, frelu3)
-
-    return relay.Function(relay.analysis.free_vars(fadd3), fadd3)
+    return tvm.IRModule.from_expr(fadd3)
+    # return relay.Function(relay.analysis.free_vars(fadd3), fadd3)
 
 
 def model_part2():
@@ -140,7 +146,7 @@ def model_part2():
     fdense1 = relay.nn.dense(data=freshape1, weight=weight3,
                              units=1, out_dtype=_dtype)
     f = relay.add(fdense1, bias3)
-    return relay.Function(relay.analysis.free_vars(f), f)
+    return tvm.IRModule.from_expr(f)
 
 
 def run_whole_model():
@@ -148,6 +154,8 @@ def run_whole_model():
     print(ir_module)
     with tvm.transform.PassContext(opt_level=3):
         lib = relay.build(ir_module, mydriver.target, params=params)
+    # print(lib.get_graph_json())
+    # print(lib.get_lib())  # Module(llvm, 4c375a8)
     module = graph_executor.GraphModule(lib["default"](mydriver.device))
     for k, v in input.items():
         module.set_input(k, v)
@@ -234,4 +242,301 @@ fn (%part2_input: Tensor[(4, 1, 6, 6), float32], %add2: Tensor[(4, 1, 6, 6), flo
 [[-41.173133850097656]]
 whole_out: [[-41.173133850097656]]
 split_out: [[-41.173133850097656]]
+'''
+
+
+'''
+{
+  "nodes": [
+    {
+      "op": "null", 
+      "name": "input", 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "add1", 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "add2", 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "p0", 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "p1", 
+      "inputs": []
+    }, 
+    {
+      "op": "tvm_op", 
+      "name": "tvmgen_default_fused_add", 
+      "attrs": {
+        "num_outputs": "1", 
+        "num_inputs": "2", 
+        "flatten_data": "0", 
+        "hash": "1e4d3c7b8a161fd8", 
+        "func_name": "tvmgen_default_fused_add"
+      }, 
+      "inputs": [
+        [
+          0, 
+          0, 
+          0
+        ], 
+        [
+          1, 
+          0, 
+          0
+        ]
+      ]
+    }, 
+    {
+      "op": "null", 
+      "name": "p2", 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "p3", 
+      "inputs": []
+    }, 
+    {
+      "op": "tvm_op", 
+      "name": "tvmgen_default_fused_nn_conv2d_add_nn_relu", 
+      "attrs": {
+        "num_outputs": "1", 
+        "num_inputs": "3", 
+        "data_layout": "NCHW", 
+        "kernel_layout": "OIHW", 
+        "hash": "f1e84e888f3a3b2b", 
+        "func_name": "tvmgen_default_fused_nn_conv2d_add_nn_relu", 
+        "out_layout": "", 
+        "flatten_data": "0"
+      }, 
+      "inputs": [
+        [
+          5, 
+          0, 
+          0
+        ], 
+        [
+          6, 
+          0, 
+          0
+        ], 
+        [
+          7, 
+          0, 
+          0
+        ]
+      ]
+    }, 
+    {
+      "op": "tvm_op", 
+      "name": "tvmgen_default_fused_nn_conv2d_add_nn_relu_add_nn_relu_add_add", 
+      "attrs": {
+        "num_outputs": "1", 
+        "num_inputs": "5", 
+        "out_layout": "", 
+        "kernel_layout": "OIHW", 
+        "hash": "83dd8fce37801156", 
+        "func_name": "tvmgen_default_fused_nn_conv2d_add_nn_relu_add_nn_relu_add_add", 
+        "data_layout": "NCHW", 
+        "flatten_data": "0"
+      }, 
+      "inputs": [
+        [
+          0, 
+          0, 
+          0
+        ], 
+        [
+          3, 
+          0, 
+          0
+        ], 
+        [
+          4, 
+          0, 
+          0
+        ], 
+        [
+          8, 
+          0, 
+          0
+        ], 
+        [
+          2, 
+          0, 
+          0
+        ]
+      ]
+    }, 
+    {
+      "op": "tvm_op", 
+      "name": "tvmgen_default_fused_reshape_nn_batch_flatten", 
+      "attrs": {
+        "num_outputs": "1", 
+        "num_inputs": "1", 
+        "flatten_data": "0", 
+        "hash": "f3abb7ecc46ce6c3", 
+        "func_name": "tvmgen_default_fused_reshape_nn_batch_flatten"
+      }, 
+      "inputs": [
+        [
+          9, 
+          0, 
+          0
+        ]
+      ]
+    }, 
+    {
+      "op": "null", 
+      "name": "p4", 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "p5", 
+      "inputs": []
+    }, 
+    {
+      "op": "tvm_op", 
+      "name": "tvmgen_default_fused_nn_dense_add", 
+      "attrs": {
+        "num_outputs": "1", 
+        "num_inputs": "3", 
+        "flatten_data": "0", 
+        "hash": "b42046847df8cb7b", 
+        "func_name": "tvmgen_default_fused_nn_dense_add"
+      }, 
+      "inputs": [
+        [
+          10, 
+          0, 
+          0
+        ], 
+        [
+          11, 
+          0, 
+          0
+        ], 
+        [
+          12, 
+          0, 
+          0
+        ]
+      ]
+    }
+  ], 
+  "arg_nodes": [0, 1, 2, 3, 4, 6, 7, 11, 12], 
+  "heads": [
+    [
+      13, 
+      0, 
+      0
+    ]
+  ], 
+  "attrs": {
+    "dltype": [
+      "list_str", 
+      [
+        "float32", 
+        "float32", 
+        "float32", 
+        "float32", 
+        "float32", 
+        "float32", 
+        "float32", 
+        "float32", 
+        "float32", 
+        "float32", 
+        "float32", 
+        "float32", 
+        "float32", 
+        "float32"
+      ]
+    ], 
+    "shape": [
+      "list_shape", 
+      [
+        [4, 3, 14, 14], 
+        [4, 3, 14, 14], 
+        [4, 1, 6, 6], 
+        [1, 3, 4, 4], 
+        [1, 1, 1], 
+        [4, 3, 14, 14], 
+        [1, 3, 4, 4], 
+        [1, 1, 1], 
+        [4, 1, 6, 6], 
+        [4, 1, 6, 6], 
+        [1, 144], 
+        [1, 144], 
+        [1], 
+        [1, 1]
+      ]
+    ], 
+    "device_index": [
+      "list_int", 
+      [
+        2, 
+        2, 
+        2, 
+        2, 
+        2, 
+        2, 
+        2, 
+        2, 
+        2, 
+        2, 
+        2, 
+        2, 
+        2, 
+        2
+      ]
+    ], 
+    "storage_id": [
+      "list_int", 
+      [
+        0, 
+        1, 
+        2, 
+        3, 
+        4, 
+        5, 
+        6, 
+        7, 
+        8, 
+        9, 
+        8, 
+        10, 
+        11, 
+        12
+      ]
+    ]
+  }, 
+  "node_row_ptr": [
+    0, 
+    1, 
+    2, 
+    3, 
+    4, 
+    5, 
+    6, 
+    7, 
+    8, 
+    9, 
+    10, 
+    11, 
+    12, 
+    13, 
+    14
+  ]
+}
 '''
