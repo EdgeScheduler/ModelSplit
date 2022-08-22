@@ -22,7 +22,7 @@ import argparse
 
 
 class Layer():
-    def __init__(self, name, type, bottoms, tops, params):
+    def __init__(self, name, type, bottoms, tops, params, line):
         # %1
         self.name = name
         # nn.dense
@@ -33,6 +33,7 @@ class Layer():
         self.bottoms = bottoms
         # {call_2} =
         self.tops = tops
+        self.line = line
 
     def print_self(self):
         print("-------------")
@@ -115,7 +116,9 @@ class MyParser:
         raw_index = line.find(bottom)
         if raw_index != -1:
             return raw_index
-        if "Constant" in bottom:
+        if re.match(r"\d+f", bottom):
+            raw_index = line.find(bottom)
+        elif "Constant" in bottom:
             constant_bottom = "meta[relay.Constant][{}]".format(
                 bottom.split('_')[1])
             raw_index = line.find(constant_bottom)
@@ -217,8 +220,6 @@ class MyParser:
                         bottoms += self.handle_constant_line(line)
 
                     # reorder bottoms(as constant vs var is unordered)
-                    print(line)
-                    print("sort:", bottoms)
                     bottoms.sort(
                         key=lambda bottom: self.key_func(bottom, line))
 
@@ -265,8 +266,17 @@ class MyParser:
 
                     # %134 = take(%72, 0 /* ty=int64 */, axis=1)
                     # %114 = subtract(1f /* ty=float32 */, %90)
-                    bottoms += [i.split(' ')[0].strip('f') for i in ''.join(line.split("(")[1:]).split(
+                    # TODO: ?
+                    print("before:", bottoms)
+                    tmp = [i.split(' ')[0].strip('f') for i in ''.join(line.split("(")[1:]).split(
                         ", ") if ' ' in i and i.split(' ')[0].strip('f').isdigit() == True]
+                    if len(tmp) > 0:
+                        raise
+                    bottoms += tmp
+
+                    # fix : %226 = multiply(1f, %resnetv24_dense0_bias);
+                    bottoms += re.findall(r"\d+f", line)
+                    print("after:", bottoms)
 
                     # handle meta[constant[0]]
                     if "meta[relay.Constant]" in line:
@@ -288,7 +298,7 @@ class MyParser:
                     params = self.parse_params(line)
 
                     l = Layer(name=name, type=type, bottoms=new_bottoms,
-                              tops=tops, params=params)
+                              tops=tops, params=params, line=line)
                     self.layer_list.append(l)
 
                 elif type == 5:
@@ -390,12 +400,20 @@ class MyParser:
                     # if isinstance(bottom, list):
                     # relay_python.write("relay.Tuple([")
 
+                    # TODO: ? %32 = (%28, %29, %30, %31)
+                    if re.match(r"%\d+, %\d+", l.line):
+                        relay_python.write("relay.Tuple([")
+
                     for j, b in enumerate(bottom if isinstance(bottom, list) else [bottom]):
                         # meta[constant]
                         if b.isdigit() == True:
                             relay_python.write(
                                 "relay.const(np.array({}, dtype=\"int64\"))".format(b))  # TODO:type
                             # relay_python.write("{}".format("scale_"+b))
+                        # fix : %226 = multiply(1f, %resnetv24_dense0_bias);
+                        if re.match(r"\d+f", b):
+                            relay_python.write(
+                                "relay.const({}.0, dtype=\"float32\")".format(b.strip("f")))
 
                         else:
                             # 'call_201.0' 'call_201_0'
@@ -410,7 +428,7 @@ class MyParser:
                         if j != len(bottom if isinstance(bottom, list) else [bottom]) - 1:
                             relay_python.write(", ")
 
-                    # if isinstance(bottom, list):
+                        # if isinstance(bottom, list):
                         # relay_python.write("])")
 
                     if i != len(l.bottoms) - 1:
