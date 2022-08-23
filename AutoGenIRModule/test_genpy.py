@@ -7,6 +7,8 @@ txt_to_class = {
     "easy_model": "EasyModule",
     "yolov2": "YoloModule",
     "squeezenet1": "SqueezeNetModule",
+    "mobilenetv2": "MobileNetModule",
+    "vgg19": "Vgg19Module",
 }
 
 if __name__ == "__main__":
@@ -20,7 +22,7 @@ if __name__ == "__main__":
     # print(tops)
 
     # txt_name = "resnet50"
-    txt_name = "squeezenet1"
+    txt_name = "vgg19"
     txt_file_path = "/home/onceas/wanna/ModelSplit/AutoGenIRModule/text/{}.txt".format(
         txt_name)
     py_file_path = txt_file_path.replace("txt", "py").replace("text", "pyfile")

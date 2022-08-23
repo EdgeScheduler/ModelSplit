@@ -17,16 +17,15 @@ import time
 import drivers
 from relayIR.relay_graph import construct_op_graph
 import drivers
-from AutoGenIRModule.pyfile.squeezenet1 import SqueezeNetModule
-# from AutoGenIRModule.text.resnet50 import ResnetModule
+from AutoGenIRModule.pyfile.vgg19 import Vgg19Module
 
 
 input_shape = (1, 3, 224, 224)
 mydriver = drivers.GPU()
 test_count = 5
 mydriver = drivers.GPU()
-input_name = "data_0"
-model_name = "squeezenet1.0-7"
+input_name = "data"
+model_name = "vgg19-7"
 _dtype = "float32"
 params = {}
 x = torch.rand(*input_shape, requires_grad=True)
@@ -62,7 +61,7 @@ def run_init_model():
 
 def run_rebuild_model():
     global params
-    ir_module = tvm.IRModule.from_expr(SqueezeNetModule())
+    ir_module = tvm.IRModule.from_expr(Vgg19Module())
     with tvm.transform.PassContext(opt_level=3):
         lib = relay.build(ir_module, target=mydriver.target, params=params)
     module = graph_executor.GraphModule(lib["default"](mydriver.device))
@@ -81,8 +80,8 @@ if __name__ == '__main__':
 
 
 '''
-[3.4409648e-05 2.6335304e-03 7.7154684e-05 1.0152867e-03 9.3985297e-04
- 7.2880606e-03 3.2365300e-02 1.1292243e-06 1.5896841e-05 2.8508302e-07]
-[3.4409648e-05 2.6335304e-03 7.7154684e-05 1.0152867e-03 9.3985297e-04
- 7.2880606e-03 3.2365300e-02 1.1292243e-06 1.5896841e-05 2.8508302e-07]
+[-1.3567598   0.62836903  1.0994687   2.071827    1.3156492   0.24298921
+  0.95590365 -0.39684555 -0.64177406 -0.423186  ]
+[-1.3567598   0.62836903  1.0994687   2.071827    1.3156492   0.24298921
+  0.95590365 -0.39684555 -0.64177406 -0.423186  ]
 '''
