@@ -179,6 +179,8 @@ class MyParser:
         with open(relay_text_path, 'r') as f:
             for line in f:
                 type = self.judge_line_type(line)
+                # fix googlenet:conv1/7x7_s2_b_0 can't match input
+                # line = line.replace("/", "_")
                 print(line, "-------", type)
                 # step 1. process
                 if type == -1:
@@ -267,7 +269,7 @@ class MyParser:
                     # %134 = take(%72, 0 /* ty=int64 */, axis=1)
                     # %114 = subtract(1f /* ty=float32 */, %90)
                     # TODO: ?
-                    print("before:", bottoms)
+                    # print("before:", bottoms)
                     tmp = [i.split(' ')[0].strip('f') for i in ''.join(line.split("(")[1:]).split(
                         ", ") if ' ' in i and i.split(' ')[0].strip('f').isdigit() == True]
                     if len(tmp) > 0:
@@ -275,8 +277,11 @@ class MyParser:
                     bottoms += tmp
 
                     # fix : %226 = multiply(1f, %resnetv24_dense0_bias);
-                    bottoms += re.findall(r"\d+f", line)
-                    print("after:", bottoms)
+                    consts = re.findall(
+                        r"\(\d+f", line) + re.findall(r", \d+f", line)
+                    for _, con in enumerate(consts):
+                        bottoms += [con.strip("(").strip(", ")]
+                    # print("after:", bottoms)
 
                     # handle meta[constant[0]]
                     if "meta[relay.Constant]" in line:
@@ -347,7 +352,7 @@ class MyParser:
             # input & params
             for index, net_input in enumerate(self.net_inputs):
                 relay_python.write(
-                    "    {} = relay.var(\"{}\", shape=(".format(net_input, net_input))
+                    "    {} = relay.var(\"{}\", shape=(".format(net_input.replace('.', '_').replace("/", "_"), net_input))
                 # for dim in self.net_input_shapes[index]:
                 # relay_python.write("{}, ".format(
                 # "relay.Any()" if dim == '?' else dim))
@@ -395,14 +400,26 @@ class MyParser:
 
                 # nn.{content,...params}——content
                 # print(l.bottoms)
+                # print(l.line)
+                flag = False
+                if re.match(r"(%\d+, %\d+)", l.line):
+                    flag = True
+                if isinstance(l.bottoms[0], list):
+                    times = 0
+                    for _, item in enumerate(l.bottoms[0]):
+                        times += 1
+                    if times > 1:
+                        flag = True
+
                 for i, bottom in enumerate(l.bottoms):
                     # call_9 = relay.nn.relu(relay.Tuple([call_7_0]), )
                     # if isinstance(bottom, list):
                     # relay_python.write("relay.Tuple([")
-
                     # TODO: ? %32 = (%28, %29, %30, %31)
-                    if re.match(r"%\d+, %\d+", l.line):
+                    # bottoms: [['call_28', 'call_29', 'call_30', 'call_31']]
+                    if flag:
                         relay_python.write("relay.Tuple([")
+                        # relay_python.write("[")
 
                     for j, b in enumerate(bottom if isinstance(bottom, list) else [bottom]):
                         # meta[constant]
@@ -418,7 +435,7 @@ class MyParser:
                         else:
                             # 'call_201.0' 'call_201_0'
                             relay_python.write(
-                                "{}".format(b.replace('.', '_')))
+                                "{}".format(b.replace('.', '_').replace("/", "_")))
                             # fix: relay.nn.batch_norm —— ValueError: don't know how to convert type <class 'tvm.relay.expr.TupleWrapper'> to object
                             if "call_" in b:
                                 call_num = b.strip("call_").split(".")[0]
@@ -430,6 +447,10 @@ class MyParser:
 
                         # if isinstance(bottom, list):
                         # relay_python.write("])")
+
+                    if flag:
+                        relay_python.write("])")
+                        # relay_python.write("]")
 
                     if i != len(l.bottoms) - 1:
                         relay_python.write(", ")
