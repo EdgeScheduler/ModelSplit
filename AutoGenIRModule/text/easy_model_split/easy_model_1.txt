@@ -1,0 +1,7 @@
+def @main(%call_9: Tensor[(4, 1, 6, 6), float32], %add2: Tensor[(4, 1, 6, 6), float32], %bias3: Tensor[(1), float32]), %weight3: Tensor[(1, 144), float32] {
+  %10 = add(%9, %add2) /* ty=Tensor[(4, 1, 6, 6), float32] */;
+  %11 = reshape(%10, newshape=[1, 144]) /* ty=Tensor[(1, 144), float32] */;
+  %12 = nn.batch_flatten(%11) /* ty=Tensor[(1, 144), float32] */;
+  %13 = nn.dense(%12, %weight3, units=1, out_dtype="float32") /* ty=Tensor[(1, 1), float32] */;
+  add(%13, %bias3) /* ty=Tensor[(1, 1), float32] */
+}
