@@ -39,22 +39,26 @@ params = {
     "weight3": weight3,
     "bias1": bias1,
     "bias2": bias2,
-    "bias3": bias3
+    "bias3": bias3,
+    "add1": tvm.nd.array(random_add1),
+    "add2": tvm.nd.array(random_add2)
 }
 params1 = {
     "weight1": weight1,
     "weight2": weight2,
     "bias1": bias1,
     "bias2": bias2,
+    "add1": tvm.nd.array(random_add1)
 }
 params2 = {
     "weight3": weight3,
-    "bias3": bias3
+    "bias3": bias3,
+    "add2": tvm.nd.array(random_add2)
 }
 
-input = {"input": input_data, "add1": random_add1, "add2": random_add2}
-input1 = {"part1_input": input_data, "add1": random_add1}
-input2 = {"part2_input": input_data, "add2": random_add2}
+input = {"input": input_data}
+input1 = {"part1_input": input_data}
+input2 = {"part2_input": input_data}
 
 '''
 %input: Tensor[(4, 3, 14, 14), float32],
@@ -151,6 +155,8 @@ def model_part2():
 
 def run_whole_model():
     ir_module = whole_model()
+    fold_const = relay.transform.FoldConstant()  # 返回类型pass
+    ir_module = fold_const(ir_module)
     print(ir_module)
     with tvm.transform.PassContext(opt_level=3):
         lib = relay.build(ir_module, mydriver.target, params=params)
