@@ -13,7 +13,8 @@ def load_onnx_model(onnx_path):
 
 def onnx2IRModule(onnx_model, shape_dict):
     # tvm.IRModule
-    mod, params = relay.frontend.from_onnx(onnx_model, shape_dict)
+    mod, params = relay.frontend.from_onnx(
+        onnx_model, shape_dict)
     return mod, params
 
 

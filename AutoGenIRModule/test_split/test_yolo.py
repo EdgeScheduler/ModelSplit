@@ -26,7 +26,7 @@ txt_to_class = {
 def gen_split_model():
     mod = get_ir_module()
 
-    txt_name = "easy_model"
+    txt_name = "yolov2"
     txt_file_path = "/home/onceas/wanna/ModelSplit/AutoGenIRModule/text/{}.txt".format(
         txt_name)
     parse = MyParser(mod, txt_file_path)
@@ -40,9 +40,9 @@ def gen_split_model():
     convergence_nodes = parse.find_convergence_point()
     for _, node in enumerate(convergence_nodes):
         node.print_self()
-
+    print("len=", len(convergence_nodes))
     file_path_list, params_file_path = parse.split_txt_file(
-        [convergence_nodes[-4]])
+        [convergence_nodes[10], convergence_nodes[-10], convergence_nodes[-4]])
     for idx, file_path in enumerate(file_path_list):
         parse = MyParser(mod, file_path)
         py_file_path = file_path.replace(

@@ -14,6 +14,7 @@ import time
 import drivers
 from tvm.contrib import graph_executor
 import gc
+import tvm.relay as relay
 
 # (N, 3, 224, 224)
 input_shape = (1, 3, 224, 224)
@@ -48,8 +49,9 @@ def main():
     shape_dict = {input_name: x.shape}
 
     onnx_model = load_onnx_model(onnx_path)
-    print(onnx_model.graph.initializer)
     mod, params = onnx2IRModule(onnx_model, shape_dict)
+    fold_const = relay.transform.FoldConstant()  # 返回类型pass
+    mod = fold_const(mod)
     print(mod)
     lib = build_lib(mod, params, mydriver.target, lib_path)
     if not os.path.exists(lib_path):

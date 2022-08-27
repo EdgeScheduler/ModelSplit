@@ -29,15 +29,17 @@ if __name__ == "__main__":
     module_name = txt_to_class[txt_name]
     # parse.export_py_file(module_name, py_file_path)
     parse.build_graph()
+    # parse.bfs()
     nodes = parse.find_convergence_point()
+    print("convergence point:", [
+          item.layer.name for _, item in enumerate(nodes)])
     # for _, node in enumerate(nodes):
     # node.print_self()
-    nodes[-5].print_self()
-    file_list, params_file_path = parse.split_txt_file([nodes[-5]])
+    # nodes[-5].print_self()
+    file_list, params_file_path = parse.split_txt_file([nodes[-4]])
     for idx, file_txt_path in enumerate(file_list):
         parse = MyParser(mod, file_txt_path)
         parse.parse_with_text(file_txt_path)
         py_file_path = file_txt_path.replace(
             "txt", "py").replace("text", "pyfile")
-        print(py_file_path)
         parse.export_py_file(module_name, py_file_path)

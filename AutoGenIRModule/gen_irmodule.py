@@ -150,7 +150,7 @@ class MyParser:
     def find_convergence_point(self):
         res = list()
         for k, v in self.nodes.items():
-            print("k==", v.layer.name)
+            # print("k==", v.layer.name)
             if self.check_convergence_point(v):
                 res.append(v)
         return res
@@ -164,7 +164,7 @@ class MyParser:
         return {"name": name, "shape": shape, "type": p_type}
 
     def store_params(self, params_dict, params_file_path):
-        print(params_dict)
+        # print(params_dict)
         new_dict = {}
         for k, v in params_dict.items():
             params = []
@@ -203,8 +203,8 @@ class MyParser:
                 else:
                     file_lines.append(params_line.replace(
                         "def @main(", "def @main("+"%call_"+extra_input.strip("%")+", "))
-                    print(params_line.replace(
-                        "def @main(", "def @main("+"%call_"+extra_input.strip("%")+", "))
+                    # print(params_line.replace(
+                    # "def @main(", "def @main("+"%call_"+extra_input.strip("%")+", "))
                     extra_input = None
                 flag = 1
             file_lines.append(line)
@@ -416,17 +416,25 @@ class MyParser:
                     for bottom in bottoms:
                         # %220 = %219.0
                         if '.' in bottom:
+                            # fix split index
+                            idx = 0
+                            for i, layer in enumerate(self.layer_list):
+                                if layer == None:
+                                    continue
+                                if layer.tops[0] == bottom.split('.')[0]:
+                                    idx = i
+                                    break
                             # 219
                             a = int(bottom.split('.')[0].strip("call_"))
                             # 0
                             i = int(bottom.split('.')[1])
                             if i == 0:
-                                self.layer_list[a].tops[0] += '.0'
+                                self.layer_list[idx].tops[0] += '.0'
                             else:
                                 # TODO: ?
-                                while i > len(self.layer_list[a].tops)-1:
-                                    self.layer_list[a].tops.append(
-                                        "call_"+str(a)+'.'+str(len(self.layer_list[a].tops)))
+                                while i > len(self.layer_list[idx].tops)-1:
+                                    self.layer_list[idx].tops.append(
+                                        "call_"+str(idx)+'.'+str(len(self.layer_list[idx].tops)))
                         else:
                             continue
 
@@ -569,8 +577,8 @@ class MyParser:
             relay_python.write("def {}():\r".format(module_name))
 
             # input & params
-            print(self.net_inputs)
-            print(self.net_inputs)
+            # print(self.net_inputs)
+            # print(self.net_input_shapes)
             for index, net_input in enumerate(self.net_inputs):
                 relay_python.write(
                     "    {} = relay.var(\"{}\", shape=(".format(net_input.replace('.', '_').replace("/", "_"), net_input))
@@ -661,6 +669,8 @@ class MyParser:
                             if "call_" in b:
                                 # call_num = b.strip("call_").split(".")[0]
                                 for idx, layer in enumerate(self.layer_list):
+                                    if layer == None:
+                                        continue
                                     if layer.tops[0] == b:
                                         if self.layer_list[idx].type == "nn.batch_norm":
                                             relay_python.write("[0]")
