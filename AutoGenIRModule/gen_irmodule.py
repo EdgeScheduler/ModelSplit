@@ -313,7 +313,9 @@ class MyParser:
         return type
 
     def parse_params_with_text(self, line):
-        line.split("->")[0]+"{\n"
+        line = line.split("->")[0]+"{\n"
+        # fix yolov5 onnx::Resize_730
+        line = line.replace("::", "_")
         bottoms = [i.split(':')[0] for i in line.split("%")[1:]]
         shapes = [list(i.split(')')[0].split(', '))
                   for i in line.split("Tensor[(")[1:]]
@@ -392,6 +394,7 @@ class MyParser:
     def parse_with_text(self, relay_text_path):
         with open(relay_text_path, 'r') as f:
             for line in f:
+                line = line.replace("::", "_")
                 type = self.judge_line_type(line)
                 # fix googlenet:conv1/7x7_s2_b_0 can't match input
                 # line = line.replace("/", "_")
@@ -417,14 +420,18 @@ class MyParser:
                     for bottom in bottoms:
                         # %220 = %219.0
                         if '.' in bottom:
+                            # print("bottom=", bottom)
                             # fix split index
-                            idx = 0
+                            idx = -1
                             for i, layer in enumerate(self.layer_list):
                                 if layer == None:
                                     continue
                                 if layer.tops[0] == bottom.split('.')[0]:
                                     idx = i
                                     break
+                            if idx == -1:
+                                # in input
+                                continue
                             # 219
                             a = int(bottom.split('.')[0].strip("call_"))
                             # 0
@@ -555,8 +562,10 @@ class MyParser:
         # print("------------------")
 
         dir_path = os.path.abspath(os.path.dirname(relay_python_path))
+        print(dir_path)
         if not os.path.exists(dir_path):
-            os.mkdir(dir_path)
+            # os.mkdir(dir_path)
+            os.makedirs(dir_path)
 
         # create relay_python.py
         type_transform_map = {
@@ -582,7 +591,7 @@ class MyParser:
             # print(self.net_input_shapes)
             for index, net_input in enumerate(self.net_inputs):
                 relay_python.write(
-                    "    {} = relay.var(\"{}\", shape=(".format(net_input.replace('.', '_').replace("/", "_"), net_input))
+                    "    {} = relay.var(\"{}\", shape=(".format(net_input.replace('.', '_').replace("/", "_").replace("::", "_"), net_input))
                 # for dim in self.net_input_shapes[index]:
                 # relay_python.write("{}, ".format(
                 # "relay.Any()" if dim == '?' else dim))
