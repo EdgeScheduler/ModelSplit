@@ -1,0 +1,6 @@
+def @main(%vgg0_conv3_weight: Tensor[(128, 128, 3, 3), float32], %vgg0_conv2_weight: Tensor[(128, 64, 3, 3), float32], %call_6: Tensor[(1, 64, 112, 112), float32], %vgg0_conv2_bias: Tensor[(128), float32] {
+  %7 = nn.conv2d(%6, %vgg0_conv2_weight, padding=[1, 1, 1, 1], channels=128, kernel_size=[3, 3]) /* ty=Tensor[(1, 128, 112, 112), float32] */;
+  %8 = nn.bias_add(%7, %vgg0_conv2_bias) /* ty=Tensor[(1, 128, 112, 112), float32] */;
+  %9 = nn.relu(%8) /* ty=Tensor[(1, 128, 112, 112), float32] */;
+  nn.conv2d(%9, %vgg0_conv3_weight, padding=[1, 1, 1, 1], channels=128, kernel_size=[3, 3]) /* ty=Tensor[(1, 128, 112, 112), float32] */;
+}

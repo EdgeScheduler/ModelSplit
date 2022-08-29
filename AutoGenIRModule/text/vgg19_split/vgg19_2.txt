@@ -1,0 +1,7 @@
+def @main(%vgg0_conv4_bias: Tensor[(256), float32], %vgg0_conv3_bias: Tensor[(128), float32], %vgg0_conv4_weight: Tensor[(256, 128, 3, 3), float32], %call_10: Tensor[(1, 128, 112, 112), float32] {
+  %11 = nn.bias_add(%10, %vgg0_conv3_bias) /* ty=Tensor[(1, 128, 112, 112), float32] */;
+  %12 = nn.relu(%11) /* ty=Tensor[(1, 128, 112, 112), float32] */;
+  %13 = nn.max_pool2d(%12, pool_size=[2, 2], strides=[2, 2], padding=[0, 0, 0, 0]) /* ty=Tensor[(1, 128, 56, 56), float32] */;
+  %14 = nn.conv2d(%13, %vgg0_conv4_weight, padding=[1, 1, 1, 1], channels=256, kernel_size=[3, 3]) /* ty=Tensor[(1, 256, 56, 56), float32] */;
+  nn.bias_add(%14, %vgg0_conv4_bias) /* ty=Tensor[(1, 256, 56, 56), float32] */;
+}

@@ -313,6 +313,7 @@ class MyParser:
         return type
 
     def parse_params_with_text(self, line):
+        line.split("->")[0]+"{\n"
         bottoms = [i.split(':')[0] for i in line.split("%")[1:]]
         shapes = [list(i.split(')')[0].split(', '))
                   for i in line.split("Tensor[(")[1:]]
@@ -494,7 +495,7 @@ class MyParser:
                     tmp = [i.split(' ')[0].strip('f') for i in ''.join(line.split("(")[1:]).split(
                         ", ") if ' ' in i and i.split(' ')[0].strip('f').isdigit() == True]
                     if len(tmp) > 0:
-                        print(tmp)
+                        print("tmp=", tmp)
                         # raise
                     # bottoms += tmp
 

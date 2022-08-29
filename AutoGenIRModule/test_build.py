@@ -9,6 +9,7 @@ txt_to_class = {
     "squeezenet1": "SqueezeNetModule",
     "mobilenetv2": "MobileNetModule",
     "vgg19": "Vgg19Module",
+    "yolov5m6": "Yolov5Module",
 }
 
 if __name__ == "__main__":
@@ -21,7 +22,7 @@ if __name__ == "__main__":
     # print(tops)
 
     # txt_name = "resnet50"
-    txt_name = "easy_model"
+    txt_name = "yolov5m6"
     txt_file_path = "/home/onceas/wanna/ModelSplit/AutoGenIRModule/text/{}.txt".format(
         txt_name)
     parse = MyParser(mod, txt_file_path)

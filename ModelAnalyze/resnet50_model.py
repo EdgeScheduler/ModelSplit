@@ -13,8 +13,7 @@ from config import Config
 import time
 import drivers
 from tvm.contrib import graph_executor
-import gc
-
+import tvm.relay as relay
 
 input_shape = (1, 3, 224, 224)
 test_count = 5
@@ -33,7 +32,6 @@ def RunModule(lib=None):
     module.run()
     module.get_output(0).numpy().flatten()
     print("time=", time.time()-start)
-    gc.collect()
 
 
 def main():
@@ -49,6 +47,8 @@ def main():
 
     onnx_model = load_onnx_model(onnx_path)
     mod, params = onnx2IRModule(onnx_model, shape_dict)
+    fold_const = relay.transform.FoldConstant()  # 返回类型pass
+    mod = fold_const(mod)
     print(mod)
     lib = build_lib(mod, params, mydriver.target, lib_path)
     if not os.path.exists(lib_path):

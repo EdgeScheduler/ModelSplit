@@ -1,0 +1,23 @@
+import tvmfrom tvm import relay, IRModuleimport numpy as npdef SqueezeNetModule_1():    fire5_expand3x3_b_0 = relay.var("fire5/expand3x3_b_0", shape=(128, ), dtype="float32")    call_25 = relay.var("call_25", shape=(1, 128, 55, 55), dtype="float32")    fire4_squeeze1x1_w_0 = relay.var("fire4/squeeze1x1_w_0", shape=(32, 128, 1, 1), dtype="float32")    fire4_expand3x3_b_0 = relay.var("fire4/expand3x3_b_0", shape=(128, ), dtype="float32")    fire5_squeeze1x1_b_0 = relay.var("fire5/squeeze1x1_b_0", shape=(32, ), dtype="float32")    fire4_squeeze1x1_b_0 = relay.var("fire4/squeeze1x1_b_0", shape=(32, ), dtype="float32")    fire5_expand1x1_w_0 = relay.var("fire5/expand1x1_w_0", shape=(128, 32, 1, 1), dtype="float32")    fire5_expand1x1_b_0 = relay.var("fire5/expand1x1_b_0", shape=(128, ), dtype="float32")    fire4_expand1x1_b_0 = relay.var("fire4/expand1x1_b_0", shape=(128, ), dtype="float32")    fire5_expand3x3_w_0 = relay.var("fire5/expand3x3_w_0", shape=(128, 32, 3, 3), dtype="float32")    fire4_expand3x3_w_0 = relay.var("fire4/expand3x3_w_0", shape=(128, 32, 3, 3), dtype="float32")    fire5_squeeze1x1_w_0 = relay.var("fire5/squeeze1x1_w_0", shape=(32, 256, 1, 1), dtype="float32")    fire4_expand1x1_w_0 = relay.var("fire4/expand1x1_w_0", shape=(128, 32, 1, 1), dtype="float32")    call_26 = relay.nn.max_pool2d(call_25, pool_size=[3, 3], strides=[2, 2], padding=[0, 0, 0, 0])
+    call_27 = relay.nn.conv2d(call_26, fire4_squeeze1x1_w_0, padding=[0, 0, 0, 0], channels=32, kernel_size=[1, 1])
+    call_28 = relay.nn.bias_add(call_27, fire4_squeeze1x1_b_0)
+    call_29 = relay.nn.relu(call_28)
+    call_30 = relay.nn.conv2d(call_29, fire4_expand1x1_w_0, padding=[0, 0, 0, 0], channels=128, kernel_size=[1, 1])
+    call_31 = relay.nn.bias_add(call_30, fire4_expand1x1_b_0)
+    call_32 = relay.nn.conv2d(call_29, fire4_expand3x3_w_0, padding=[1, 1, 1, 1], channels=128, kernel_size=[3, 3])
+    call_33 = relay.nn.bias_add(call_32, fire4_expand3x3_b_0)
+    call_34 = relay.nn.relu(call_31)
+    call_35 = relay.nn.relu(call_33)
+    call_37 = relay.concatenate(relay.Tuple([call_34, call_35]), axis=1)
+    call_38 = relay.nn.conv2d(call_37, fire5_squeeze1x1_w_0, padding=[0, 0, 0, 0], channels=32, kernel_size=[1, 1])
+    call_39 = relay.nn.bias_add(call_38, fire5_squeeze1x1_b_0)
+    call_40 = relay.nn.relu(call_39)
+    call_41 = relay.nn.conv2d(call_40, fire5_expand1x1_w_0, padding=[0, 0, 0, 0], channels=128, kernel_size=[1, 1])
+    call_42 = relay.nn.bias_add(call_41, fire5_expand1x1_b_0)
+    call_43 = relay.nn.conv2d(call_40, fire5_expand3x3_w_0, padding=[1, 1, 1, 1], channels=128, kernel_size=[3, 3])
+    call_44 = relay.nn.bias_add(call_43, fire5_expand3x3_b_0)
+    call_45 = relay.nn.relu(call_42)
+    call_46 = relay.nn.relu(call_44)
+    call_48 = relay.concatenate(relay.Tuple([call_45, call_46]), axis=1)
+    call_output0 = relay.nn.max_pool2d(call_48, pool_size=[3, 3], strides=[2, 2], padding=[0, 0, 0, 0])
+    return call_output0
