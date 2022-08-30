@@ -13,7 +13,6 @@ txt_to_class = {
 
 if __name__ == "__main__":
     mod = get_ir_module()
-    parse = MyParser(mod)
     # parse.parse_params_with_module()
 
     # line = "def @main(%part1_input: Tensor[(4, 3, 14, 14), float32], %weight1: Tensor[(1, 3, 4, 4), float32], %bias1: Tensor[(1), float32], %add1: Tensor[(4, 3, 14, 14), float32], %weight2: Tensor[(1, 3, 4, 4), float32], %bias2: Tensor[(1), float32]) {"
@@ -22,9 +21,10 @@ if __name__ == "__main__":
     # print(tops)
 
     # txt_name = "resnet50"
-    txt_name = "vgg19"
+    txt_name = "mobilenetv2"
     txt_file_path = "/home/onceas/wanna/ModelSplit/AutoGenIRModule/text/{}.txt".format(
         txt_name)
+    parse = MyParser(mod, txt_file_path)
     py_file_path = txt_file_path.replace("txt", "py").replace("text", "pyfile")
     parse.parse_with_text(txt_file_path)
     module_name = txt_to_class[txt_name]

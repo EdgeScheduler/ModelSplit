@@ -17,6 +17,7 @@ from AutoGenIRModule.profiler.pyfile.resnet50_split.resnet50_0 import ResnetModu
 from AutoGenIRModule.profiler.pyfile.resnet50_split.resnet50_1 import ResnetModule_1
 from ModelUtils.params_utils import parse_params_file, filter_params
 import sys
+import time
 
 txt_to_class = {
     "googlenet": "GoogleNetModule",
@@ -53,7 +54,7 @@ def get_params():
     _, params = onnx2IRModule(onnx_model, shape_dict)
 
 
-def split_model_profile(params_file_path=None, parts=1):
+def split_model_mem_profile(params_file_path=None, parts=1):
     # print("params:", params.keys())
     params_dict = parse_params_file(params_file_path)
     output1 = None
@@ -73,13 +74,45 @@ def split_model_profile(params_file_path=None, parts=1):
         for k, v in new_input.items():
             module1.set_input(k, v)
         module1.run()
+
         output1 = module1.get_output(0).numpy()
 
     print(output1.flatten()[:10])
     return output1
 
 
-def gen_split_model(index):
+def split_model_time_profile(params_file_path=None, parts=1):
+    # print("params:", params.keys())
+    params_dict = parse_params_file(params_file_path)
+    output1 = None
+    exec_time = 0
+    for part in range(parts):
+        new_input, new_params = filter_params(
+            params_dict, part, input, params, output1)
+        # print(new_input.keys())
+        # print(new_params.keys())
+        if part == 0:
+            ir_module1 = tvm.IRModule.from_expr(ResnetModule_0())
+        elif part == 1:
+            ir_module1 = tvm.IRModule.from_expr(ResnetModule_1())
+        with tvm.transform.PassContext(opt_level=3):
+            lib1 = relay.build(ir_module1, mydriver.target, params=new_params)
+        module1 = graph_executor.GraphModule(lib1["default"](mydriver.device))
+
+        for k, v in new_input.items():
+            module1.set_input(k, v)
+        start = time.time()
+        module1.run()
+        exec_time += time.time()-start
+
+        output1 = module1.get_output(0).numpy()
+
+    print("time =", exec_time)
+    print(output1.flatten()[:10])
+    return output1, exec_time
+
+
+def gen_split_model(index, p_type="mem"):
     txt_name = "resnet50"
     txt_file_path = "/home/onceas/wanna/ModelSplit/AutoGenIRModule/profiler/text/{}.txt".format(
         txt_name)
@@ -112,10 +145,20 @@ def gen_split_model(index):
                 "txt", "py").replace("text", "pyfile")
             split_parse.export_py_file(module_name, py_file_path)
 
-        # profile
-        params_file_path = "/home/onceas/wanna/ModelSplit/AutoGenIRModule/profiler/text/resnet50_split/params.json"
-        # run_split_model(params_file_path)
-        split_model_profile(params_file_path, 2)
+        if p_type == "mem":
+            # profile memory
+            params_file_path = "/home/onceas/wanna/ModelSplit/AutoGenIRModule/profiler/text/resnet50_split/params.json"
+            split_model_mem_profile(params_file_path, 2)
+        elif p_type == "time":
+            # profile time
+            print("nidx =", nidx)
+            exe_times = []
+            for i in range(test_count):
+                _, exe_time = split_model_time_profile(params_file_path, 2)
+                exe_times.append(exe_time)
+            with open("/home/onceas/wanna/ModelSplit/AutoGenIRModule/profiler/resnet_split_gen_time.txt", "a") as f:
+                f.write("arg:"+str(nidx))
+                f.write(str(exe_times))
 
     return params_file_path
 
@@ -123,7 +166,7 @@ def gen_split_model(index):
 if __name__ == "__main__":
     index = int(sys.argv[1])
     get_params()
-    gen_split_model(index)
+    gen_split_model(index, "time")
 
 '''
 arg=1-------------------------22-08-29-08:39:19 AM-UTC
@@ -156,4 +199,12 @@ arg=14-------------------------22-08-29-08:51:05 AM-UTC
 max_used: 542.4375, max_util: 0
 arg=15-------------------------22-08-29-08:52:00 AM-UTC
 max_used: 542.4375, max_util: 0
+'''
+
+'''
+time = 0.4590938091278076
+time = 0.46651506423950195
+time = 0.4599442481994629
+time = 0.45522284507751465
+time = 0.4665210247039795
 '''
