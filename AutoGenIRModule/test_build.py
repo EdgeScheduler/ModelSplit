@@ -26,21 +26,21 @@ if __name__ == "__main__":
     txt_file_path = "/home/onceas/wanna/ModelSplit/AutoGenIRModule/text/{}.txt".format(
         txt_name)
     parse = MyParser(mod, txt_file_path)
-    parse.parse_with_text(txt_file_path)
+    parse.ParseWithFunctionText(txt_file_path)
     module_name = txt_to_class[txt_name]
     # parse.export_py_file(module_name, py_file_path)
-    parse.build_graph()
+    parse.BuildGraph()
     # parse.bfs()
-    nodes = parse.find_convergence_point()
+    nodes = parse.FindConvergencePoint()
     print("convergence point:", [
           item.layer.name for _, item in enumerate(nodes)])
     # for _, node in enumerate(nodes):
     # node.print_self()
     # nodes[-5].print_self()
-    file_list, params_file_path = parse.split_txt_file([nodes[-4]])
+    file_list, params_file_path = parse.SplitToFunctionsTextFile([nodes[-4]])
     for idx, file_txt_path in enumerate(file_list):
         parse = MyParser(mod, file_txt_path)
-        parse.parse_with_text(file_txt_path)
+        parse.ParseWithFunctionText(file_txt_path)
         py_file_path = file_txt_path.replace(
             "txt", "py").replace("text", "pyfile")
-        parse.export_py_file(module_name, py_file_path)
+        parse.ExportToPythonFile(module_name, py_file_path)

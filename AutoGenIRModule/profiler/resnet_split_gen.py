@@ -119,31 +119,31 @@ def gen_split_model(index, p_type="mem"):
     parse = MyParser(None, txt_file_path)
 
     # py_file_path = txt_file_path.replace("txt", "py").replace("text", "pyfile")
-    parse.parse_with_text(txt_file_path)
+    parse.ParseWithFunctionText(txt_file_path)
     # module_name = txt_to_class[txt_name]
     # parse.export_py_file(module_name, py_file_path)
-    parse.build_graph()
+    parse.BuildGraph()
     # parse.bfs()
-    convergence_nodes = parse.find_convergence_point()
+    convergence_nodes = parse.FindConvergencePoint()
     # for _, node in enumerate(convergence_nodes):
     # node.print_self()
     print("len=", len(convergence_nodes))
 
     for nidx, node in enumerate([convergence_nodes[index]]):
         print("nidx={} opidx={}".format(nidx, node.layer.name))
-        file_path_list, params_file_path = parse.split_txt_file(
+        file_path_list, params_file_path = parse.SplitToFunctionsTextFile(
             [convergence_nodes[nidx]])
         for idx, file_path in enumerate(file_path_list):
             split_parse = MyParser(None, file_path)
 
-            split_parse.parse_with_text(file_path)
+            split_parse.ParseWithFunctionText(file_path)
             module_name = txt_to_class[txt_name]+"_"+str(idx)
 
             # py_file_path = file_path.replace(
             # "txt", "py").replace("text", "pyfile/{}_{}".format(txt_name, nidx))
             py_file_path = file_path.replace(
                 "txt", "py").replace("text", "pyfile")
-            split_parse.export_py_file(module_name, py_file_path)
+            split_parse.ExportToPythonFile(module_name, py_file_path)
 
         if p_type == "mem":
             # profile memory

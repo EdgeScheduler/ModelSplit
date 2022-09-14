@@ -11,10 +11,10 @@ from AutoGenIRModule.pyfile.easy_model_split.easy_model_0 import EasyModule_0
 from AutoGenIRModule.pyfile.easy_model_split.easy_model_1 import EasyModule_1
 from ModelAnalyze.easy_model_split_manual import whole_model, get_whole_model_params
 from ModelUtils.params_utils import parse_params_file, filter_params
-from test_easy import gen_split_model
+from test_easy import splitModel
 from test_easy_compare import run_whole_model, run_split_model
 
 if __name__ == "__main__":
-    params_file_path = gen_split_model()
+    params_file_path = splitModel()
     run_whole_model()
     run_split_model(params_file_path)

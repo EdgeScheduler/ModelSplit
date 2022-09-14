@@ -1,7 +1,4 @@
-import re
 import argparse
-
-
 class layer:
     def __init__(self, name, type, bottoms, tops, params):
         self.name = name

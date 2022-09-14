@@ -1,0 +1,26 @@
+def @main(%call_25: Tensor[(1, 128, 55, 55), float32], %fire4/squeeze1x1_b_0: Tensor[(32), float32], %fire5/squeeze1x1_w_0: Tensor[(32, 256, 1, 1), float32], %fire4/expand1x1_w_0: Tensor[(128, 32, 1, 1), float32], %fire4/expand3x3_w_0: Tensor[(128, 32, 3, 3), float32], %fire5/expand3x3_b_0: Tensor[(128), float32], %fire4/squeeze1x1_w_0: Tensor[(32, 128, 1, 1), float32], %fire5/expand3x3_w_0: Tensor[(128, 32, 3, 3), float32], %fire4/expand1x1_b_0: Tensor[(128), float32], %fire5/squeeze1x1_b_0: Tensor[(32), float32], %fire5/expand1x1_b_0: Tensor[(128), float32], %fire4/expand3x3_b_0: Tensor[(128), float32], %fire5/expand1x1_w_0: Tensor[(128, 32, 1, 1), float32] {
+  %26 = nn.max_pool2d(%25, pool_size=[3, 3], strides=[2, 2], padding=[0, 0, 0, 0]) /* ty=Tensor[(1, 128, 27, 27), float32] */;
+  %27 = nn.conv2d(%26, %fire4/squeeze1x1_w_0, padding=[0, 0, 0, 0], channels=32, kernel_size=[1, 1]) /* ty=Tensor[(1, 32, 27, 27), float32] */;
+  %28 = nn.bias_add(%27, %fire4/squeeze1x1_b_0) /* ty=Tensor[(1, 32, 27, 27), float32] */;
+  %29 = nn.relu(%28) /* ty=Tensor[(1, 32, 27, 27), float32] */;
+  %30 = nn.conv2d(%29, %fire4/expand1x1_w_0, padding=[0, 0, 0, 0], channels=128, kernel_size=[1, 1]) /* ty=Tensor[(1, 128, 27, 27), float32] */;
+  %31 = nn.bias_add(%30, %fire4/expand1x1_b_0) /* ty=Tensor[(1, 128, 27, 27), float32] */;
+  %32 = nn.conv2d(%29, %fire4/expand3x3_w_0, padding=[1, 1, 1, 1], channels=128, kernel_size=[3, 3]) /* ty=Tensor[(1, 128, 27, 27), float32] */;
+  %33 = nn.bias_add(%32, %fire4/expand3x3_b_0) /* ty=Tensor[(1, 128, 27, 27), float32] */;
+  %34 = nn.relu(%31) /* ty=Tensor[(1, 128, 27, 27), float32] */;
+  %35 = nn.relu(%33) /* ty=Tensor[(1, 128, 27, 27), float32] */;
+  %36 = (%34, %35);
+  %37 = concatenate(%36, axis=1) /* ty=Tensor[(1, 256, 27, 27), float32] */;
+  %38 = nn.conv2d(%37, %fire5/squeeze1x1_w_0, padding=[0, 0, 0, 0], channels=32, kernel_size=[1, 1]) /* ty=Tensor[(1, 32, 27, 27), float32] */;
+  %39 = nn.bias_add(%38, %fire5/squeeze1x1_b_0) /* ty=Tensor[(1, 32, 27, 27), float32] */;
+  %40 = nn.relu(%39) /* ty=Tensor[(1, 32, 27, 27), float32] */;
+  %41 = nn.conv2d(%40, %fire5/expand1x1_w_0, padding=[0, 0, 0, 0], channels=128, kernel_size=[1, 1]) /* ty=Tensor[(1, 128, 27, 27), float32] */;
+  %42 = nn.bias_add(%41, %fire5/expand1x1_b_0) /* ty=Tensor[(1, 128, 27, 27), float32] */;
+  %43 = nn.conv2d(%40, %fire5/expand3x3_w_0, padding=[1, 1, 1, 1], channels=128, kernel_size=[3, 3]) /* ty=Tensor[(1, 128, 27, 27), float32] */;
+  %44 = nn.bias_add(%43, %fire5/expand3x3_b_0) /* ty=Tensor[(1, 128, 27, 27), float32] */;
+  %45 = nn.relu(%42) /* ty=Tensor[(1, 128, 27, 27), float32] */;
+  %46 = nn.relu(%44) /* ty=Tensor[(1, 128, 27, 27), float32] */;
+  %47 = (%45, %46);
+  %48 = concatenate(%47, axis=1) /* ty=Tensor[(1, 256, 27, 27), float32] */;
+  nn.max_pool2d(%48, pool_size=[3, 3], strides=[2, 2], padding=[0, 0, 0, 0]) /* ty=Tensor[(1, 256, 13, 13), float32] */;
+}

@@ -1,25 +1,13 @@
-import os
-import json
-import onnx
-import onnxruntime
-import numpy as np
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from ModelUtils.model_utils import load_onnx_model, onnx2IRModule, build_lib, store_lib, get_lib
-import load_data
 import tvm
 import tvm.relay as relay
 from tvm.contrib import graph_executor
-import onnxruntime as ort
-from config import Config
-import time
 import drivers
-from relayIR.relay_graph import construct_op_graph
 import drivers
 from AutoGenIRModule.pyfile.easy_model import EasyModule
-from AutoGenIRModule.pyfile.easy_model_split.easy_model_0 import EasyModule_0
-from AutoGenIRModule.pyfile.easy_model_split.easy_model_1 import EasyModule_1
+# from AutoGenIRModule.pyfile.easy_model_split.easy_model_0 import EasyModule_0
+# from AutoGenIRModule.pyfile.easy_model_split.easy_model_1 import EasyModule_1
+from ModelFuntionsPython.childs.easy_model import *
 from ModelAnalyze.easy_model_split_manual import get_whole_model_params
 from ModelUtils.params_utils import parse_params_file, filter_params
 

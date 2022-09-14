@@ -1,25 +1,9 @@
 import os
 import json
-import onnx
-import onnxruntime
-import numpy as np
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from ModelUtils.model_utils import load_onnx_model, onnx2IRModule, build_lib, store_lib, get_lib
-import load_data
-import tvm
-import tvm.relay as relay
-from tvm.contrib import graph_executor
-import onnxruntime as ort
-from config import Config
-import time
-import drivers
-from relayIR.relay_graph import construct_op_graph
 from queue import Queue
 import re
 import argparse
-
+from typing import List,Tuple,Dict
 
 class Layer():
     def __init__(self, name, type, bottoms, tops, params, line):
@@ -35,10 +19,9 @@ class Layer():
         self.tops = tops
         self.line = line
 
-    def print_self(self):
+    def Print(self):
         print("Layer-------------")
-        print("name:{} type:{} params:{}".format(
-            self.name, self.type, self.params))
+        print("name:{} type:{} params:{}".format(self.name, self.type, self.params))
         print("tops:{} bottoms:{}".format(self.tops, self.bottoms))
         print("Layer-------------")
 
@@ -46,36 +29,36 @@ class Layer():
 class GraphNode:
     def __init__(self, layer):
         # self info
-        self.layer = layer
+        self.layer = layer          # type: Layer
         # pre & next
-        self.pre = list()
-        self.next = list()
+        self.pre = list()           # type: List[GraphNode]
+        self.next = list()          # type: List[GraphNode]
         # in & out degree
         self.in_degree = 0
         self.out_degree = 0
 
-    def add_next_node(self, node):
+    def AddNextNode(self, node):
         self.out_degree += 1
         self.next.append(node)
 
-    def add_pre_node(self, node):
+    def AddPreNode(self, node):
         self.in_degree += 1
         self.pre.append(node)
 
-    def print_self(self):
+    def PrintNode(self):
         print("GraphNode------------")
-        print("node:", self.layer.print_self())
-        print("pre:", [item.layer.name for _, item in enumerate(self.pre)])
-        print("next:", [item.layer.name for _, item in enumerate(self.next)])
+        print("node:", self.layer.Print())
+        print("pre:", [item.layer.name for item in self.pre])
+        print("next:", [item.layer.name for item in self.next])
         print("in_degree:", self.in_degree)
         print("out_degree:", self.out_degree)
         print("GraphNode------------")
 
 
 class MyParser:
-    def __init__(self, ir_module, txt_file_path):
-        self.ir_module = ir_module
-        self.txt_file_path = txt_file_path
+    def __init__(self, functionTextPath):
+        # self.ir_module = ir_module                  # deprecated
+        self.functionTextPath = functionTextPath
         # nn.func
         self.layer_list = list()
         self.replace_map = dict()
@@ -90,9 +73,9 @@ class MyParser:
         self.output_count = 0
         # graph header
         self.header = None
-        self.nodes = dict()
+        self.nodes: Dict[int,GraphNode] = dict()            
 
-    def build_graph(self):
+    def BuildGraph(self):
         for idx, layer in enumerate(self.layer_list):
             if layer is None:
                 continue
@@ -106,22 +89,22 @@ class MyParser:
                     if "call_" in b:
                         call_num = int(float(b.strip("call_")))
                         pre_node = self.nodes[call_num]
-                        node.add_pre_node(pre_node)
-                        pre_node.add_next_node(node)
+                        node.AddPreNode(pre_node)
+                        pre_node.AddNextNode(node)
         self.header = self.nodes[0]
 
-    def bfs(self):
+    def BFS(self):
         print("bfs:-----------------------------")
         q = Queue()
         q.put(self.header)
         while not q.empty():
-            front = q.get()
-            front.print_self()
-            for _, next in enumerate(front.next):
+            front = q.get()     # type: Layer
+            front.Print()
+            for next in front.next:
                 q.put(next)
         print("bfs:-----------------------------")
 
-    def cul_pre_degree(self, node):
+    def CulPreDegree(self, node):
         q = Queue()
         q.put(node)
         in_total = 0
@@ -138,24 +121,24 @@ class MyParser:
                 q.put(pre)
         return in_total, out_total-node.out_degree
 
-    def check_convergence_point(self, node):
+    def CheckConvergencePoint(self, node):
         if node.in_degree == 0 or node.out_degree == 0:
             return False
         if node.out_degree != 1 or node.next[0].in_degree != 1:
             return False
-        in_total, out_total = self.cul_pre_degree(node)
+        in_total, out_total = self.CulPreDegree(node)
         # print(in_total, out_total)
         return in_total == out_total
 
-    def find_convergence_point(self):
+    def FindConvergencePoint(self)->List[GraphNode]:
         res = list()
         for k, v in self.nodes.items():
             # print("k==", v.layer.name)
-            if self.check_convergence_point(v):
+            if self.CheckConvergencePoint(v):
                 res.append(v)
         return res
 
-    def parse_param(self, param):
+    def ParseParam(self, param):
         items = param.split(": ")
         name = items[0]
         tmp = items[1].split("Tensor[")[1].split("]")[0].split("), ")
@@ -163,28 +146,27 @@ class MyParser:
         p_type = tmp[1]
         return {"name": name, "shape": shape, "type": p_type}
 
-    def store_params(self, params_dict, params_file_path):
+    def StoreParams(self, params_dict, params_file_path):
         # print(params_dict)
         new_dict = {}
         for k, v in params_dict.items():
             params = []
             for _, param in enumerate(v):
-                params.append(self.parse_param(param))
+                params.append(self.ParseParam(param))
             new_dict[k] = params
         with open(params_file_path, "w") as f:
             f.write(json.dumps(new_dict))
 
-    def split_txt_file(self, nodes):
-        file_name = self.txt_file_path.split("/")[-1].strip(".txt")
-        dir_path = os.path.abspath(os.path.dirname(self.txt_file_path))
+    def SplitToFunctionsTextFile(self, nodes: List[Layer],aimDir: str=None)-> Tuple[list, str]:
+        file_name = self.functionTextPath.split("/")[-1].strip(".txt")
+        if aimDir is None:
+            aimDir = os.path.join(os.path.abspath(os.path.dirname(self.functionTextPath)), file_name)
 
-        split_file_dir = os.path.join(dir_path, file_name+"_split")
-        if not os.path.exists(split_file_dir):
-            os.mkdir(split_file_dir)
+        os.makedirs(aimDir,exist_ok=True)
         idx = 0
         params_line = ""
         lines = list()
-        with open(self.txt_file_path, "r") as rfp:
+        with open(self.functionTextPath, "r") as rfp:
             for line in rfp:
                 if "def" in line:
                     params_line = line
@@ -246,14 +228,13 @@ class MyParser:
             # print("res=", res)
             params_dict[k] = list(res)
             v[0] = "def @main(%"+", %".join(list(res))+" {\n"
-        params_file_path = os.path.join(split_file_dir, "params.json")
-        self.store_params(params_dict, params_file_path)
+        params_file_path = os.path.join(aimDir, "params.json")
+        self.StoreParams(params_dict, params_file_path)
 
         # write split txt file
         file_list = list()
         for k, v in split_txt_files.items():
-            split_file_path = os.path.join(
-                split_file_dir, "{}_{}.txt".format(file_name, k))
+            split_file_path = os.path.join(aimDir, "{}_{}.txt".format(file_name, k))
             file_list.append(split_file_path)
             with open(split_file_path, "w") as wfp:
                 for _, line in enumerate(v):
@@ -262,27 +243,28 @@ class MyParser:
         print("params json file path:", params_file_path)
         return file_list, params_file_path
 
-    def get_extra_input(self, node):
+    def GetExtraInput(self, node):
         # call_9
         # input_name = "call_"+node.layer.name.strip("%")
         # %9
         input_name = node.layer.name
         return input_name
 
-    def split_model(self, nodes):
+    def SplitModel(self, nodes):
         pass
 
-    def parse_params_with_module(self):
-        mod_params = self.ir_module.functions.items()[0][1].params
-        for param in mod_params:
-            name = str(param.name_hint)
-            tmp = str(param.type_annotation).replace(
-                "Tensor[", "").replace("]", "").split("),")
-            shape = tmp[0]+")"
-            dtype = tmp[1]
-            # print(name, shape, dtype)
+    # # deprecated
+    # def parse_params_with_module(self):
+    #     mod_params = self.ir_module.functions.items()[0][1].params
+    #     for param in mod_params:
+    #         name = str(param.name_hint)
+    #         tmp = str(param.type_annotation).replace(
+    #             "Tensor[", "").replace("]", "").split("),")
+    #         shape = tmp[0]+")"
+    #         dtype = tmp[1]
+    #         # print(name, shape, dtype)
 
-    def judge_line_type(self, line):
+    def JudgeLineType(self, line):
         # self.net_inputs = list()
         # line = "  %114 = subtract(1f /* ty=float32 */, %90) /* ty=Tensor[(1, 12, 50), float32] */;"
         # step 0. get type
@@ -312,7 +294,7 @@ class MyParser:
                     type = 3
         return type
 
-    def parse_params_with_text(self, line):
+    def ParseParamsWithText(self, line):
         line = line.split("->")[0]+"{\n"
         # fix yolov5 onnx::Resize_730
         line = line.replace("::", "_")
@@ -328,7 +310,7 @@ class MyParser:
         '''
         return bottoms, shapes
 
-    def key_func(self, bottom, line):
+    def KeyFunc(self, bottom, line):
         raw_index = line.find(bottom)
         if raw_index != -1:
             return raw_index
@@ -349,7 +331,7 @@ class MyParser:
         # print(bottom, raw_index)
         return raw_index
 
-    def handle_constant_line(self, line):
+    def HandleConstantLine(self, line):
         # meta[relay.Constant][0]
         # Constant_0
         constant_bottoms = [
@@ -367,7 +349,7 @@ class MyParser:
                 self.net_meta_dtypes[const] = constant_dtype[i]
         return constant_bottoms
 
-    def parse_params(self, line):
+    def ParseParams(self, line):
         params = dict()
         s = line.split('=')
         # ['  %217 ', ' nn.conv2d(%216, %resnetv24_stage4_conv9_weight, padding', '[0, 0, 0, 0], channels', '2048, kernel_size', '[1, 1]);\n']
@@ -391,11 +373,11 @@ class MyParser:
             params[param] = value
         return params
 
-    def parse_with_text(self, relay_text_path):
-        with open(relay_text_path, 'r') as f:
+    def ParseWithFunctionText(self, functionTextSavePath):
+        with open(functionTextSavePath, 'r') as f:
             for line in f:
                 line = line.replace("::", "_")
-                type = self.judge_line_type(line)
+                type = self.JudgeLineType(line)
                 # fix googlenet:conv1/7x7_s2_b_0 can't match input
                 # line = line.replace("/", "_")
                 # print(line, "-------", type)
@@ -404,7 +386,7 @@ class MyParser:
                     raise
 
                 elif type == 0:  # 0: "def @main(%INPUT__0..."
-                    self.net_inputs, self.net_input_shapes = self.parse_params_with_text(
+                    self.net_inputs, self.net_input_shapes = self.ParseParamsWithText(
                         line)
 
                 # 1: "  %0 = (%INPUT_0, %INPUT_1)"
@@ -448,11 +430,11 @@ class MyParser:
 
                     # handle meta[constant[0]]
                     if "meta[relay.Constant]" in line:
-                        bottoms += self.handle_constant_line(line)
+                        bottoms += self.HandleConstantLine(line)
 
                     # reorder bottoms(as constant vs var is unordered)
                     bottoms.sort(
-                        key=lambda bottom: self.key_func(bottom, line))
+                        key=lambda bottom: self.KeyFunc(bottom, line))
 
                     # top-bottoms replace map for type=3/4
                     self.replace_map[top] = bottoms
@@ -515,11 +497,11 @@ class MyParser:
 
                     # handle meta[constant[0]]
                     if "meta[relay.Constant]" in line:
-                        bottoms += self.handle_constant_line(line)
+                        bottoms += self.HandleConstantLine(line)
 
                     # reorder bottoms(as constant vs var is unordered)
                     bottoms.sort(
-                        key=lambda bottom: self.key_func(bottom, line))
+                        key=lambda bottom: self.KeyFunc(bottom, line))
 
                     # 'call_1': ['call_0.0']
                     new_bottoms = list()
@@ -530,7 +512,7 @@ class MyParser:
                             new_bottoms.append(bottom)
 
                     # process param
-                    params = self.parse_params(line)
+                    params = self.ParseParams(line)
 
                     l = Layer(name=name, type=type, bottoms=new_bottoms,
                               tops=tops, params=params, line=line)
@@ -539,13 +521,14 @@ class MyParser:
                 elif type == 5:
                     pass
 
-    def export_py_file(self, module_name, relay_python_path):
+    def ExportToPythonFile(self, function_name:str, modelFunctionSavePath:str, clear=False):
         """
         export python file after parse IRModule text
 
         Parameters
         ----------
-        :param relay_python_path: the file path of output python file
+        :param modelFunctionSaveFold: the fold to store python-file
+        :param clear: clear python file first
         """
         # print("------------------")
         # for index, layer in enumerate(self.layer_list):
@@ -556,16 +539,17 @@ class MyParser:
         #     tops:['call_204'] bottoms:['resnetv24_stage4_conv6_weight', 'call_203']
         #     '''
         #     if layer is not None:
-        #         layer.print_self()
+        #         layer.Print()
         # print("------------------")
         # print("replace_map", self.replace_map)
         # print("------------------")
 
-        dir_path = os.path.abspath(os.path.dirname(relay_python_path))
-        print(dir_path)
-        if not os.path.exists(dir_path):
-            # os.mkdir(dir_path)
-            os.makedirs(dir_path)
+        modelFunctionSaveFold=os.path.abspath(os.path.dirname(modelFunctionSavePath))
+        print(modelFunctionSaveFold)
+        if not os.path.exists(modelFunctionSaveFold):
+            os.makedirs(modelFunctionSaveFold)
+
+        count_dict={"count": 0}
 
         # create relay_python.py
         type_transform_map = {
@@ -578,13 +562,19 @@ class MyParser:
         }
         param_ignore_list = ["out_dtype"]
 
-        with open(relay_python_path, 'w') as relay_python:
-            # import
-            relay_python.write("import tvm\r")
-            relay_python.write("from tvm import relay, IRModule\r")
-            relay_python.write("import numpy as np\r\r")
+        with open(modelFunctionSavePath, 'w' if clear else 'a') as relay_python:
+            if clear:
+                relay_python.write("# this file is create by program.\r")
+                # relay_python.write("def GetFunctionNames()->list:\r")
+                # relay_python.write("    return []\r\r")
+
             # def func
-            relay_python.write("def {}():\r".format(module_name))
+            relay_python.write("def {}():\r".format(function_name))
+
+            # import
+            relay_python.write("    import tvm\r")
+            relay_python.write("    from tvm import relay, IRModule\r")
+            relay_python.write("    import numpy as np\r\r")
 
             # input & params
             # print(self.net_inputs)
@@ -721,6 +711,8 @@ class MyParser:
                 relay_python.write("call_output{}".format(i))
                 if i != self.output_count - 1:
                     relay_python.write(", ")
+
+            relay_python.write("\r\r")
 
 
 def main():

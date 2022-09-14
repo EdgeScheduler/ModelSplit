@@ -8,7 +8,7 @@ from CheckData import CheckData
 
 # 定义模型导出位置
 onnx_name="easy-model-fish"                                  # (4,3,14,14) ===> (1,)
-onnx_fold=os.path.join(Config.OnnxSavePath,onnx_name)
+onnx_fold=os.path.join(Config.OnnxSaveFold,onnx_name)
 os.makedirs(onnx_fold,exist_ok=True)
 
 # 模型定义

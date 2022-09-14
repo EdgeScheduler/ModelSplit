@@ -9,11 +9,11 @@ import time
 import load_data
 
 mydriver=drivers.GPU()
-<<<<<<< HEAD
+
 Count=4
 name="resnet50-v2-7"
 input_dict={
-    "data": (10, 3, 224, 224)
+    "data": (1, 3, 224, 224)
 }
 
 irModule, params, load_time = load_data.easy_load_from_onnx(name, input_dict)

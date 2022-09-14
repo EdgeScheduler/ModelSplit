@@ -19,7 +19,7 @@ def easy_load_from_onnx(save_name,input_dict={}, download_url=OnnxModelUrl.Defau
     download_url : str
         url to download onnx-model from internet, it only works when local-file is not exist.
     auto_path: bool
-        whether transform "$save_name" to "$project_path/onnxs/$save_name/$save_name.onnx"
+        transform "$save_name" to "$project_path/onnxs/$save_name/$save_name.onnx"
 
     Returns
     -------
@@ -58,8 +58,8 @@ def easy_load_from_onnx(save_name,input_dict={}, download_url=OnnxModelUrl.Defau
     return irModule, params,time.time()-start
 
 def download(url, path)->bool:
-    """Downloads the file from the internet.
-    Set the input options correctly to overwrite or do the size comparison
+    '''
+    Downloads the file from the internet. Set the input options correctly to overwrite or do the size comparison
 
     Parameters
     ----------
@@ -76,7 +76,7 @@ def download(url, path)->bool:
     -------
     result : bool
         success or fail
-    """
+    '''
     
     print("start to download file from:",url)
     start=time.time()

@@ -26,6 +26,6 @@ if __name__ == "__main__":
         txt_name)
     parse = MyParser(mod, txt_file_path)
     py_file_path = txt_file_path.replace("txt", "py").replace("text", "pyfile")
-    parse.parse_with_text(txt_file_path)
+    parse.ParseWithFunctionText(txt_file_path)
     module_name = txt_to_class[txt_name]
-    parse.export_py_file(module_name, py_file_path)
+    parse.ExportToPythonFile(module_name, py_file_path)

@@ -1,14 +1,5 @@
 from GenerateModels.easy_model import get_ir_module
-from AutoGenIRModule.gen_irmodule import MyParser
-import numpy as np
-from ModelUtils.model_utils import load_onnx_model, onnx2IRModule, build_lib, store_lib, get_lib
-import tvm.relay as relay
-from tvm.contrib import graph_executor
-import onnxruntime as ort
-from config import Config
-from relayIR.relay_graph import construct_op_graph
-import drivers
-from AutoGenIRModule.pyfile.easy_model import EasyModule
+from AutoGenIRModule.gen_irmodule import MyParser,Layer
 
 
 txt_to_class = {
@@ -33,24 +24,24 @@ def gen_split_model():
     parse = MyParser(mod, txt_file_path)
 
     py_file_path = txt_file_path.replace("txt", "py").replace("text", "pyfile")
-    parse.parse_with_text(txt_file_path)
+    parse.ParseWithFunctionText(txt_file_path)
     # module_name = txt_to_class[txt_name]
     # parse.export_py_file(module_name, py_file_path)
-    parse.build_graph()
+    parse.BuildGraph()
     # parse.bfs()
-    convergence_nodes = parse.find_convergence_point()
+    convergence_nodes = parse.FindConvergencePoint()
     for _, node in enumerate(convergence_nodes):
-        node.print_self()
+        node.Print()
     print("len=", len(convergence_nodes))
-    file_path_list, params_file_path = parse.split_txt_file(
+    file_path_list, params_file_path = parse.SplitToFunctionsTextFile(
         [convergence_nodes[10], convergence_nodes[-10], convergence_nodes[-4]])
     for idx, file_path in enumerate(file_path_list):
-        parse = MyParser(mod, file_path)
+        parse = MyParser(file_path)
         py_file_path = file_path.replace(
             "txt", "py").replace("text", "pyfile")
-        parse.parse_with_text(file_path)
+        parse.ParseWithFunctionText(file_path)
         module_name = txt_to_class[txt_name]+"_"+str(idx)
-        parse.export_py_file(module_name, py_file_path)
+        parse.ExportToPythonFile(module_name, py_file_path)
     return params_file_path
 
 

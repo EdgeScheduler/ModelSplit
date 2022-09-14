@@ -1,0 +1,17 @@
+def @main(%vgg0_conv5_weight: Tensor[(256, 256, 3, 3), float32], %vgg0_conv9_bias: Tensor[(512), float32], %vgg0_conv8_weight: Tensor[(512, 256, 3, 3), float32], %vgg0_conv8_bias: Tensor[(512), float32], %vgg0_conv7_weight: Tensor[(256, 256, 3, 3), float32], %vgg0_conv5_bias: Tensor[(256), float32], %vgg0_conv6_bias: Tensor[(256), float32], %call_16: Tensor[(1, 256, 56, 56), float32], %vgg0_conv6_weight: Tensor[(256, 256, 3, 3), float32], %vgg0_conv9_weight: Tensor[(512, 512, 3, 3), float32], %vgg0_conv7_bias: Tensor[(256), float32] {
+  %17 = nn.conv2d(%16, %vgg0_conv5_weight, padding=[1, 1, 1, 1], channels=256, kernel_size=[3, 3]) /* ty=Tensor[(1, 256, 56, 56), float32] */;
+  %18 = nn.bias_add(%17, %vgg0_conv5_bias) /* ty=Tensor[(1, 256, 56, 56), float32] */;
+  %19 = nn.relu(%18) /* ty=Tensor[(1, 256, 56, 56), float32] */;
+  %20 = nn.conv2d(%19, %vgg0_conv6_weight, padding=[1, 1, 1, 1], channels=256, kernel_size=[3, 3]) /* ty=Tensor[(1, 256, 56, 56), float32] */;
+  %21 = nn.bias_add(%20, %vgg0_conv6_bias) /* ty=Tensor[(1, 256, 56, 56), float32] */;
+  %22 = nn.relu(%21) /* ty=Tensor[(1, 256, 56, 56), float32] */;
+  %23 = nn.conv2d(%22, %vgg0_conv7_weight, padding=[1, 1, 1, 1], channels=256, kernel_size=[3, 3]) /* ty=Tensor[(1, 256, 56, 56), float32] */;
+  %24 = nn.bias_add(%23, %vgg0_conv7_bias) /* ty=Tensor[(1, 256, 56, 56), float32] */;
+  %25 = nn.relu(%24) /* ty=Tensor[(1, 256, 56, 56), float32] */;
+  %26 = nn.max_pool2d(%25, pool_size=[2, 2], strides=[2, 2], padding=[0, 0, 0, 0]) /* ty=Tensor[(1, 256, 28, 28), float32] */;
+  %27 = nn.conv2d(%26, %vgg0_conv8_weight, padding=[1, 1, 1, 1], channels=512, kernel_size=[3, 3]) /* ty=Tensor[(1, 512, 28, 28), float32] */;
+  %28 = nn.bias_add(%27, %vgg0_conv8_bias) /* ty=Tensor[(1, 512, 28, 28), float32] */;
+  %29 = nn.relu(%28) /* ty=Tensor[(1, 512, 28, 28), float32] */;
+  %30 = nn.conv2d(%29, %vgg0_conv9_weight, padding=[1, 1, 1, 1], channels=512, kernel_size=[3, 3]) /* ty=Tensor[(1, 512, 28, 28), float32] */;
+  nn.bias_add(%30, %vgg0_conv9_bias) /* ty=Tensor[(1, 512, 28, 28), float32] */;
+}

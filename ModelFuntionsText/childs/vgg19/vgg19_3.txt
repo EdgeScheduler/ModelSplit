@@ -1,0 +1,29 @@
+def @main(%vgg0_dense2_weight: Tensor[(1000, 4096), float32], %vgg0_dense1_weight: Tensor[(4096, 4096), float32], %vgg0_conv15_bias: Tensor[(512), float32], %vgg0_conv15_weight: Tensor[(512, 512, 3, 3), float32], %vgg0_dense0_weight: Tensor[(4096, 25088), float32], %call_46: Tensor[(1, 512, 14, 14), float32], %vgg0_dense0_bias: Tensor[(4096), float32], %vgg0_dense2_bias: Tensor[(1000), float32]), %vgg0_dense1_bias: Tensor[(4096), float32], %vgg0_conv14_bias: Tensor[(512), float32] {
+  %47 = nn.bias_add(%46, %vgg0_conv14_bias) /* ty=Tensor[(1, 512, 14, 14), float32] */;
+  %48 = nn.relu(%47) /* ty=Tensor[(1, 512, 14, 14), float32] */;
+  %49 = nn.conv2d(%48, %vgg0_conv15_weight, padding=[1, 1, 1, 1], channels=512, kernel_size=[3, 3]) /* ty=Tensor[(1, 512, 14, 14), float32] */;
+  %50 = nn.bias_add(%49, %vgg0_conv15_bias) /* ty=Tensor[(1, 512, 14, 14), float32] */;
+  %51 = nn.relu(%50) /* ty=Tensor[(1, 512, 14, 14), float32] */;
+  %52 = nn.max_pool2d(%51, pool_size=[2, 2], strides=[2, 2], padding=[0, 0, 0, 0]) /* ty=Tensor[(1, 512, 7, 7), float32] */;
+  %53 = nn.batch_flatten(%52) /* ty=Tensor[(1, 25088), float32] */;
+  %54 = nn.batch_flatten(%53) /* ty=Tensor[(1, 25088), float32] */;
+  %55 = nn.dense(%54, %vgg0_dense0_weight, units=4096) /* ty=Tensor[(1, 4096), float32] */;
+  %56 = multiply(1f /* ty=float32 */, %vgg0_dense0_bias) /* ty=Tensor[(4096), float32] */;
+  %57 = add(%55, %56) /* ty=Tensor[(1, 4096), float32] */;
+  %58 = nn.relu(%57) /* ty=Tensor[(1, 4096), float32] */;
+  %59 = nn.dropout(%58) /* ty=(Tensor[(1, 4096), float32], Tensor[(1, 4096), float32]) */;
+  %60 = %59.0;
+  %61 = nn.batch_flatten(%60) /* ty=Tensor[(1, 4096), float32] */;
+  %62 = nn.batch_flatten(%61) /* ty=Tensor[(1, 4096), float32] */;
+  %63 = nn.dense(%62, %vgg0_dense1_weight, units=4096) /* ty=Tensor[(1, 4096), float32] */;
+  %64 = multiply(1f /* ty=float32 */, %vgg0_dense1_bias) /* ty=Tensor[(4096), float32] */;
+  %65 = add(%63, %64) /* ty=Tensor[(1, 4096), float32] */;
+  %66 = nn.relu(%65) /* ty=Tensor[(1, 4096), float32] */;
+  %67 = nn.dropout(%66) /* ty=(Tensor[(1, 4096), float32], Tensor[(1, 4096), float32]) */;
+  %68 = %67.0;
+  %69 = nn.batch_flatten(%68) /* ty=Tensor[(1, 4096), float32] */;
+  %70 = nn.batch_flatten(%69) /* ty=Tensor[(1, 4096), float32] */;
+  %71 = nn.dense(%70, %vgg0_dense2_weight, units=1000) /* ty=Tensor[(1, 1000), float32] */;
+  %72 = multiply(1f /* ty=float32 */, %vgg0_dense2_bias) /* ty=Tensor[(1000), float32] */;
+  add(%71, %72) /* ty=Tensor[(1, 1000), float32] */
+}
