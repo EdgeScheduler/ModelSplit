@@ -1,5 +1,5 @@
-from AutoGenIRModule.gen_irmodule import MyParser
-from SplitToChilds.common import ModelNames
+from SplitToChilds.moduleOperate import MyParser
+from SplitToChilds.transfer import ModelNames
 from config import Config
 
 model_name = "yolov2"
