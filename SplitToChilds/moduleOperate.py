@@ -155,7 +155,7 @@ class MyParser:
                 params.append(self.ParseParam(param))
             new_dict[k] = params
         with open(params_file_path, "w") as f:
-            f.write(json.dumps(new_dict))
+            json.dump(new_dict,f,indent=4)
 
     def SplitToFunctionsTextFile(self, nodes: List[Layer],aimDir: str=None)-> Tuple[list, str]:
         file_name = self.functionTextPath.split("/")[-1].strip(".txt")
