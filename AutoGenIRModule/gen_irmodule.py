@@ -501,9 +501,9 @@ class MyParser:
                     # print("before:", bottoms)
                     tmp = [i.split(' ')[0].strip('f') for i in ''.join(line.split("(")[1:]).split(
                         ", ") if ' ' in i and i.split(' ')[0].strip('f').isdigit() == True]
-                    if len(tmp) > 0:
-                        print("tmp=", tmp)
-                        # raise
+                    # if len(tmp) > 0:
+                    # print("tmp=", tmp)
+                    # raise
                     # bottoms += tmp
 
                     # fix : %226 = multiply(1f, %resnetv24_dense0_bias);
@@ -606,6 +606,7 @@ class MyParser:
 
             relay_python.write("\r")
 
+            topKey = set()
             for l in self.layer_list:
                 if l == None:
                     continue
@@ -629,6 +630,7 @@ class MyParser:
 
                 # left of =
                 for i, top in enumerate(l.tops):
+                    topKey.add(top)
                     relay_python.write("    {}".format(top.replace('.', '_')))
                     if i != len(l.tops) - 1:
                         relay_python.write(", ")
@@ -650,6 +652,7 @@ class MyParser:
                     if times > 1:
                         flag = True
 
+                print("bottoms:", l.bottoms)
                 for i, bottom in enumerate(l.bottoms):
                     # call_9 = relay.nn.relu(relay.Tuple([call_7_0]), )
                     # if isinstance(bottom, list):
@@ -673,6 +676,10 @@ class MyParser:
 
                         else:
                             # 'call_201.0' 'call_201_0'
+                            # fix split call_205_0(with input call_205)
+                            if b not in topKey and ".0" in b:
+                                b = b.replace(".0", "")
+
                             relay_python.write(
                                 "{}".format(b.replace('.', '_').replace("/", "_")))
                             # fix: relay.nn.batch_norm —— ValueError: don't know how to convert type <class 'tvm.relay.expr.TupleWrapper'> to object
