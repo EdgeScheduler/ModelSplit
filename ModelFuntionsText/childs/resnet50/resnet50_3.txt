@@ -1,0 +1,7 @@
+def @main(%resnetv24_dense0_weight: Tensor[(1000, 2048), float32], %resnetv24_dense0_bias: Tensor[(1000), float32]), %call_222: Tensor[(1, 2048, 1, 1), float32] {
+  %223 = reshape(%222, newshape=[0, -1]) /* ty=Tensor[(1, 2048), float32] */;
+  %224 = nn.batch_flatten(%223) /* ty=Tensor[(1, 2048), float32] */;
+  %225 = nn.dense(%224, %resnetv24_dense0_weight, units=1000) /* ty=Tensor[(1, 1000), float32] */;
+  %226 = multiply(1f /* ty=float32 */, %resnetv24_dense0_bias) /* ty=Tensor[(1000), float32] */;
+  add(%225, %226) /* ty=Tensor[(1, 1000), float32] */
+}

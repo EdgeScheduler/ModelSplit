@@ -1,4 +1,8 @@
 import os
 from config import Config
 
-os.makedirs(Config.OnnxSavePath,exist_ok=True)
+os.makedirs(Config.OnnxSaveFold,exist_ok=True)
+os.makedirs(Config.RawModelFunctionsTextSaveFold,exist_ok=True)
+os.makedirs(Config.ChildsModelFunctionsTextSaveFold,exist_ok=True)
+os.makedirs(Config.RawModelFunctionsPythonSaveFold,exist_ok=True)
+os.makedirs(Config.ChildsModelFunctionsPythonSaveFold,exist_ok=True)
