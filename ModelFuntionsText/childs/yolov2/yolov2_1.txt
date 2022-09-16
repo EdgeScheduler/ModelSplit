@@ -1,36 +1,4 @@
-def @main(%models.12.bn9.weight: Tensor[(512), float32], %models.12.conv9.weight: Tensor[(512, 256, 3, 3), float32], %models.14.bn11.running_mean: Tensor[(512), float32], %models.14.conv11.weight: Tensor[(512, 256, 3, 3), float32], %models.14.bn11.running_var: Tensor[(512), float32], %models.9.bn7.bias: Tensor[(128), float32], %models.8.conv6.weight: Tensor[(256, 128, 3, 3), float32], %models.15.conv12.weight: Tensor[(256, 512, 1, 1), float32], %models.8.bn6.weight: Tensor[(256), float32], %models.6.bn5.bias: Tensor[(128), float32], %models.9.bn7.running_mean: Tensor[(128), float32], %models.6.bn5.running_var: Tensor[(128), float32], %models.9.bn7.running_var: Tensor[(128), float32], %models.13.conv10.weight: Tensor[(256, 512, 1, 1), float32], %models.10.bn8.running_var: Tensor[(256), float32], %call_14: Tensor[(1, 64, 104, 104), float32], %models.13.bn10.bias: Tensor[(256), float32], %models.10.bn8.bias: Tensor[(256), float32], %models.13.bn10.weight: Tensor[(256), float32], %models.8.bn6.running_var: Tensor[(256), float32], %models.10.conv8.weight: Tensor[(256, 128, 3, 3), float32], %models.8.bn6.bias: Tensor[(256), float32], %models.13.bn10.running_var: Tensor[(256), float32], %models.9.bn7.weight: Tensor[(128), float32], %models.9.conv7.weight: Tensor[(128, 256, 1, 1), float32]), %models.10.bn8.running_mean: Tensor[(256), float32], %models.5.bn4.running_var: Tensor[(64), float32], %models.6.bn5.weight: Tensor[(128), float32], %models.14.bn11.bias: Tensor[(512), float32], %models.12.bn9.running_var: Tensor[(512), float32], %models.6.bn5.running_mean: Tensor[(128), float32], %models.6.conv5.weight: Tensor[(128, 64, 3, 3), float32], %models.13.bn10.running_mean: Tensor[(256), float32], %models.5.bn4.bias: Tensor[(64), float32], %models.5.bn4.weight: Tensor[(64), float32], %models.14.bn11.weight: Tensor[(512), float32], %models.8.bn6.running_mean: Tensor[(256), float32], %models.12.bn9.running_mean: Tensor[(512), float32], %models.10.bn8.weight: Tensor[(256), float32], %models.5.bn4.running_mean: Tensor[(64), float32], %models.12.bn9.bias: Tensor[(512), float32] {
-  %15 = nn.batch_norm(%14, %models.5.bn4.weight, %models.5.bn4.bias, %models.5.bn4.running_mean, %models.5.bn4.running_var) /* ty=(Tensor[(1, 64, 104, 104), float32], Tensor[(64), float32], Tensor[(64), float32]) */;
-  %16 = %15.0;
-  %17 = nn.leaky_relu(%16, alpha=0.1f) /* ty=Tensor[(1, 64, 104, 104), float32] */;
-  %18 = nn.conv2d(%17, %models.6.conv5.weight, padding=[1, 1, 1, 1], channels=128, kernel_size=[3, 3]) /* ty=Tensor[(1, 128, 104, 104), float32] */;
-  %19 = nn.batch_norm(%18, %models.6.bn5.weight, %models.6.bn5.bias, %models.6.bn5.running_mean, %models.6.bn5.running_var) /* ty=(Tensor[(1, 128, 104, 104), float32], Tensor[(128), float32], Tensor[(128), float32]) */;
-  %20 = %19.0;
-  %21 = nn.leaky_relu(%20, alpha=0.1f) /* ty=Tensor[(1, 128, 104, 104), float32] */;
-  %22 = nn.max_pool2d(%21, pool_size=[2, 2], strides=[2, 2], padding=[0, 0, 0, 0]) /* ty=Tensor[(1, 128, 52, 52), float32] */;
-  %23 = nn.conv2d(%22, %models.8.conv6.weight, padding=[1, 1, 1, 1], channels=256, kernel_size=[3, 3]) /* ty=Tensor[(1, 256, 52, 52), float32] */;
-  %24 = nn.batch_norm(%23, %models.8.bn6.weight, %models.8.bn6.bias, %models.8.bn6.running_mean, %models.8.bn6.running_var) /* ty=(Tensor[(1, 256, 52, 52), float32], Tensor[(256), float32], Tensor[(256), float32]) */;
-  %25 = %24.0;
-  %26 = nn.leaky_relu(%25, alpha=0.1f) /* ty=Tensor[(1, 256, 52, 52), float32] */;
-  %27 = nn.conv2d(%26, %models.9.conv7.weight, padding=[0, 0, 0, 0], channels=128, kernel_size=[1, 1]) /* ty=Tensor[(1, 128, 52, 52), float32] */;
-  %28 = nn.batch_norm(%27, %models.9.bn7.weight, %models.9.bn7.bias, %models.9.bn7.running_mean, %models.9.bn7.running_var) /* ty=(Tensor[(1, 128, 52, 52), float32], Tensor[(128), float32], Tensor[(128), float32]) */;
-  %29 = %28.0;
-  %30 = nn.leaky_relu(%29, alpha=0.1f) /* ty=Tensor[(1, 128, 52, 52), float32] */;
-  %31 = nn.conv2d(%30, %models.10.conv8.weight, padding=[1, 1, 1, 1], channels=256, kernel_size=[3, 3]) /* ty=Tensor[(1, 256, 52, 52), float32] */;
-  %32 = nn.batch_norm(%31, %models.10.bn8.weight, %models.10.bn8.bias, %models.10.bn8.running_mean, %models.10.bn8.running_var) /* ty=(Tensor[(1, 256, 52, 52), float32], Tensor[(256), float32], Tensor[(256), float32]) */;
-  %33 = %32.0;
-  %34 = nn.leaky_relu(%33, alpha=0.1f) /* ty=Tensor[(1, 256, 52, 52), float32] */;
-  %35 = nn.max_pool2d(%34, pool_size=[2, 2], strides=[2, 2], padding=[0, 0, 0, 0]) /* ty=Tensor[(1, 256, 26, 26), float32] */;
-  %36 = nn.conv2d(%35, %models.12.conv9.weight, padding=[1, 1, 1, 1], channels=512, kernel_size=[3, 3]) /* ty=Tensor[(1, 512, 26, 26), float32] */;
-  %37 = nn.batch_norm(%36, %models.12.bn9.weight, %models.12.bn9.bias, %models.12.bn9.running_mean, %models.12.bn9.running_var) /* ty=(Tensor[(1, 512, 26, 26), float32], Tensor[(512), float32], Tensor[(512), float32]) */;
-  %38 = %37.0;
-  %39 = nn.leaky_relu(%38, alpha=0.1f) /* ty=Tensor[(1, 512, 26, 26), float32] */;
-  %40 = nn.conv2d(%39, %models.13.conv10.weight, padding=[0, 0, 0, 0], channels=256, kernel_size=[1, 1]) /* ty=Tensor[(1, 256, 26, 26), float32] */;
-  %41 = nn.batch_norm(%40, %models.13.bn10.weight, %models.13.bn10.bias, %models.13.bn10.running_mean, %models.13.bn10.running_var) /* ty=(Tensor[(1, 256, 26, 26), float32], Tensor[(256), float32], Tensor[(256), float32]) */;
-  %42 = %41.0;
-  %43 = nn.leaky_relu(%42, alpha=0.1f) /* ty=Tensor[(1, 256, 26, 26), float32] */;
-  %44 = nn.conv2d(%43, %models.14.conv11.weight, padding=[1, 1, 1, 1], channels=512, kernel_size=[3, 3]) /* ty=Tensor[(1, 512, 26, 26), float32] */;
-  %45 = nn.batch_norm(%44, %models.14.bn11.weight, %models.14.bn11.bias, %models.14.bn11.running_mean, %models.14.bn11.running_var) /* ty=(Tensor[(1, 512, 26, 26), float32], Tensor[(512), float32], Tensor[(512), float32]) */;
-  %46 = %45.0;
-  %47 = nn.leaky_relu(%46, alpha=0.1f) /* ty=Tensor[(1, 512, 26, 26), float32] */;
-  nn.conv2d(%47, %models.15.conv12.weight, padding=[0, 0, 0, 0], channels=256, kernel_size=[1, 1]) /* ty=Tensor[(1, 256, 26, 26), float32] */;
+def @main(%call_1: (Tensor[(1, 32, 416, 416), float32], Tensor[(32), float32], Tensor[(32), float32]) {
+  %2 = %1.0;
+  nn.leaky_relu(%2, alpha=0.1f) /* ty=Tensor[(1, 32, 416, 416), float32] */;
 }

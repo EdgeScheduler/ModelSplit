@@ -1,0 +1,3 @@
+def @main(%call_23: Tensor[(1, 256, 56, 56), float32], %vgg0_conv7_bias: Tensor[(256), float32] {
+  nn.bias_add(%23, %vgg0_conv7_bias) /* ty=Tensor[(1, 256, 56, 56), float32] */;
+}

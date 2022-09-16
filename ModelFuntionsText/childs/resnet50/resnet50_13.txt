@@ -1,0 +1,4 @@
+def @main(%call_219: (Tensor[(1, 2048, 7, 7), float32], Tensor[(2048), float32], Tensor[(2048), float32]) {
+  %220 = %219.0;
+  nn.relu(%220) /* ty=Tensor[(1, 2048, 7, 7), float32] */;
+}

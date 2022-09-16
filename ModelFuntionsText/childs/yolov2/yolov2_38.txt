@@ -1,0 +1,4 @@
+def @main(%call_49: (Tensor[(1, 256, 26, 26), float32], Tensor[(256), float32], Tensor[(256), float32]) {
+  %50 = %49.0;
+  nn.leaky_relu(%50, alpha=0.1f) /* ty=Tensor[(1, 256, 26, 26), float32] */;
+}

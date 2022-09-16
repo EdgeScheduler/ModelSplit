@@ -33,6 +33,7 @@ class Config:
         '''
         return os.path.join(Config.RawModelFunctionsPythonSaveFold,model_name+".py")
 
+    @staticmethod
     def ModelParamsFile(model_name)->Dict[int,List[dict]]:
         '''
         return convert "$project_path/ModelFuntionsText/childs/$model_name/params.json" to dict

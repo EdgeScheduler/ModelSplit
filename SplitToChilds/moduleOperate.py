@@ -3,7 +3,10 @@ import json
 from queue import Queue
 import re
 import argparse
+from sys import prefix
 from typing import List,Tuple,Dict
+
+InputNameKeys=["data","input","call"]
 
 class Layer():
     def __init__(self, name, type, bottoms, tops, params, line):
@@ -132,8 +135,9 @@ class MyParser:
 
     def FindConvergencePoint(self)->List[GraphNode]:
         res = list()
-        for k, v in self.nodes.items():
+        for _, v in self.nodes.items():
             # print("k==", v.layer.name)
+            # if self.CheckConvergencePoint(v) and v.layer.type not in BadOperatorTypes:
             if self.CheckConvergencePoint(v):
                 res.append(v)
         return res
@@ -158,7 +162,8 @@ class MyParser:
             json.dump(new_dict,f,indent=4)
 
     def SplitToFunctionsTextFile(self, nodes: List[Layer],aimDir: str=None)-> Tuple[list, str]:
-        file_name = self.functionTextPath.split("/")[-1].strip(".txt")
+        file_name = os.path.basename(self.functionTextPath)[:-4]
+
         if aimDir is None:
             aimDir = os.path.join(os.path.abspath(os.path.dirname(self.functionTextPath)), file_name)
 
@@ -217,12 +222,12 @@ class MyParser:
             # print("items=", items)
             res = set()
             # if extra
-            for _, item in enumerate(items):
+            for item in items:
                 if "call_" in item.split(":")[0]:
                     res.add(item)
             # if exist
-            for _, line in enumerate(v[1:]):
-                for _, item in enumerate(items):
+            for line in v[1:]:
+                for item in items:
                     if item.split(":")[0] in line:
                         res.add(item)
             # print("res=", res)
@@ -239,7 +244,7 @@ class MyParser:
             with open(split_file_path, "w") as wfp:
                 for _, line in enumerate(v):
                     wfp.write(line)
-        print("split txt file path:", file_list)
+        print("split txt file in:", aimDir)
         print("params json file path:", params_file_path)
         return file_list, params_file_path
 
@@ -373,8 +378,8 @@ class MyParser:
             params[param] = value
         return params
 
-    def ParseWithFunctionText(self, functionTextSavePath):
-        with open(functionTextSavePath, 'r') as f:
+    def ParseWithFunctionText(self):
+        with open(self.functionTextPath, 'r') as f:
             for line in f:
                 line = line.replace("::", "_")
                 type = self.JudgeLineType(line)
@@ -545,11 +550,7 @@ class MyParser:
         # print("------------------")
 
         modelFunctionSaveFold=os.path.abspath(os.path.dirname(modelFunctionSavePath))
-        print(modelFunctionSaveFold)
-        if not os.path.exists(modelFunctionSaveFold):
-            os.makedirs(modelFunctionSaveFold)
-
-        count_dict={"count": 0}
+        os.makedirs(modelFunctionSaveFold,exist_ok=True)
 
         # create relay_python.py
         type_transform_map = {
@@ -569,19 +570,24 @@ class MyParser:
                 # relay_python.write("    return []\r\r")
 
             # def func
-            relay_python.write("def {}():\r".format(function_name))
+            relay_python.write("def {}(pre_input=None):\r".format(function_name))
 
             # import
             relay_python.write("    import tvm\r")
-            relay_python.write("    from tvm import relay, IRModule\r")
-            relay_python.write("    import numpy as np\r\r")
+            # relay_python.write("    import numpy as np\r")
+            relay_python.write("    from tvm import relay\r\r")
 
             # input & params
             # print(self.net_inputs)
             # print(self.net_input_shapes)
             for index, net_input in enumerate(self.net_inputs):
-                relay_python.write(
-                    "    {} = relay.var(\"{}\", shape=(".format(net_input.replace('.', '_').replace("/", "_").replace("::", "_"), net_input))
+                prefix_str=""
+                for namekey in InputNameKeys:
+                    if net_input.startswith(namekey):
+                        prefix_str="pre_input if pre_input is not None else "
+                        break
+
+                relay_python.write("    {} = {}relay.var(\"{}\", shape=(".format(net_input.replace('.', '_').replace("/", "_").replace("::", "_"), prefix_str, net_input))
                 # for dim in self.net_input_shapes[index]:
                 # relay_python.write("{}, ".format(
                 # "relay.Any()" if dim == '?' else dim))
@@ -596,6 +602,7 @@ class MyParser:
 
             relay_python.write("\r")
 
+            topKey = set()
             for l in self.layer_list:
                 if l == None:
                     continue
@@ -619,6 +626,7 @@ class MyParser:
 
                 # left of =
                 for i, top in enumerate(l.tops):
+                    topKey.add(top)
                     relay_python.write("    {}".format(top.replace('.', '_')))
                     if i != len(l.tops) - 1:
                         relay_python.write(", ")
@@ -662,6 +670,10 @@ class MyParser:
                                 "relay.const({}.0, dtype=\"float32\")".format(b.strip("f")))
 
                         else:
+                            # fix split call_205_0(with input call_205)
+                            if b not in topKey and ".0" in b and "call_" in b:
+                                b = b.replace(".0", "")
+
                             # 'call_201.0' 'call_201_0'
                             relay_python.write(
                                 "{}".format(b.replace('.', '_').replace("/", "_")))
@@ -708,7 +720,7 @@ class MyParser:
             # return & output
             relay_python.write("    return ")
             for i in range(self.output_count):
-                relay_python.write("call_output{}".format(i))
+                relay_python.write("call_output{} if not isinstance(call_output{},tvm.relay.expr.TupleWrapper) else call_output{}[0]".format(i,i,i))
                 if i != self.output_count - 1:
                     relay_python.write(", ")
 

@@ -1,0 +1,3 @@
+def @main(%call_101: Tensor[(1, 1024, 13, 13), float32], %models.30.conv23.weight: Tensor[(425, 1024, 1, 1), float32] {
+  nn.conv2d(%101, %models.30.conv23.weight, padding=[0, 0, 0, 0], channels=425, kernel_size=[1, 1]) /* ty=Tensor[(1, 425, 13, 13), float32] */;
+}

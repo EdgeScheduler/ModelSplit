@@ -1,0 +1,5 @@
+def @main(%call_213: Tensor[(1, 1000), float32] {
+  %214 = exp(%213) /* ty=Tensor[(1, 1000), float32] */;
+  %215 = sum(%214, axis=[1], keepdims=True) /* ty=Tensor[(1, 1), float32] */;
+  divide(%214, %215) /* ty=Tensor[(1, 1000), float32] */
+}

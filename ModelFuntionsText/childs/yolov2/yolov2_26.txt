@@ -1,0 +1,3 @@
+def @main(%call_34: Tensor[(1, 256, 52, 52), float32] {
+  nn.max_pool2d(%34, pool_size=[2, 2], strides=[2, 2], padding=[0, 0, 0, 0]) /* ty=Tensor[(1, 256, 26, 26), float32] */;
+}

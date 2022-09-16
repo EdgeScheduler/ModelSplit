@@ -1,0 +1,3 @@
+def @main(%call_3: Tensor[(1, 64, 56, 56), float32] {
+  nn.lrn(%3, bias=1f) /* ty=Tensor[(1, 64, 56, 56), float32] */;
+}

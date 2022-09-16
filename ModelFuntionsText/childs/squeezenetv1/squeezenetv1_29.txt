@@ -1,0 +1,3 @@
+def @main(%call_93: Tensor[(1, 512, 13, 13), float32] {
+  nn.dropout(%93) /* ty=(Tensor[(1, 512, 13, 13), float32], Tensor[(1, 512, 13, 13), float32]) */;
+}

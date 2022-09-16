@@ -1,0 +1,3 @@
+def @main(%call_1: Tensor[(1, 64, 112, 112), float32] {
+  nn.relu(%1) /* ty=Tensor[(1, 64, 112, 112), float32] */;
+}

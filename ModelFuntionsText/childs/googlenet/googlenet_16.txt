@@ -1,0 +1,4 @@
+def @main(%call_205: (Tensor[(1, 1024, 1, 1), float32], Tensor[(1, 1024, 1, 1), float32]) {
+  %206 = %205.0;
+  reshape(%206, newshape=[1, 1024]) /* ty=Tensor[(1, 1024), float32] */;
+}

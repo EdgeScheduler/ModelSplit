@@ -1,0 +1,4 @@
+def @main(%call_67: (Tensor[(1, 4096), float32], Tensor[(1, 4096), float32]) {
+  %68 = %67.0;
+  nn.batch_flatten(%68) /* ty=Tensor[(1, 4096), float32] */;
+}
