@@ -3,7 +3,8 @@ import json
 from queue import Queue
 import re
 import argparse
-from typing import List,Tuple,Dict
+from typing import List, Tuple, Dict
+
 
 class Layer():
     def __init__(self, name, type, bottoms, tops, params, line):
@@ -21,7 +22,8 @@ class Layer():
 
     def Print(self):
         print("Layer-------------")
-        print("name:{} type:{} params:{}".format(self.name, self.type, self.params))
+        print("name:{} type:{} params:{}".format(
+            self.name, self.type, self.params))
         print("tops:{} bottoms:{}".format(self.tops, self.bottoms))
         print("Layer-------------")
 
@@ -73,7 +75,7 @@ class MyParser:
         self.output_count = 0
         # graph header
         self.header = None
-        self.nodes: Dict[int,GraphNode] = dict()            
+        self.nodes: Dict[int, GraphNode] = dict()
 
     def BuildGraph(self):
         for idx, layer in enumerate(self.layer_list):
@@ -130,7 +132,7 @@ class MyParser:
         # print(in_total, out_total)
         return in_total == out_total
 
-    def FindConvergencePoint(self)->List[GraphNode]:
+    def FindConvergencePoint(self) -> List[GraphNode]:
         res = list()
         for k, v in self.nodes.items():
             # print("k==", v.layer.name)
@@ -157,12 +159,13 @@ class MyParser:
         with open(params_file_path, "w") as f:
             f.write(json.dumps(new_dict))
 
-    def SplitToFunctionsTextFile(self, nodes: List[Layer],aimDir: str=None)-> Tuple[list, str]:
+    def SplitToFunctionsTextFile(self, nodes: List[Layer], aimDir: str = None) -> Tuple[list, str]:
         file_name = self.functionTextPath.split("/")[-1].strip(".txt")
         if aimDir is None:
-            aimDir = os.path.join(os.path.abspath(os.path.dirname(self.functionTextPath)), file_name)
+            aimDir = os.path.join(os.path.abspath(
+                os.path.dirname(self.functionTextPath)), file_name)
 
-        os.makedirs(aimDir,exist_ok=True)
+        os.makedirs(aimDir, exist_ok=True)
         idx = 0
         params_line = ""
         lines = list()
@@ -234,7 +237,8 @@ class MyParser:
         # write split txt file
         file_list = list()
         for k, v in split_txt_files.items():
-            split_file_path = os.path.join(aimDir, "{}_{}.txt".format(file_name, k))
+            split_file_path = os.path.join(
+                aimDir, "{}_{}.txt".format(file_name, k))
             file_list.append(split_file_path)
             with open(split_file_path, "w") as wfp:
                 for _, line in enumerate(v):
@@ -483,9 +487,9 @@ class MyParser:
                     # print("before:", bottoms)
                     tmp = [i.split(' ')[0].strip('f') for i in ''.join(line.split("(")[1:]).split(
                         ", ") if ' ' in i and i.split(' ')[0].strip('f').isdigit() == True]
-                    if len(tmp) > 0:
-                        print("tmp=", tmp)
-                        # raise
+                    # if len(tmp) > 0:
+                    # print("tmp=", tmp)
+                    # raise
                     # bottoms += tmp
 
                     # fix : %226 = multiply(1f, %resnetv24_dense0_bias);
@@ -521,7 +525,7 @@ class MyParser:
                 elif type == 5:
                     pass
 
-    def ExportToPythonFile(self, function_name:str, modelFunctionSavePath:str, clear=False):
+    def ExportToPythonFile(self, function_name: str, modelFunctionSavePath: str, clear=False):
         """
         export python file after parse IRModule text
 
@@ -544,12 +548,13 @@ class MyParser:
         # print("replace_map", self.replace_map)
         # print("------------------")
 
-        modelFunctionSaveFold=os.path.abspath(os.path.dirname(modelFunctionSavePath))
+        modelFunctionSaveFold = os.path.abspath(
+            os.path.dirname(modelFunctionSavePath))
         print(modelFunctionSaveFold)
         if not os.path.exists(modelFunctionSaveFold):
             os.makedirs(modelFunctionSaveFold)
 
-        count_dict={"count": 0}
+        count_dict = {"count": 0}
 
         # create relay_python.py
         type_transform_map = {
@@ -596,6 +601,7 @@ class MyParser:
 
             relay_python.write("\r")
 
+            topKey = set()
             for l in self.layer_list:
                 if l == None:
                     continue
@@ -619,6 +625,7 @@ class MyParser:
 
                 # left of =
                 for i, top in enumerate(l.tops):
+                    topKey.add(top)
                     relay_python.write("    {}".format(top.replace('.', '_')))
                     if i != len(l.tops) - 1:
                         relay_python.write(", ")
@@ -640,6 +647,7 @@ class MyParser:
                     if times > 1:
                         flag = True
 
+                print("bottoms:", l.bottoms)
                 for i, bottom in enumerate(l.bottoms):
                     # call_9 = relay.nn.relu(relay.Tuple([call_7_0]), )
                     # if isinstance(bottom, list):
@@ -656,6 +664,7 @@ class MyParser:
                             relay_python.write(
                                 "relay.const(np.array({}, dtype=\"int64\"))".format(b))  # TODO:type
                             # relay_python.write("{}".format("scale_"+b))
+
                         # fix : %226 = multiply(1f, %resnetv24_dense0_bias);
                         if re.match(r"\d+f", b):
                             relay_python.write(
@@ -663,6 +672,10 @@ class MyParser:
 
                         else:
                             # 'call_201.0' 'call_201_0'
+                            # fix split call_205_0(with input call_205)
+                            if b not in topKey and ".0" in b and "call_" in b:
+                                b = b.replace(".0", "")
+
                             relay_python.write(
                                 "{}".format(b.replace('.', '_').replace("/", "_")))
                             # fix: relay.nn.batch_norm —— ValueError: don't know how to convert type <class 'tvm.relay.expr.TupleWrapper'> to object
