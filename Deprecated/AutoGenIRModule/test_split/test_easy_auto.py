@@ -1,3 +1,4 @@
+import AutoGenIRModule
 from GenerateModels.easy_model import get_ir_module
 from AutoGenIRModule.gen_irmodule import MyParser
 import numpy as np

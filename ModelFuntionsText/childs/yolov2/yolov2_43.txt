@@ -1,3 +1,3 @@
-def @main(%models.29.bn22.running_var: Tensor[(1024), float32], %models.29.bn22.weight: Tensor[(1024), float32], %models.29.bn22.bias: Tensor[(1024), float32], %models.29.bn22.running_mean: Tensor[(1024), float32], %call_98: Tensor[(1, 1024, 13, 13), float32] {
+def @main(%models.29.bn22.running_mean: Tensor[(1024), float32], %call_98: Tensor[(1, 1024, 13, 13), float32], %models.29.bn22.running_var: Tensor[(1024), float32], %models.29.bn22.weight: Tensor[(1024), float32], %models.29.bn22.bias: Tensor[(1024), float32] {
   nn.batch_norm(%98, %models.29.bn22.weight, %models.29.bn22.bias, %models.29.bn22.running_mean, %models.29.bn22.running_var) /* ty=(Tensor[(1, 1024, 13, 13), float32], Tensor[(1024), float32], Tensor[(1024), float32]) */;
 }

@@ -15,7 +15,6 @@ import onnxruntime as ort
 from config import Config
 import time
 import drivers
-from relayIR.relay_graph import construct_op_graph
 from AutoGenIRModule.pyfile.googlenet import GoogleNetModule
 from AutoGenIRModule.pyfile.googlene_split.googlene_0 import GoogleNetModule_0
 from AutoGenIRModule.pyfile.googlene_split.googlene_1 import GoogleNetModule_1

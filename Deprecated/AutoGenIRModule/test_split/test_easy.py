@@ -1,6 +1,6 @@
-from AutoGenIRModule.gen_irmodule import Layer, MyParser
 from config import Config
 from AutoGenIRModule.test_split.common import ModelNames
+from AutoGenIRModule.gen_irmodule import Layer, MyParser
 
 # txt_to_class = {
 #     "googlenet": "GoogleNetModule",
