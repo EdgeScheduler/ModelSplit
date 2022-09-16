@@ -2,20 +2,20 @@ from SplitToChilds.moduleOperate import MyParser
 from SplitToChilds.transfer import ModelNames
 from config import Config
 
-model_name = "vgg19"
+model_name = "resnet50"
 
 def splitModel():
     rawModelFunctionTextPath = Config.RawModelFunctionsTextSavePathName(model_name)
     parse = MyParser(rawModelFunctionTextPath)
     
     parse.ParseWithFunctionText(rawModelFunctionTextPath)
-    parse.ExportToPythonFile(model_name, Config.RawModelFunctionsPythonSavePathName(model_name),clear=True)
+    parse.ExportToPythonFile(ModelNames[model_name], Config.RawModelFunctionsPythonSavePathName(model_name),clear=True)
     parse.BuildGraph()
     convergenceNodes = parse.FindConvergencePoint()
     for node in convergenceNodes:          
         node.PrintNode()
         
-    funtionTextPaths, paramsFileSavePath = parse.SplitToFunctionsTextFile([convergenceNodes[15], convergenceNodes[30], convergenceNodes[45]],aimDir=Config.ChildModelFunctionsTextSaveFold(model_name))
+    funtionTextPaths, paramsFileSavePath = parse.SplitToFunctionsTextFile([convergenceNodes[5], convergenceNodes[9], convergenceNodes[14]],aimDir=Config.ChildModelFunctionsTextSaveFold(model_name))
     for idx, funtionTextPath in enumerate(funtionTextPaths):
         parse = MyParser(funtionTextPath)
         parse.ParseWithFunctionText(funtionTextPath)
@@ -25,3 +25,4 @@ def splitModel():
 
 if __name__ == "__main__":
     splitModel()
+

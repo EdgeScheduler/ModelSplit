@@ -1,10 +1,8 @@
 ModelNames = {
-    "googlenet": "GoogleNetModule",
-    "resnet50": "ResnetModule",
-    "easy_model": "EasyModule",
-    "yolov2": "YoloModule",
-    "squeezenet1": "SqueezeNetModule",
-    "mobilenetv2": "MobileNetModule",
-    "mobilenetv2_back": "MobileNetModule",
-    "vgg19": "Vgg19Module",
+    "googlenet": "GoogleNet",
+    "resnet50": "Resnet50",
+    "easy_model": "EasyModel",
+    "yolov2": "Yolov2",
+    "squeezenetv1": "SqueezeNetv1",
+    "vgg19": "Vgg19",
 }

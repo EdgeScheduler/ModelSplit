@@ -48,8 +48,7 @@ def run_whole_model_from_onnx():
     fold_const = relay.transform.FoldConstant()  # 返回类型pass
     mod = fold_const(mod)
     lib = build_lib(mod, params, mydriver.target, lib_path)
-    module = graph_executor.GraphModule(
-        lib["default"](mydriver.device))
+    module = graph_executor.GraphModule(lib["default"](mydriver.device))
 
     # tvm model
     for k, v in input.items():

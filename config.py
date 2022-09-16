@@ -1,4 +1,6 @@
 import os
+from typing import Dict,List
+import json
 
 class Config:
     # static path property
@@ -30,6 +32,21 @@ class Config:
         name is given when you use raw model functions Python-file from disk, you may create this file by print-copy. Return "$project_path/ModelFuntionsPython/raw/$model_name.py"
         '''
         return os.path.join(Config.RawModelFunctionsPythonSaveFold,model_name+".py")
+
+    def ModelParamsFile(model_name)->Dict[int,List[dict]]:
+        '''
+        return convert "$project_path/ModelFuntionsText/childs/$model_name/params.json" to dict
+        '''
+        jsonFilePath=os.path.join(Config.ChildModelFunctionsTextSaveFold(model_name),"params.json")
+        if not os.path.exists(jsonFilePath):
+            return None
+        
+        with open(jsonFilePath,"r") as fp:
+            try:
+                return json.load(fp)
+            except Exception as ex:
+                print("error:",ex)
+                return None
     
     @staticmethod
     def ChildModelFunctionsPythonSavePathName(model_name)->str:
@@ -49,28 +66,20 @@ class Config:
     @staticmethod
     def ModelSavePathName(name) -> str:
         '''
-        name is given when you create the data. Return "$project_path/onnxs/$name/$name.onnx"
+        name is given when you create the data. Return "$project_path/Onnxs/$name/$name.onnx"
         '''
         return os.path.join(Config.OnnxSaveFold, name, name+".onnx")
 
     @staticmethod
     def TvmLibSavePathName(name, target, batch) -> str:
         '''
-        name is given when you create the data. Return "$project_path/onnxs/$name/$name.tar"
+        name is given when you create the data. Return "$project_path/Onnxs/$name/$name.tar"
         '''
         return os.path.join(Config.OnnxSaveFold, name, "{}-{}-{}.tar".format(name, target, batch))
 
     @staticmethod
     def ModelSaveDataPathName(name) -> str:
         '''
-        name is given when you create the data. Return "$project_path/onnxs/$name/data.json"
+        name is given when you create the data. Return "$project_path/Onnxs/$name/data.json"
         '''
         return os.path.join(Config.OnnxSaveFold, name, "data.json")
-
-
-class OnnxModelUrl:
-    '''
-    record onnx models URL which can be used to download from internet.
-    '''
-    Default = ""
-    Resnet50 = ""

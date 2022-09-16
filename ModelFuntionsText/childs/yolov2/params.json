@@ -1,18 +1,8 @@
 {
     "0": [
         {
-            "name": "models.2.conv2.weight",
-            "shape": "(64, 32, 3, 3)",
-            "type": "float32"
-        },
-        {
-            "name": "models.4.bn3.weight",
-            "shape": "(128)",
-            "type": "float32"
-        },
-        {
-            "name": "models.4.bn3.bias",
-            "shape": "(128)",
+            "name": "models.0.bn1.running_var",
+            "shape": "(32)",
             "type": "float32"
         },
         {
@@ -26,33 +16,8 @@
             "type": "float32"
         },
         {
-            "name": "models.4.conv3.weight",
-            "shape": "(128, 64, 3, 3)",
-            "type": "float32"
-        },
-        {
-            "name": "models.2.bn2.running_mean",
+            "name": "models.2.bn2.running_var",
             "shape": "(64)",
-            "type": "float32"
-        },
-        {
-            "name": "models.0.bn1.running_mean",
-            "shape": "(32)",
-            "type": "float32"
-        },
-        {
-            "name": "models.2.bn2.bias",
-            "shape": "(64)",
-            "type": "float32"
-        },
-        {
-            "name": "models.2.bn2.weight",
-            "shape": "(64)",
-            "type": "float32"
-        },
-        {
-            "name": "models.4.bn3.running_mean",
-            "shape": "(128)",
             "type": "float32"
         },
         {
@@ -61,23 +26,58 @@
             "type": "float32"
         },
         {
+            "name": "models.4.conv3.weight",
+            "shape": "(128, 64, 3, 3)",
+            "type": "float32"
+        },
+        {
+            "name": "models.2.conv2.weight",
+            "shape": "(64, 32, 3, 3)",
+            "type": "float32"
+        },
+        {
+            "name": "models.4.bn3.weight",
+            "shape": "(128)",
+            "type": "float32"
+        },
+        {
+            "name": "models.2.bn2.bias",
+            "shape": "(64)",
+            "type": "float32"
+        },
+        {
             "name": "models.4.bn3.running_var",
             "shape": "(128)",
             "type": "float32"
         },
         {
-            "name": "models.2.bn2.running_var",
+            "name": "models.0.bn1.running_mean",
+            "shape": "(32)",
+            "type": "float32"
+        },
+        {
+            "name": "models.4.bn3.running_mean",
+            "shape": "(128)",
+            "type": "float32"
+        },
+        {
+            "name": "models.2.bn2.weight",
+            "shape": "(64)",
+            "type": "float32"
+        },
+        {
+            "name": "models.4.bn3.bias",
+            "shape": "(128)",
+            "type": "float32"
+        },
+        {
+            "name": "models.2.bn2.running_mean",
             "shape": "(64)",
             "type": "float32"
         },
         {
             "name": "models.5.conv4.weight",
             "shape": "(64, 128, 1, 1)",
-            "type": "float32"
-        },
-        {
-            "name": "models.0.bn1.running_var",
-            "shape": "(32)",
             "type": "float32"
         },
         {
@@ -88,158 +88,13 @@
     ],
     "1": [
         {
-            "name": "models.14.bn11.weight",
+            "name": "models.12.bn9.weight",
             "shape": "(512)",
-            "type": "float32"
-        },
-        {
-            "name": "models.15.conv12.weight",
-            "shape": "(256, 512, 1, 1)",
-            "type": "float32"
-        },
-        {
-            "name": "models.8.bn6.weight",
-            "shape": "(256)",
-            "type": "float32"
-        },
-        {
-            "name": "models.6.conv5.weight",
-            "shape": "(128, 64, 3, 3)",
-            "type": "float32"
-        },
-        {
-            "name": "models.6.bn5.weight",
-            "shape": "(128)",
-            "type": "float32"
-        },
-        {
-            "name": "models.13.bn10.bias",
-            "shape": "(256)",
-            "type": "float32"
-        },
-        {
-            "name": "models.9.bn7.running_var",
-            "shape": "(128)",
-            "type": "float32"
-        },
-        {
-            "name": "models.10.conv8.weight",
-            "shape": "(256, 128, 3, 3)",
-            "type": "float32"
-        },
-        {
-            "name": "models.8.bn6.bias",
-            "shape": "(256)",
-            "type": "float32"
-        },
-        {
-            "name": "models.9.conv7.weight",
-            "shape": "(128, 256, 1, 1)",
-            "type": "float32"
-        },
-        {
-            "name": "models.5.bn4.running_mean",
-            "shape": "(64)",
-            "type": "float32"
-        },
-        {
-            "name": "models.9.bn7.weight",
-            "shape": "(128)",
-            "type": "float32"
-        },
-        {
-            "name": "models.12.bn9.bias",
-            "shape": "(512)",
-            "type": "float32"
-        },
-        {
-            "name": "models.5.bn4.weight",
-            "shape": "(64)",
-            "type": "float32"
-        },
-        {
-            "name": "models.13.bn10.running_mean",
-            "shape": "(256)",
             "type": "float32"
         },
         {
             "name": "models.12.conv9.weight",
             "shape": "(512, 256, 3, 3)",
-            "type": "float32"
-        },
-        {
-            "name": "models.13.bn10.running_var",
-            "shape": "(256)",
-            "type": "float32"
-        },
-        {
-            "name": "models.12.bn9.running_var",
-            "shape": "(512)",
-            "type": "float32"
-        },
-        {
-            "name": "models.6.bn5.running_var",
-            "shape": "(128)",
-            "type": "float32"
-        },
-        {
-            "name": "models.10.bn8.bias",
-            "shape": "(256)",
-            "type": "float32"
-        },
-        {
-            "name": "models.6.bn5.bias",
-            "shape": "(128)",
-            "type": "float32"
-        },
-        {
-            "name": "models.5.bn4.bias",
-            "shape": "(64)",
-            "type": "float32"
-        },
-        {
-            "name": "call_14",
-            "shape": "(1, 64, 104, 104)",
-            "type": "float32"
-        },
-        {
-            "name": "models.10.bn8.weight",
-            "shape": "(256)",
-            "type": "float32"
-        },
-        {
-            "name": "models.13.bn10.weight",
-            "shape": "(256)",
-            "type": "float32"
-        },
-        {
-            "name": "models.8.conv6.weight",
-            "shape": "(256, 128, 3, 3)",
-            "type": "float32"
-        },
-        {
-            "name": "models.8.bn6.running_mean",
-            "shape": "(256)",
-            "type": "float32"
-        },
-        {
-            "name": "models.10.bn8.running_var",
-            "shape": "(256)",
-            "type": "float32"
-        },
-        {
-            "name": "models.6.bn5.running_mean",
-            "shape": "(128)",
-            "type": "float32"
-        },
-        {
-            "name": "models.8.bn6.running_var",
-            "shape": "(256)",
-            "type": "float32"
-        },
-        {
-            "name": "models.14.bn11.bias",
-            "shape": "(512)",
             "type": "float32"
         },
         {
@@ -253,23 +108,33 @@
             "type": "float32"
         },
         {
+            "name": "models.14.bn11.running_var",
+            "shape": "(512)",
+            "type": "float32"
+        },
+        {
             "name": "models.9.bn7.bias",
             "shape": "(128)",
             "type": "float32"
         },
         {
-            "name": "models.5.bn4.running_var",
-            "shape": "(64)",
+            "name": "models.8.conv6.weight",
+            "shape": "(256, 128, 3, 3)",
             "type": "float32"
         },
         {
-            "name": "models.12.bn9.weight",
-            "shape": "(512)",
+            "name": "models.15.conv12.weight",
+            "shape": "(256, 512, 1, 1)",
             "type": "float32"
         },
         {
-            "name": "models.12.bn9.running_mean",
-            "shape": "(512)",
+            "name": "models.8.bn6.weight",
+            "shape": "(256)",
+            "type": "float32"
+        },
+        {
+            "name": "models.6.bn5.bias",
+            "shape": "(128)",
             "type": "float32"
         },
         {
@@ -278,8 +143,13 @@
             "type": "float32"
         },
         {
-            "name": "models.10.bn8.running_mean",
-            "shape": "(256)",
+            "name": "models.6.bn5.running_var",
+            "shape": "(128)",
+            "type": "float32"
+        },
+        {
+            "name": "models.9.bn7.running_var",
+            "shape": "(128)",
             "type": "float32"
         },
         {
@@ -288,64 +158,144 @@
             "type": "float32"
         },
         {
-            "name": "models.14.bn11.running_var",
+            "name": "models.10.bn8.running_var",
+            "shape": "(256)",
+            "type": "float32"
+        },
+        {
+            "name": "call_14",
+            "shape": "(1, 64, 104, 104)",
+            "type": "float32"
+        },
+        {
+            "name": "models.13.bn10.bias",
+            "shape": "(256)",
+            "type": "float32"
+        },
+        {
+            "name": "models.10.bn8.bias",
+            "shape": "(256)",
+            "type": "float32"
+        },
+        {
+            "name": "models.13.bn10.weight",
+            "shape": "(256)",
+            "type": "float32"
+        },
+        {
+            "name": "models.8.bn6.running_var",
+            "shape": "(256)",
+            "type": "float32"
+        },
+        {
+            "name": "models.10.conv8.weight",
+            "shape": "(256, 128, 3, 3)",
+            "type": "float32"
+        },
+        {
+            "name": "models.8.bn6.bias",
+            "shape": "(256)",
+            "type": "float32"
+        },
+        {
+            "name": "models.13.bn10.running_var",
+            "shape": "(256)",
+            "type": "float32"
+        },
+        {
+            "name": "models.9.bn7.weight",
+            "shape": "(128)",
+            "type": "float32"
+        },
+        {
+            "name": "models.9.conv7.weight",
+            "shape": "(128, 256, 1, 1)",
+            "type": "float32"
+        },
+        {
+            "name": "models.10.bn8.running_mean",
+            "shape": "(256)",
+            "type": "float32"
+        },
+        {
+            "name": "models.5.bn4.running_var",
+            "shape": "(64)",
+            "type": "float32"
+        },
+        {
+            "name": "models.6.bn5.weight",
+            "shape": "(128)",
+            "type": "float32"
+        },
+        {
+            "name": "models.14.bn11.bias",
+            "shape": "(512)",
+            "type": "float32"
+        },
+        {
+            "name": "models.12.bn9.running_var",
+            "shape": "(512)",
+            "type": "float32"
+        },
+        {
+            "name": "models.6.bn5.running_mean",
+            "shape": "(128)",
+            "type": "float32"
+        },
+        {
+            "name": "models.6.conv5.weight",
+            "shape": "(128, 64, 3, 3)",
+            "type": "float32"
+        },
+        {
+            "name": "models.13.bn10.running_mean",
+            "shape": "(256)",
+            "type": "float32"
+        },
+        {
+            "name": "models.5.bn4.bias",
+            "shape": "(64)",
+            "type": "float32"
+        },
+        {
+            "name": "models.5.bn4.weight",
+            "shape": "(64)",
+            "type": "float32"
+        },
+        {
+            "name": "models.14.bn11.weight",
+            "shape": "(512)",
+            "type": "float32"
+        },
+        {
+            "name": "models.8.bn6.running_mean",
+            "shape": "(256)",
+            "type": "float32"
+        },
+        {
+            "name": "models.12.bn9.running_mean",
+            "shape": "(512)",
+            "type": "float32"
+        },
+        {
+            "name": "models.10.bn8.weight",
+            "shape": "(256)",
+            "type": "float32"
+        },
+        {
+            "name": "models.5.bn4.running_mean",
+            "shape": "(64)",
+            "type": "float32"
+        },
+        {
+            "name": "models.12.bn9.bias",
             "shape": "(512)",
             "type": "float32"
         }
     ],
     "2": [
         {
-            "name": "models.19.bn15.running_var",
-            "shape": "(512)",
-            "type": "float32"
-        },
-        {
-            "name": "models.20.bn16.weight",
-            "shape": "(1024)",
-            "type": "float32"
-        },
-        {
-            "name": "models.15.bn12.running_var",
-            "shape": "(256)",
-            "type": "float32"
-        },
-        {
-            "name": "models.23.conv19.weight",
-            "shape": "(1024, 1024, 3, 3)",
-            "type": "float32"
-        },
-        {
-            "name": "models.20.bn16.running_mean",
-            "shape": "(1024)",
-            "type": "float32"
-        },
-        {
-            "name": "models.20.bn16.bias",
-            "shape": "(1024)",
-            "type": "float32"
-        },
-        {
-            "name": "models.18.bn14.running_mean",
-            "shape": "(1024)",
-            "type": "float32"
-        },
-        {
-            "name": "models.18.conv14.weight",
-            "shape": "(1024, 512, 3, 3)",
-            "type": "float32"
-        },
-        {
-            "name": "models.23.bn19.weight",
-            "shape": "(1024)",
-            "type": "float32"
-        },
-        {
-            "name": "models.18.bn14.running_var",
-            "shape": "(1024)",
-            "type": "float32"
-        },
-        {
-            "name": "models.24.bn20.bias",
+            "name": "models.22.bn18.weight",
             "shape": "(1024)",
             "type": "float32"
         },
@@ -355,87 +305,22 @@
             "type": "float32"
         },
         {
-            "name": "call_48",
-            "shape": "(1, 256, 26, 26)",
-            "type": "float32"
-        },
-        {
-            "name": "models.24.bn20.weight",
-            "shape": "(1024)",
-            "type": "float32"
-        },
-        {
-            "name": "models.19.bn15.weight",
-            "shape": "(512)",
-            "type": "float32"
-        },
-        {
-            "name": "models.16.bn13.bias",
-            "shape": "(512)",
-            "type": "float32"
-        },
-        {
-            "name": "models.18.bn14.weight",
-            "shape": "(1024)",
-            "type": "float32"
-        },
-        {
-            "name": "models.22.conv18.weight",
-            "shape": "(1024, 512, 3, 3)",
-            "type": "float32"
-        },
-        {
-            "name": "models.18.bn14.bias",
-            "shape": "(1024)",
-            "type": "float32"
-        },
-        {
-            "name": "models.26.bn21.weight",
-            "shape": "(64)",
-            "type": "float32"
-        },
-        {
-            "name": "models.21.conv17.weight",
-            "shape": "(512, 1024, 1, 1)",
-            "type": "float32"
-        },
-        {
-            "name": "models.22.bn18.running_mean",
-            "shape": "(1024)",
-            "type": "float32"
-        },
-        {
-            "name": "models.22.bn18.running_var",
-            "shape": "(1024)",
-            "type": "float32"
-        },
-        {
-            "name": "models.26.bn21.running_mean",
-            "shape": "(64)",
-            "type": "float32"
-        },
-        {
-            "name": "models.15.bn12.bias",
+            "name": "models.15.bn12.running_mean",
             "shape": "(256)",
             "type": "float32"
         },
         {
-            "name": "models.29.conv22.weight",
-            "shape": "(1024, 1280, 3, 3)",
-            "type": "float32"
-        },
-        {
-            "name": "models.23.bn19.running_var",
+            "name": "models.24.bn20.bias",
             "shape": "(1024)",
             "type": "float32"
         },
         {
-            "name": "models.15.bn12.weight",
+            "name": "models.15.bn12.running_var",
             "shape": "(256)",
             "type": "float32"
         },
         {
-            "name": "models.24.bn20.running_var",
+            "name": "models.20.bn16.running_mean",
             "shape": "(1024)",
             "type": "float32"
         },
@@ -445,28 +330,13 @@
             "type": "float32"
         },
         {
-            "name": "models.21.bn17.running_var",
+            "name": "models.15.bn12.bias",
+            "shape": "(256)",
+            "type": "float32"
+        },
+        {
+            "name": "models.16.bn13.bias",
             "shape": "(512)",
-            "type": "float32"
-        },
-        {
-            "name": "models.23.bn19.running_mean",
-            "shape": "(1024)",
-            "type": "float32"
-        },
-        {
-            "name": "models.19.bn15.bias",
-            "shape": "(512)",
-            "type": "float32"
-        },
-        {
-            "name": "models.20.bn16.running_var",
-            "shape": "(1024)",
-            "type": "float32"
-        },
-        {
-            "name": "models.24.conv20.weight",
-            "shape": "(1024, 1024, 3, 3)",
             "type": "float32"
         },
         {
@@ -475,12 +345,57 @@
             "type": "float32"
         },
         {
-            "name": "models.15.bn12.running_mean",
-            "shape": "(256)",
+            "name": "models.20.bn16.weight",
+            "shape": "(1024)",
             "type": "float32"
         },
         {
-            "name": "models.24.bn20.running_mean",
+            "name": "models.19.bn15.weight",
+            "shape": "(512)",
+            "type": "float32"
+        },
+        {
+            "name": "models.23.bn19.weight",
+            "shape": "(1024)",
+            "type": "float32"
+        },
+        {
+            "name": "models.16.bn13.running_mean",
+            "shape": "(512)",
+            "type": "float32"
+        },
+        {
+            "name": "models.21.bn17.running_mean",
+            "shape": "(512)",
+            "type": "float32"
+        },
+        {
+            "name": "models.18.bn14.running_var",
+            "shape": "(1024)",
+            "type": "float32"
+        },
+        {
+            "name": "models.22.bn18.bias",
+            "shape": "(1024)",
+            "type": "float32"
+        },
+        {
+            "name": "models.23.bn19.running_mean",
+            "shape": "(1024)",
+            "type": "float32"
+        },
+        {
+            "name": "models.26.bn21.running_var",
+            "shape": "(64)",
+            "type": "float32"
+        },
+        {
+            "name": "models.20.bn16.running_var",
+            "shape": "(1024)",
+            "type": "float32"
+        },
+        {
+            "name": "models.23.bn19.bias",
             "shape": "(1024)",
             "type": "float32"
         },
@@ -490,23 +405,13 @@
             "type": "float32"
         },
         {
-            "name": "models.26.conv21.weight",
-            "shape": "(64, 512, 1, 1)",
+            "name": "models.24.conv20.weight",
+            "shape": "(1024, 1024, 3, 3)",
             "type": "float32"
         },
         {
-            "name": "models.21.bn17.running_mean",
-            "shape": "(512)",
-            "type": "float32"
-        },
-        {
-            "name": "models.26.bn21.running_var",
-            "shape": "(64)",
-            "type": "float32"
-        },
-        {
-            "name": "models.22.bn18.bias",
-            "shape": "(1024)",
+            "name": "models.19.conv15.weight",
+            "shape": "(512, 1024, 1, 1)",
             "type": "float32"
         },
         {
@@ -515,12 +420,47 @@
             "type": "float32"
         },
         {
-            "name": "models.16.bn13.running_mean",
+            "name": "models.26.conv21.weight",
+            "shape": "(64, 512, 1, 1)",
+            "type": "float32"
+        },
+        {
+            "name": "models.24.bn20.weight",
+            "shape": "(1024)",
+            "type": "float32"
+        },
+        {
+            "name": "models.19.bn15.bias",
             "shape": "(512)",
             "type": "float32"
         },
         {
-            "name": "models.23.bn19.bias",
+            "name": "models.24.bn20.running_mean",
+            "shape": "(1024)",
+            "type": "float32"
+        },
+        {
+            "name": "models.26.bn21.running_mean",
+            "shape": "(64)",
+            "type": "float32"
+        },
+        {
+            "name": "models.21.bn17.running_var",
+            "shape": "(512)",
+            "type": "float32"
+        },
+        {
+            "name": "models.19.bn15.running_var",
+            "shape": "(512)",
+            "type": "float32"
+        },
+        {
+            "name": "models.18.bn14.weight",
+            "shape": "(1024)",
+            "type": "float32"
+        },
+        {
+            "name": "models.23.bn19.running_var",
             "shape": "(1024)",
             "type": "float32"
         },
@@ -530,8 +470,53 @@
             "type": "float32"
         },
         {
-            "name": "models.16.conv13.weight",
-            "shape": "(512, 256, 3, 3)",
+            "name": "models.22.bn18.running_mean",
+            "shape": "(1024)",
+            "type": "float32"
+        },
+        {
+            "name": "call_48",
+            "shape": "(1, 256, 26, 26)",
+            "type": "float32"
+        },
+        {
+            "name": "models.23.conv19.weight",
+            "shape": "(1024, 1024, 3, 3)",
+            "type": "float32"
+        },
+        {
+            "name": "models.22.bn18.running_var",
+            "shape": "(1024)",
+            "type": "float32"
+        },
+        {
+            "name": "models.29.conv22.weight",
+            "shape": "(1024, 1280, 3, 3)",
+            "type": "float32"
+        },
+        {
+            "name": "models.21.conv17.weight",
+            "shape": "(512, 1024, 1, 1)",
+            "type": "float32"
+        },
+        {
+            "name": "models.22.conv18.weight",
+            "shape": "(1024, 512, 3, 3)",
+            "type": "float32"
+        },
+        {
+            "name": "models.15.bn12.weight",
+            "shape": "(256)",
+            "type": "float32"
+        },
+        {
+            "name": "models.18.conv14.weight",
+            "shape": "(1024, 512, 3, 3)",
+            "type": "float32"
+        },
+        {
+            "name": "models.18.bn14.bias",
+            "shape": "(1024)",
             "type": "float32"
         },
         {
@@ -540,20 +525,35 @@
             "type": "float32"
         },
         {
-            "name": "models.19.conv15.weight",
-            "shape": "(512, 1024, 1, 1)",
+            "name": "models.24.bn20.running_var",
+            "shape": "(1024)",
             "type": "float32"
         },
         {
-            "name": "models.22.bn18.weight",
+            "name": "models.16.conv13.weight",
+            "shape": "(512, 256, 3, 3)",
+            "type": "float32"
+        },
+        {
+            "name": "models.26.bn21.weight",
+            "shape": "(64)",
+            "type": "float32"
+        },
+        {
+            "name": "models.18.bn14.running_mean",
+            "shape": "(1024)",
+            "type": "float32"
+        },
+        {
+            "name": "models.20.bn16.bias",
             "shape": "(1024)",
             "type": "float32"
         }
     ],
     "3": [
         {
-            "name": "models.30.conv23.weight",
-            "shape": "(425, 1024, 1, 1)",
+            "name": "models.29.bn22.weight",
+            "shape": "(1024)",
             "type": "float32"
         },
         {
@@ -562,18 +562,18 @@
             "type": "float32"
         },
         {
-            "name": "models.29.bn22.weight",
-            "shape": "(1024)",
-            "type": "float32"
-        },
-        {
             "name": "models.29.bn22.running_mean",
             "shape": "(1024)",
             "type": "float32"
         },
         {
-            "name": "call_98",
-            "shape": "(1, 1024, 13, 13)",
+            "name": "models.29.bn22.running_var",
+            "shape": "(1024)",
+            "type": "float32"
+        },
+        {
+            "name": "models.30.conv23.weight",
+            "shape": "(425, 1024, 1, 1)",
             "type": "float32"
         },
         {
@@ -582,8 +582,8 @@
             "type": "float32"
         },
         {
-            "name": "models.29.bn22.running_var",
-            "shape": "(1024)",
+            "name": "call_98",
+            "shape": "(1, 1024, 13, 13)",
             "type": "float32"
         }
     ]

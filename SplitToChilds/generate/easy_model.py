@@ -9,7 +9,7 @@ def splitModel():
     parse = MyParser(rawModelFunctionTextPath)
     
     parse.ParseWithFunctionText(rawModelFunctionTextPath)
-    parse.ExportToPythonFile(model_name, Config.RawModelFunctionsPythonSavePathName(model_name),clear=True)
+    parse.ExportToPythonFile(ModelNames[model_name], Config.RawModelFunctionsPythonSavePathName(model_name),clear=True)
     parse.BuildGraph()
     convergenceNodes = parse.FindConvergencePoint()
     for node in convergenceNodes:          

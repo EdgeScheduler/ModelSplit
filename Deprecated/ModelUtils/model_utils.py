@@ -23,7 +23,7 @@ def build_lib(mod, params, target, lib_path=None):
     # tvm.runtime.module.Module
     # return get_lib(lib_path)
     # factory_module
-    with tvm.transform.PassContext(opt_level=3):
+    with tvm.transform.PassContext(opt_level=0):
         lib = relay.build(mod, target=target, params=params)
     return lib
 
