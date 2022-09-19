@@ -6,6 +6,10 @@ class Config:
     # static path property
     ProjectRootFold = os.path.dirname(os.path.abspath(__file__))
 
+    # bench data save-path
+    BenchmarkDataSavePath_cold_run=os.path.join(ProjectRootFold, "Benchmark/timecost/data-cold_run.json")
+    BenchmarkDataAnalyzeSaveFold=os.path.join(ProjectRootFold, "Benchmark/images/")
+
     # onnx-model save-path
     OnnxSaveFold = os.path.join(ProjectRootFold, "Onnxs")
 

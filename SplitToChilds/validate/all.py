@@ -20,6 +20,9 @@ if __name__ == "__main__":
         input = {input_name: input_data}
         shape_dict = {input_name: input_data.shape}
 
-        _, params = runmodule.RunWholeOnnxModel(model_name,input,shape_dict,driver=driver,onnx_download_url=config["onnx_download_url"],validate_download=validate_local_onnx_file)
-        runmodule.RunWholeModelByFunction(model_name,input,params)
-        runmodule.RunAllChildModelSequentially(model_name,input,params,Config.ModelParamsFile(model_name=model_name))
+        output, params = runmodule.RunWholeOnnxModel(model_name,input,shape_dict,driver=driver,onnx_download_url=config["onnx_download_url"],validate_download=validate_local_onnx_file)
+        print(output[:10])
+        output=runmodule.RunWholeModelByFunction(model_name,input,params)
+        print(output.flatten()[:10])
+        output=runmodule.RunAllChildModelSequentially(model_name,input,params,Config.ModelParamsFile(model_name=model_name))
+        print(output.flatten()[:10])
