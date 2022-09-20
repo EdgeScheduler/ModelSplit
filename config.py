@@ -8,10 +8,12 @@ class Config:
 
     # bench data save-path
     BenchmarkDataSavePath_cold_run=os.path.join(ProjectRootFold, "Benchmark/timecost/data-cold_run.json")
+    BenchmarkDataSavePath_hot_run=os.path.join(ProjectRootFold, "Benchmark/timecost/data-hot_run.json")
     BenchmarkDataAnalyzeSaveFold=os.path.join(ProjectRootFold, "Benchmark/images/")
 
     # onnx-model save-path
     OnnxSaveFold = os.path.join(ProjectRootFold, "Onnxs")
+    TVMLibSaveFold = os.path.join(ProjectRootFold, "RunLib")
 
     # model-functions text save-path
     RawModelFunctionsTextSaveFold = os.path.join(ProjectRootFold, "ModelFuntionsText/raw")
@@ -73,14 +75,21 @@ class Config:
         '''
         name is given when you create the data. Return "$project_path/Onnxs/$name/$name.onnx"
         '''
+        os.makedirs(os.path.join(Config.OnnxSaveFold, name),exist_ok=True)
         return os.path.join(Config.OnnxSaveFold, name, name+".onnx")
 
     @staticmethod
-    def TvmLibSavePathName(name, target, batch) -> str:
+    def TvmLibSavePathByName(name, target, idx: int=-1) -> str:
         '''
-        name is given when you create the data. Return "$project_path/Onnxs/$name/$name.tar"
+        name is given when you create the data. Return "$project_path/RunLib/$target/$name/$name-$idx.tar"
         '''
-        return os.path.join(Config.OnnxSaveFold, name, "{}-{}-{}.tar".format(name, target, batch))
+
+        fold=os.path.join(Config.TVMLibSaveFold,target,name)
+        os.makedirs(fold,exist_ok=True)
+        if idx>=0:
+            return os.path.join(fold, "{}-{}.tar".format(name,str(idx)))
+        else:
+            return os.path.join(fold, "{}.tar".format(name))
 
     @staticmethod
     def ModelSaveDataPathName(name) -> str:

@@ -1,4 +1,4 @@
-def @main(%vgg0_dense2_weight: Tensor[(1000, 4096), float32], %vgg0_dense2_bias: Tensor[(1000), float32]), %call_70: Tensor[(1, 4096), float32] {
+def @main(%call_70: Tensor[(1, 4096), float32], %vgg0_dense2_weight: Tensor[(1000, 4096), float32], %vgg0_dense2_bias: Tensor[(1000), float32]) {
   %71 = nn.dense(%70, %vgg0_dense2_weight, units=1000) /* ty=Tensor[(1, 1000), float32] */;
   %72 = multiply(1f /* ty=float32 */, %vgg0_dense2_bias) /* ty=Tensor[(1000), float32] */;
   add(%71, %72) /* ty=Tensor[(1, 1000), float32] */

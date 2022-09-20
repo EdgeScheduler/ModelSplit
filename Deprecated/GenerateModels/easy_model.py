@@ -77,7 +77,7 @@ def main():
     input_name = "input"
     output_name = "output"
     onnx_path = Config.ModelSavePathName(onnx_name)
-    lib_path = Config.TvmLibSavePathName(
+    lib_path = Config.TvmLibSavePathByName(
         onnx_name, mydriver.target, str(input_shape[0]))
     torch.onnx.export(model, x, Config.ModelSavePathName(onnx_name), export_params=True, input_names=[
         input_name], output_names=[output_name])  # "edge"使得自定义名称与tvm内部自动命名显示区分，便于理解

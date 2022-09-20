@@ -46,7 +46,7 @@ def get_params():
     global params
     # onnx model
     onnx_path = Config.ModelSavePathName(model_name)
-    lib_path = Config.TvmLibSavePathName(
+    lib_path = Config.TvmLibSavePathByName(
         model_name, mydriver.target, str(input_shape[0]))
     # (N,3,224,224)——need to set input size for tvm
 

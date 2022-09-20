@@ -2,7 +2,7 @@ from tvm import relay
 import onnx
 import os
 from config import Config
-from Onnxs.config import OnnxModelUrl
+from Onnxs.download_config import OnnxModelUrl
 import time
 import requests 
 from tqdm import tqdm
@@ -59,7 +59,7 @@ def easy_load_from_onnx(save_name,input_dict={}, download_url=None, auto_path=Tr
         irModule, params = relay.frontend.from_onnx(onnx_model,input_dict)
         irModule=relay.transform.InferType()(irModule)                    # tvm.ir.module.IRModule
     except Exception as ex:
-        print("fail to load onnx from %s"%(filepath))
+        print("fail to load onnx from %s, error info: %s"%(filepath,str(ex)))
         return None,{},time.time()-start
 
     print("success to load onnx from %s"%(filepath))
@@ -116,7 +116,6 @@ def download(url,path)->bool:
 
     print("success download from %s and save to %s, cost time=%f min."%(url,path,(time.time()-start)/60.0))
     return True
-
 
 # def download(url, path)->bool:
 #     '''

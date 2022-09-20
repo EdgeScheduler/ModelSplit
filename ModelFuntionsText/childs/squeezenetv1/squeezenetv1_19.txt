@@ -1,4 +1,4 @@
-def @main(%call_51: Tensor[(1, 48, 13, 13), float32], %fire6/expand3x3_b_0: Tensor[(192), float32], %fire6/expand1x1_w_0: Tensor[(192, 48, 1, 1), float32], %fire6/expand1x1_b_0: Tensor[(192), float32], %fire6/expand3x3_w_0: Tensor[(192, 48, 3, 3), float32] {
+def @main(%fire6/expand1x1_b_0: Tensor[(192), float32], %fire6/expand3x3_w_0: Tensor[(192, 48, 3, 3), float32], %fire6/expand3x3_b_0: Tensor[(192), float32], %call_51: Tensor[(1, 48, 13, 13), float32], %fire6/expand1x1_w_0: Tensor[(192, 48, 1, 1), float32] {
   %52 = nn.relu(%51) /* ty=Tensor[(1, 48, 13, 13), float32] */;
   %53 = nn.conv2d(%52, %fire6/expand1x1_w_0, padding=[0, 0, 0, 0], channels=192, kernel_size=[1, 1]) /* ty=Tensor[(1, 192, 13, 13), float32] */;
   %54 = nn.bias_add(%53, %fire6/expand1x1_b_0) /* ty=Tensor[(1, 192, 13, 13), float32] */;

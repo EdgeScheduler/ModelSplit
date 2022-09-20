@@ -37,7 +37,7 @@ input = {input_name: x.detach().numpy()}
 def run_init_model():
     global params
     onnx_path = Config.ModelSavePathName(model_name)
-    lib_path = Config.TvmLibSavePathName(
+    lib_path = Config.TvmLibSavePathByName(
         model_name, mydriver.target, str(input_shape[0]))
     # (N,3,224,224)——need to set input size for tvm
     shape_dict = {input_name: x.shape}

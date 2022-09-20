@@ -1,4 +1,4 @@
-from Onnxs.config import OnnxModelUrl
+from Onnxs.download_config import OnnxModelUrl
 
 SupportedModels = {
     "googlenet": {
@@ -27,3 +27,16 @@ SupportedModels = {
         "onnx_download_url": OnnxModelUrl.Yolov2_coco
     }
 }
+
+# SupportedModels = {
+#     "resnet50":{
+#         "input_shape": (15, 3, 224, 224),
+#         "input_name": "data",
+#         "onnx_download_url": OnnxModelUrl.Resnet50
+#     },
+#         "googlenet": {
+#         "input_shape": (15, 3, 224, 224),
+#         "input_name": "data_0",
+#         "onnx_download_url": OnnxModelUrl.Googlenet
+#     },
+# }

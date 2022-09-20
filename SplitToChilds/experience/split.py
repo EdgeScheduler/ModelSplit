@@ -10,8 +10,8 @@ def SplitModel(model_name):
     parse.ExportToPythonFile(ModelNames[model_name], Config.RawModelFunctionsPythonSavePathName(model_name),clear=True)
     parse.BuildGraph()
     convergenceNodes = parse.FindConvergencePoint()
-    for node in convergenceNodes:          
-        node.PrintNode()
+    # for node in convergenceNodes:          
+    #     node.PrintNode()
         
     #funtionTextPaths, paramsFileSavePath = parse.SplitToFunctionsTextFile([convergenceNodes[5], convergenceNodes[9], convergenceNodes[14]],aimDir=Config.ChildModelFunctionsTextSaveFold(model_name))
     funtionTextPaths, paramsFileSavePath = parse.SplitToFunctionsTextFile(convergenceNodes,aimDir=Config.ChildModelFunctionsTextSaveFold(model_name))

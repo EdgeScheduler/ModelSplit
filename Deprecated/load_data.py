@@ -2,7 +2,7 @@ from tvm import relay
 import onnx
 import os
 from config import Config
-from Onnxs.config import OnnxModelUrl
+from Onnxs.download_config import OnnxModelUrl
 import time
 import requests 
 from tqdm import tqdm

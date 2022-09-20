@@ -391,8 +391,7 @@ class MyParser:
                     raise
 
                 elif type == 0:  # 0: "def @main(%INPUT__0..."
-                    self.net_inputs, self.net_input_shapes = self.ParseParamsWithText(
-                        line)
+                    self.net_inputs, self.net_input_shapes = self.ParseParamsWithText(line)
 
                 # 1: "  %0 = (%INPUT_0, %INPUT_1)"
                 # 2: "  %7 = %3.0;\n" or "%99 = (%97, %98);"

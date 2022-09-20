@@ -3,7 +3,7 @@ import tvm
 import tvm.relay as relay
 from tvm.contrib import graph_executor
 from config import Config
-from Onnxs.config import OnnxModelUrl
+from Onnxs.download_config import OnnxModelUrl
 import drivers
 from ModelFuntionsPython.childs.googlenet import *
 from ModelFuntionsPython.raw.googlenet import *
@@ -26,6 +26,7 @@ def run_whole_model_from_onnx():
     global params
     # (N,3,224,224)——need to set input size for tvm
     mod, params, _ =easy_load_from_onnx(model_name,shape_dict,download_url=OnnxModelUrl.Googlenet,validate_download=False)
+    print(mod)
     with tvm.transform.PassContext(opt_level=0):
         lib = relay.build(mod, target=mydriver.target, params=params)
     module = graph_executor.GraphModule(lib["default"](mydriver.device))

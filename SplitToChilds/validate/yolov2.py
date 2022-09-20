@@ -3,7 +3,7 @@ import tvm
 import tvm.relay as relay
 from tvm.contrib import graph_executor
 from config import Config
-from Onnxs.config import OnnxModelUrl
+from Onnxs.download_config import OnnxModelUrl
 import drivers
 from ModelFuntionsPython.childs.yolov2 import *
 from ModelFuntionsPython.raw.yolov2 import *

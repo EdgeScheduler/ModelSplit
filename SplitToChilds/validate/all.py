@@ -4,6 +4,7 @@ from SplitToChilds.experience import runmodule
 import torch
 from config import Config
 import drivers
+import time
 
 validate_local_onnx_file=False
 driver=drivers.GPU()
@@ -21,8 +22,8 @@ if __name__ == "__main__":
         shape_dict = {input_name: input_data.shape}
 
         output, params = runmodule.RunWholeOnnxModel(model_name,input,shape_dict,driver=driver,onnx_download_url=config["onnx_download_url"],validate_download=validate_local_onnx_file)
-        print(output[:10])
+        print("onnx:",output[:10])
         output=runmodule.RunWholeModelByFunction(model_name,input,params)
-        print(output.flatten()[:10])
+        print("function:",output.flatten()[:10])
         output=runmodule.RunAllChildModelSequentially(model_name,input,params,Config.ModelParamsFile(model_name=model_name))
-        print(output.flatten()[:10])
+        print("child-models:",output.flatten()[:10])
