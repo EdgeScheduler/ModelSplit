@@ -1,4 +1,4 @@
-def @main(%resnetv24_dense0_bias: Tensor[(1000), float32]), %resnetv24_dense0_weight: Tensor[(1000, 2048), float32], %call_224: Tensor[(1, 2048), float32] {
+def @main(%resnetv24_dense0_bias: Tensor[(1000), float32]), %call_224: Tensor[(1, 2048), float32], %resnetv24_dense0_weight: Tensor[(1000, 2048), float32] {
   %225 = nn.dense(%224, %resnetv24_dense0_weight, units=1000) /* ty=Tensor[(1, 1000), float32] */;
   %226 = multiply(1f /* ty=float32 */, %resnetv24_dense0_bias) /* ty=Tensor[(1000), float32] */;
   add(%225, %226) /* ty=Tensor[(1, 1000), float32] */

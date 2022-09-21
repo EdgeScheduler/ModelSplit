@@ -30,13 +30,12 @@ def run_whole_model_from_onnx():
         lib = relay.build(mod, target=mydriver.target, params=params)
     module = graph_executor.GraphModule(lib["default"](mydriver.device))
 
-    # tvm model
     for k, v in input.items(): 
         module.set_input(k, v)
     module.run()
+
     output = module.get_output(0).numpy().flatten()
     print(output[:10])
-
 
 def run_whole_model():
     global params

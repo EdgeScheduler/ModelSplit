@@ -22,4 +22,4 @@ if __name__ == "__main__":
 
         _, params, _ = easy_load_from_onnx(model_name,shape_dict,download_url=config["onnx_download_url"],validate_download=validate_local_onnx_file)
         for current_driver in mydrivers:
-            export2lib.ExportModelToLib(model_name,params,Config.ModelParamsFile(model_name=model_name),driver=current_driver)
+            export2lib.ExportModelToLib(model_name,input,params,Config.ModelParamsFile(model_name=model_name),driver=current_driver)

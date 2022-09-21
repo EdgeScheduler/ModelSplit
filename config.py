@@ -81,15 +81,19 @@ class Config:
     @staticmethod
     def TvmLibSavePathByName(name, target, idx: int=-1) -> str:
         '''
-        name is given when you create the data. Return "$project_path/RunLib/$target/$name/$name-$idx.tar"
+        name is given when you create the data. Return "$project_path/RunLib/$target/$name/$name-$idx.tar", "$project_path/RunLib/$target/$name/$idx/$name-$idx-input_shape.json"
         '''
-
-        fold=os.path.join(Config.TVMLibSaveFold,target,name)
-        os.makedirs(fold,exist_ok=True)
+        
         if idx>=0:
-            return os.path.join(fold, "{}-{}.tar".format(name,str(idx)))
+            fold=os.path.join(Config.TVMLibSaveFold,target,name,"childs",str(idx))
+            os.makedirs(fold,exist_ok=True)
+
+            return os.path.join(fold, "{}-{}.tar".format(name,str(idx))),os.path.join(fold, "{}-{}-input_shape.json".format(name,str(idx)))
         else:
-            return os.path.join(fold, "{}.tar".format(name))
+            fold=os.path.join(Config.TVMLibSaveFold,target,name,"raw")
+            os.makedirs(fold,exist_ok=True)
+
+            return os.path.join(fold, "{}.tar".format(name)),os.path.join(fold, "{}-input_shape.json".format(name))
 
     @staticmethod
     def ModelSaveDataPathName(name) -> str:

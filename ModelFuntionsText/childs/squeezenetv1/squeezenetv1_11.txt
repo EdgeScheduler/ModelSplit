@@ -1,3 +1,3 @@
-def @main(%fire4/squeeze1x1_b_0: Tensor[(32), float32], %call_27: Tensor[(1, 32, 27, 27), float32] {
+def @main(%call_27: Tensor[(1, 32, 27, 27), float32], %fire4/squeeze1x1_b_0: Tensor[(32), float32] {
   nn.bias_add(%27, %fire4/squeeze1x1_b_0) /* ty=Tensor[(1, 32, 27, 27), float32] */;
 }

@@ -1,8 +1,8 @@
 {
     "0": [
         {
-            "name": "conv1_w_0",
-            "shape": "(64, 3, 3, 3)",
+            "name": "conv1_b_0",
+            "shape": "(64)",
             "type": "float32"
         },
         {
@@ -11,8 +11,8 @@
             "type": "float32"
         },
         {
-            "name": "conv1_b_0",
-            "shape": "(64)",
+            "name": "conv1_w_0",
+            "shape": "(64, 3, 3, 3)",
             "type": "float32"
         }
     ],
@@ -32,32 +32,37 @@
     ],
     "3": [
         {
-            "name": "call_3",
-            "shape": "(1, 64, 55, 55)",
+            "name": "fire2/squeeze1x1_w_0",
+            "shape": "(16, 64, 1, 1)",
             "type": "float32"
         },
         {
-            "name": "fire2/squeeze1x1_w_0",
-            "shape": "(16, 64, 1, 1)",
+            "name": "call_3",
+            "shape": "(1, 64, 55, 55)",
             "type": "float32"
         }
     ],
     "4": [
         {
-            "name": "fire2/squeeze1x1_b_0",
-            "shape": "(16)",
+            "name": "call_4",
+            "shape": "(1, 16, 55, 55)",
             "type": "float32"
         },
         {
-            "name": "call_4",
-            "shape": "(1, 16, 55, 55)",
+            "name": "fire2/squeeze1x1_b_0",
+            "shape": "(16)",
             "type": "float32"
         }
     ],
     "5": [
         {
-            "name": "fire2/expand1x1_b_0",
-            "shape": "(64)",
+            "name": "call_5",
+            "shape": "(1, 16, 55, 55)",
+            "type": "float32"
+        },
+        {
+            "name": "fire2/expand3x3_w_0",
+            "shape": "(64, 16, 3, 3)",
             "type": "float32"
         },
         {
@@ -71,25 +76,20 @@
             "type": "float32"
         },
         {
-            "name": "fire2/expand3x3_w_0",
-            "shape": "(64, 16, 3, 3)",
-            "type": "float32"
-        },
-        {
-            "name": "call_5",
-            "shape": "(1, 16, 55, 55)",
+            "name": "fire2/expand1x1_b_0",
+            "shape": "(64)",
             "type": "float32"
         }
     ],
     "6": [
         {
-            "name": "call_14",
-            "shape": "(1, 128, 55, 55)",
+            "name": "fire3/squeeze1x1_w_0",
+            "shape": "(16, 128, 1, 1)",
             "type": "float32"
         },
         {
-            "name": "fire3/squeeze1x1_w_0",
-            "shape": "(16, 128, 1, 1)",
+            "name": "call_14",
+            "shape": "(1, 128, 55, 55)",
             "type": "float32"
         }
     ],
@@ -107,13 +107,13 @@
     ],
     "8": [
         {
-            "name": "fire3/expand3x3_w_0",
-            "shape": "(64, 16, 3, 3)",
+            "name": "fire3/expand3x3_b_0",
+            "shape": "(64)",
             "type": "float32"
         },
         {
-            "name": "fire3/expand3x3_b_0",
-            "shape": "(64)",
+            "name": "call_16",
+            "shape": "(1, 16, 55, 55)",
             "type": "float32"
         },
         {
@@ -122,13 +122,13 @@
             "type": "float32"
         },
         {
-            "name": "fire3/expand1x1_b_0",
-            "shape": "(64)",
+            "name": "fire3/expand3x3_w_0",
+            "shape": "(64, 16, 3, 3)",
             "type": "float32"
         },
         {
-            "name": "call_16",
-            "shape": "(1, 16, 55, 55)",
+            "name": "fire3/expand1x1_b_0",
+            "shape": "(64)",
             "type": "float32"
         }
     ],
@@ -141,25 +141,25 @@
     ],
     "10": [
         {
-            "name": "fire4/squeeze1x1_w_0",
-            "shape": "(32, 128, 1, 1)",
+            "name": "call_26",
+            "shape": "(1, 128, 27, 27)",
             "type": "float32"
         },
         {
-            "name": "call_26",
-            "shape": "(1, 128, 27, 27)",
+            "name": "fire4/squeeze1x1_w_0",
+            "shape": "(32, 128, 1, 1)",
             "type": "float32"
         }
     ],
     "11": [
         {
-            "name": "fire4/squeeze1x1_b_0",
-            "shape": "(32)",
+            "name": "call_27",
+            "shape": "(1, 32, 27, 27)",
             "type": "float32"
         },
         {
-            "name": "call_27",
-            "shape": "(1, 32, 27, 27)",
+            "name": "fire4/squeeze1x1_b_0",
+            "shape": "(32)",
             "type": "float32"
         }
     ],
@@ -170,7 +170,7 @@
             "type": "float32"
         },
         {
-            "name": "fire4/expand1x1_b_0",
+            "name": "fire4/expand3x3_b_0",
             "shape": "(128)",
             "type": "float32"
         },
@@ -180,25 +180,25 @@
             "type": "float32"
         },
         {
-            "name": "call_28",
-            "shape": "(1, 32, 27, 27)",
+            "name": "fire4/expand1x1_b_0",
+            "shape": "(128)",
             "type": "float32"
         },
         {
-            "name": "fire4/expand3x3_b_0",
-            "shape": "(128)",
+            "name": "call_28",
+            "shape": "(1, 32, 27, 27)",
             "type": "float32"
         }
     ],
     "13": [
         {
-            "name": "call_37",
-            "shape": "(1, 256, 27, 27)",
+            "name": "fire5/squeeze1x1_w_0",
+            "shape": "(32, 256, 1, 1)",
             "type": "float32"
         },
         {
-            "name": "fire5/squeeze1x1_w_0",
-            "shape": "(32, 256, 1, 1)",
+            "name": "call_37",
+            "shape": "(1, 256, 27, 27)",
             "type": "float32"
         }
     ],
@@ -221,13 +221,13 @@
             "type": "float32"
         },
         {
-            "name": "call_39",
-            "shape": "(1, 32, 27, 27)",
+            "name": "fire5/expand3x3_b_0",
+            "shape": "(128)",
             "type": "float32"
         },
         {
-            "name": "fire5/expand1x1_w_0",
-            "shape": "(128, 32, 1, 1)",
+            "name": "call_39",
+            "shape": "(1, 32, 27, 27)",
             "type": "float32"
         },
         {
@@ -236,8 +236,8 @@
             "type": "float32"
         },
         {
-            "name": "fire5/expand3x3_b_0",
-            "shape": "(128)",
+            "name": "fire5/expand1x1_w_0",
+            "shape": "(128, 32, 1, 1)",
             "type": "float32"
         }
     ],
@@ -250,34 +250,29 @@
     ],
     "17": [
         {
-            "name": "call_49",
-            "shape": "(1, 256, 13, 13)",
+            "name": "fire6/squeeze1x1_w_0",
+            "shape": "(48, 256, 1, 1)",
             "type": "float32"
         },
         {
-            "name": "fire6/squeeze1x1_w_0",
-            "shape": "(48, 256, 1, 1)",
+            "name": "call_49",
+            "shape": "(1, 256, 13, 13)",
             "type": "float32"
         }
     ],
     "18": [
         {
-            "name": "fire6/squeeze1x1_b_0",
-            "shape": "(48)",
+            "name": "call_50",
+            "shape": "(1, 48, 13, 13)",
             "type": "float32"
         },
         {
-            "name": "call_50",
-            "shape": "(1, 48, 13, 13)",
+            "name": "fire6/squeeze1x1_b_0",
+            "shape": "(48)",
             "type": "float32"
         }
     ],
     "19": [
-        {
-            "name": "fire6/expand1x1_b_0",
-            "shape": "(192)",
-            "type": "float32"
-        },
         {
             "name": "fire6/expand3x3_w_0",
             "shape": "(192, 48, 3, 3)",
@@ -297,35 +292,45 @@
             "name": "fire6/expand1x1_w_0",
             "shape": "(192, 48, 1, 1)",
             "type": "float32"
+        },
+        {
+            "name": "fire6/expand1x1_b_0",
+            "shape": "(192)",
+            "type": "float32"
         }
     ],
     "20": [
         {
-            "name": "call_60",
-            "shape": "(1, 384, 13, 13)",
+            "name": "fire7/squeeze1x1_w_0",
+            "shape": "(48, 384, 1, 1)",
             "type": "float32"
         },
         {
-            "name": "fire7/squeeze1x1_w_0",
-            "shape": "(48, 384, 1, 1)",
+            "name": "call_60",
+            "shape": "(1, 384, 13, 13)",
             "type": "float32"
         }
     ],
     "21": [
         {
-            "name": "call_61",
-            "shape": "(1, 48, 13, 13)",
+            "name": "fire7/squeeze1x1_b_0",
+            "shape": "(48)",
             "type": "float32"
         },
         {
-            "name": "fire7/squeeze1x1_b_0",
-            "shape": "(48)",
+            "name": "call_61",
+            "shape": "(1, 48, 13, 13)",
             "type": "float32"
         }
     ],
     "22": [
         {
-            "name": "fire7/expand3x3_b_0",
+            "name": "fire7/expand3x3_w_0",
+            "shape": "(192, 48, 3, 3)",
+            "type": "float32"
+        },
+        {
+            "name": "fire7/expand1x1_b_0",
             "shape": "(192)",
             "type": "float32"
         },
@@ -335,18 +340,13 @@
             "type": "float32"
         },
         {
-            "name": "fire7/expand1x1_b_0",
+            "name": "fire7/expand3x3_b_0",
             "shape": "(192)",
             "type": "float32"
         },
         {
             "name": "fire7/expand1x1_w_0",
             "shape": "(192, 48, 1, 1)",
-            "type": "float32"
-        },
-        {
-            "name": "fire7/expand3x3_w_0",
-            "shape": "(192, 48, 3, 3)",
             "type": "float32"
         }
     ],
@@ -376,7 +376,17 @@
     ],
     "25": [
         {
-            "name": "fire8/expand3x3_b_0",
+            "name": "call_73",
+            "shape": "(1, 64, 13, 13)",
+            "type": "float32"
+        },
+        {
+            "name": "fire8/expand3x3_w_0",
+            "shape": "(256, 64, 3, 3)",
+            "type": "float32"
+        },
+        {
+            "name": "fire8/expand1x1_b_0",
             "shape": "(256)",
             "type": "float32"
         },
@@ -386,18 +396,8 @@
             "type": "float32"
         },
         {
-            "name": "call_73",
-            "shape": "(1, 64, 13, 13)",
-            "type": "float32"
-        },
-        {
-            "name": "fire8/expand1x1_b_0",
+            "name": "fire8/expand3x3_b_0",
             "shape": "(256)",
-            "type": "float32"
-        },
-        {
-            "name": "fire8/expand3x3_w_0",
-            "shape": "(256, 64, 3, 3)",
             "type": "float32"
         }
     ],
@@ -427,8 +427,8 @@
     ],
     "28": [
         {
-            "name": "fire9/expand3x3_b_0",
-            "shape": "(256)",
+            "name": "call_84",
+            "shape": "(1, 64, 13, 13)",
             "type": "float32"
         },
         {
@@ -442,8 +442,8 @@
             "type": "float32"
         },
         {
-            "name": "call_84",
-            "shape": "(1, 64, 13, 13)",
+            "name": "fire9/expand3x3_b_0",
+            "shape": "(256)",
             "type": "float32"
         },
         {
@@ -473,13 +473,13 @@
     ],
     "31": [
         {
-            "name": "conv10_b_0",
-            "shape": "(1000)",
+            "name": "call_96",
+            "shape": "(1, 1000, 13, 13)",
             "type": "float32"
         },
         {
-            "name": "call_96",
-            "shape": "(1, 1000, 13, 13)",
+            "name": "conv10_b_0",
+            "shape": "(1000)",
             "type": "float32"
         }
     ],

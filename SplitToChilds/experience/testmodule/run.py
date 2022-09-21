@@ -1,4 +1,3 @@
-from audioop import avg
 import torch
 import tvm
 import tvm.relay as relay
@@ -13,6 +12,7 @@ from SplitToChilds.transfer import ModelNames
 import importlib
 import time  
 import pynvml
+from SplitToChilds.experience.export2lib import LoadLib
 
 def GetGPUMemoryHandle():
     pynvml.nvmlInit() 
@@ -53,17 +53,21 @@ def RunWholeOnnxModel(model_name:str,input:dict, shape_dict:dict, driver=drivers
     #print(output[:10])
     return output, params,avg_time,GetGPUUsed(gpuHandle)-start_memory
 
-
-def RunWholeModelByFunction(model_name:str,input:dict,params:dict,driver=drivers.GPU(),count=5):
+def RunWholeModelByFunction(model_name:str,input:dict,params:dict=None,driver=drivers.GPU(),allow_lib=True,count=5):
     pythonLib=importlib.import_module("ModelFuntionsPython.raw.{}".format(model_name))
 
     gpuHandle=GetGPUMemoryHandle()
-    # print("params:", params.keys())
-    ir_module = tvm.IRModule.from_expr(getattr(pythonLib,ModelNames[model_name])())
-
     start_memory=GetGPUUsed(gpuHandle)
-    with tvm.transform.PassContext(opt_level=0):
-        lib = relay.build(ir_module, driver.target, params=params)
+    lib=None
+    if allow_lib:
+        lib,_ = LoadLib(model_name,driver,-1)
+
+    if lib is not None:
+        print("  > skip build Lib")
+    else:
+        ir_module = tvm.IRModule.from_expr(getattr(pythonLib,ModelNames[model_name])())
+        with tvm.transform.PassContext(opt_level=0):
+            lib = relay.build(ir_module, driver.target, params=params)
     module = graph_executor.GraphModule(lib["default"](driver.device))
 
     for k, v in input.items():
@@ -82,98 +86,56 @@ def RunWholeModelByFunction(model_name:str,input:dict,params:dict,driver=drivers
     #print(output[:10])
     return output,avg_time,GetGPUUsed(gpuHandle)-start_memory
 
-def RunAllChildModelSequentially(model_name:str,input:dict,params:dict,params_dict:dict=None, driver=drivers.GPU(),count=5):
-    pythonLib=importlib.import_module("ModelFuntionsPython.childs.{}".format(model_name))
-    
-    gpuHandle=GetGPUMemoryHandle()
+def RunAllChildModelSequentially(model_name:str,input:dict,params:dict=None,params_dict:dict=None, driver=drivers.GPU(),allow_lib=True,count=5):
     avg_time_list=[]
     memory_list=[]
+
     output=None
-    
-    start=GetGPUUsed(gpuHandle)
     for idx in range(len(params_dict)):
         print("--run model-%d:"%idx) 
-        new_input, new_params = FilterChildInput(params_dict,idx,input,output),FilterChildParams(params_dict,idx,params)
-        # print("input:",list(new_input.keys()))
-        # print("params:",list(new_params.keys()))
         
-        ir_module = tvm.IRModule.from_expr(getattr(pythonLib,ModelNames[model_name]+"_"+str(idx))())
-        # start_memory=GetGPUUsed(gpuHandle)
-        time.sleep(3)
-        with tvm.transform.PassContext(opt_level=0):
-            lib = relay.build(ir_module, driver.target, params=new_params)
-        module = graph_executor.GraphModule(lib["default"](driver.device))
-
-        for k, v in new_input.items():
-            module.set_input(k, v)
-        module.run()
-        output = module.get_output(0).numpy()
-
-        start=time.time()
-        for _ in range(count):
-            for k, v in new_input.items(): 
-                module.set_input(k, v)
-            module.run()
-        output = module.get_output(0).numpy()
-        avg_time_list.append((time.time()-start)/count)
-        # memory_list.append(GetGPUUsed(gpuHandle)-start_memory)
-        memory_list.append(GetGPUUsed(gpuHandle))
-    # print("output=>", output.flatten()[:10])
+        output,time_cost,memory_cost=RunChildModelByIdx(model_name,idx,input,params,params_dict,driver,output,allow_lib,count)
+        avg_time_list.append(time_cost),memory_list.append(memory_cost)
     return output,avg_time_list,memory_list
 
-def RunChildModelByIdx(model_name:str,idx:int,input:dict,params:dict,params_dict:dict=None, driver=drivers.GPU(),pre_output=None,count=5):
+def RunChildModelByIdx(model_name:str,idx:int,input:dict,params:dict=None,params_dict:dict=None, driver=drivers.GPU(),pre_output=None,allow_lib=True,count=5):
     pythonLib=importlib.import_module("ModelFuntionsPython.childs.{}".format(model_name))
 
-    new_input, new_params = FilterChildInput(params_dict,idx,input,pre_output),FilterChildParams(params_dict,idx,params)
-    ir_module = tvm.IRModule.from_expr(getattr(pythonLib,ModelNames[model_name]+"_"+str(idx))())
-    with tvm.transform.PassContext(opt_level=0):
-        lib = relay.build(ir_module, driver.target, params=new_params)
+    # new_input, new_params = FilterChildInput(params_dict,idx,input,pre_output),FilterChildParams(params_dict,idx,params)
+    # ir_module = tvm.IRModule.from_expr(getattr(pythonLib,ModelNames[model_name]+"_"+str(idx))())
+    # with tvm.transform.PassContext(opt_level=0):
+    #     lib = relay.build(ir_module, driver.target, params=new_params)
+    # module = graph_executor.GraphModule(lib["default"](driver.device))
+
+    gpuHandle=GetGPUMemoryHandle()
+    start_memory=GetGPUUsed(gpuHandle)
+
+    lib=None
+    if allow_lib:
+        lib,_ = LoadLib(model_name,driver,idx)
+
+    if lib is not None:
+        print("  > skip build Lib")
+    else:
+        if params is None:
+            print("error: need params.")
+            return None
+        new_params = FilterChildParams(params_dict,idx,params)
+        ir_module = tvm.IRModule.from_expr(getattr(pythonLib,ModelNames[model_name]+"_"+str(idx))())
+        with tvm.transform.PassContext(opt_level=0):
+            lib = relay.build(ir_module, driver.target, params=new_params)
     module = graph_executor.GraphModule(lib["default"](driver.device))
 
+    new_input = FilterChildInput(params_dict,idx,input,pre_output)
     for k, v in new_input.items():
         module.set_input(k, v)
 
     module.run()
 
-    output = module.get_output(0).numpy()
-    return output
-
-def RunChildModelByRange(model_name:str,start:int,end:int,input:dict,params:dict,params_dict:dict=None, driver=drivers.GPU(),pre_output=None,count=5):
-    pythonLib=importlib.import_module("ModelFuntionsPython.childs.{}".format(model_name))
-    
-    child_count=len(params_dict)
-    if end is None or end>child_count:
-        end=child_count
-    elif end<0:
-        end=child_count+end
-
-    if start<0:
-        start=child_count+start
-
-    if not (end>start and start<child_count and start>=0):
-        print("error: bad index, out of child-range")
-        return
-
-    # print run tips
-    if start==end-1:
-        print("--run model (%d):"%(start))
-    else:
-        print("--run model (%d=>%d):"%(start,end-1))
-
-    output=pre_output
-    for idx in range(start,end):
-        
-        # print("input:",list(new_input.keys()))
-        # print("params:",list(new_params.keys()))
-        new_input, new_params = FilterChildInput(params_dict,idx,input,output),FilterChildParams(params_dict,idx,params)
-        ir_module = tvm.IRModule.from_expr(getattr(pythonLib,ModelNames[model_name]+"_"+str(idx))())
-        with tvm.transform.PassContext(opt_level=0):
-            lib = relay.build(ir_module, driver.target, params=new_params)
-        module = graph_executor.GraphModule(lib["default"](driver.device))
-
-        for k, v in new_input.items():
+    start=time.time()
+    for _ in range(count):
+        for k, v in new_input.items(): 
             module.set_input(k, v)
         module.run()
-        output = module.get_output(0).numpy()
-    # print("output=>", output.flatten()[:10])
-    return output
+
+    return module.get_output(0).numpy(),(time.time()-start)/count,GetGPUUsed(gpuHandle)-start_memory

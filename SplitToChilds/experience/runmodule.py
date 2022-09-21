@@ -33,11 +33,17 @@ def RunWholeModelByFunction(model_name:str,input:dict,params:dict,driver=drivers
 
     lib=None
     if allow_lib:
-        lib = LoadLib(model_name,driver,-1)
+        lib,_ = LoadLib(model_name,driver,-1)
 
     if lib is not None:
-        print("  > skip build Lib")
+        # print("  > skip build Lib")
+        pass
     else:
+        if params is None:
+            print("error: need params.")
+            return None
+
+        print("load function")
         ir_module = tvm.IRModule.from_expr(getattr(pythonLib,ModelNames[model_name])())
         with tvm.transform.PassContext(opt_level=0):
             lib = relay.build(ir_module, driver.target, params=params)
@@ -50,15 +56,15 @@ def RunWholeModelByFunction(model_name:str,input:dict,params:dict,driver=drivers
     #print(output[:10])
     return output
     
-def RunAllChildModelSequentially(model_name:str,input:dict,params:dict,params_dict:dict=None, driver=drivers.GPU(),allow_lib=True):
+def RunAllChildModelSequentially(model_name:str,input:dict,params:dict=None,params_dict:dict=None, driver=drivers.GPU(),allow_lib=True):
     output=None
     for idx in range(len(params_dict)):
-        print("--run model-%d:"%idx) 
+        # print("--run model-%d:"%idx) 
         
         output=RunChildModelByIdx(model_name,idx,input,params,params_dict,driver,output,allow_lib)
     return output
 
-def RunChildModelByIdx(model_name:str,idx:int,input:dict,params:dict,params_dict:dict=None, driver=drivers.GPU(),pre_output=None,allow_lib=True):
+def RunChildModelByIdx(model_name:str,idx:int,input:dict,params:dict=None,params_dict:dict=None, driver=drivers.GPU(),pre_output=None,allow_lib=True):
     pythonLib=importlib.import_module("ModelFuntionsPython.childs.{}".format(model_name))
 
     # new_input, new_params = FilterChildInput(params_dict,idx,input,pre_output),FilterChildParams(params_dict,idx,params)
@@ -69,11 +75,17 @@ def RunChildModelByIdx(model_name:str,idx:int,input:dict,params:dict,params_dict
 
     lib=None
     if allow_lib:
-        lib = LoadLib(model_name,driver,idx)
+        lib,_ = LoadLib(model_name,driver,idx)
 
     if lib is not None:
-        print("  > skip build Lib")
+        pass
+        # print("  > skip build Lib")
     else:
+        if params is None:
+            print("error: need params.")
+            return None
+
+        print("load function")
         new_params = FilterChildParams(params_dict,idx,params)
         ir_module = tvm.IRModule.from_expr(getattr(pythonLib,ModelNames[model_name]+"_"+str(idx))())
         with tvm.transform.PassContext(opt_level=0):

@@ -29,7 +29,7 @@ if __name__ == "__main__":
         shape_dict = {input_name: input_data.shape}
 
         # load params
-        _, params, _ =easy_load_from_onnx(model_name,shape_dict,download_url=config["onnx_download_url"],validate_download=validate_local_onnx_file)
+        # _, params, _ =easy_load_from_onnx(model_name,shape_dict,download_url=config["onnx_download_url"],validate_download=validate_local_onnx_file)
 
         for mydriver in mydrivers:
             print("=> model: {}, driver: {}:".format(model_name, mydriver))
@@ -39,18 +39,23 @@ if __name__ == "__main__":
 
             model_by_driver_data["count"]=test_count
             
+            # print("> onnx time:")
+            # _,_,avg_time,memory_cost=runmodule.RunWholeOnnxModel(model_name,input,shape_dict,driver=mydriver,onnx_download_url=config["onnx_download_url"],validate_download=validate_local_onnx_file,count=test_count)
+            # model_by_driver_data["whole_time_by_onnx"]=avg_time
+            # model_by_driver_data["whole_gpu_memory_by_onnx"]=memory_cost
+
             print("> onnx time:")
-            _,_,avg_time,memory_cost=runmodule.RunWholeOnnxModel(model_name,input,shape_dict,driver=mydriver,onnx_download_url=config["onnx_download_url"],validate_download=validate_local_onnx_file,count=test_count)
-            model_by_driver_data["whole_time_by_onnx"]=avg_time
-            model_by_driver_data["whole_gpu_memory_by_onnx"]=memory_cost
+            # _,_,avg_time,memory_cost=runmodule.RunWholeOnnxModel(model_name,input,shape_dict,driver=mydriver,onnx_download_url=config["onnx_download_url"],validate_download=validate_local_onnx_file,count=test_count)
+            model_by_driver_data["whole_time_by_onnx"]=0
+            model_by_driver_data["whole_gpu_memory_by_onnx"]=0
 
             print("> function time:")
-            _,avg_time,memory_cost=runmodule.RunWholeModelByFunction(model_name,input,params,driver=mydriver,count=test_count)
+            _,avg_time,memory_cost=runmodule.RunWholeModelByFunction(model_name,input,None,driver=mydriver,count=test_count)
             model_by_driver_data["whole_time_by_function"]=avg_time
             model_by_driver_data["whole_gpu_memory_by_function"]=memory_cost
 
             print("> child model time:")
-            _,avg_time_list,memory_list=runmodule.RunAllChildModelSequentially(model_name,input,params,Config.ModelParamsFile(model_name=model_name),driver=mydriver,count=test_count)
+            _,avg_time_list,memory_list=runmodule.RunAllChildModelSequentially(model_name,input,None,Config.ModelParamsFile(model_name=model_name),driver=mydriver,count=test_count)
             model_by_driver_data["whole_time_by_child"]={}
             model_by_driver_data["whole_gpu_memory_by_childs"]={}
             model_by_driver_data["whole_time_by_child"]["childs"]=avg_time_list

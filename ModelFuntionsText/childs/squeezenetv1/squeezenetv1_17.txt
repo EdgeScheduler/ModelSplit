@@ -1,3 +1,3 @@
-def @main(%call_49: Tensor[(1, 256, 13, 13), float32], %fire6/squeeze1x1_w_0: Tensor[(48, 256, 1, 1), float32] {
+def @main(%fire6/squeeze1x1_w_0: Tensor[(48, 256, 1, 1), float32], %call_49: Tensor[(1, 256, 13, 13), float32] {
   nn.conv2d(%49, %fire6/squeeze1x1_w_0, padding=[0, 0, 0, 0], channels=48, kernel_size=[1, 1]) /* ty=Tensor[(1, 48, 13, 13), float32] */;
 }
