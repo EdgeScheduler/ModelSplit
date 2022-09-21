@@ -13,10 +13,9 @@ from config import Config
 import time
 import drivers
 from tvm.contrib import graph_executor
-import gc
 import tvm.relay as relay
 
-input_shape = (1, 3, 224, 224)
+input_shape = (15, 3, 224, 224)
 test_count = 5
 mydriver = drivers.GPU()
 input_name = "data_0"
@@ -34,15 +33,14 @@ def RunModule(lib=None):
     module.run()
     module.get_output(0).numpy().flatten()
     print("time=", time.time()-start)
-    gc.collect()
 
 
 def main():
 
     # onnx model
     onnx_path = Config.ModelSavePathName(model_name)
-    lib_path = Config.TvmLibSavePathByName(
-        model_name, mydriver.target, str(input_shape[0]))
+    # lib_path = Config.TvmLibSavePathByName(
+    #     model_name, mydriver.target, str(input_shape[0]))
     # (N,3,224,224)——need to set input size for tvm
     x = torch.rand(*input_shape, requires_grad=True)
     shape_dict = {input_name: input_shape}
@@ -53,12 +51,12 @@ def main():
     fold_const = relay.transform.FoldConstant()  # 返回类型pass
     mod = fold_const(mod)
     print(mod)
-    lib = build_lib(mod, params, mydriver.target, lib_path)
-    if not os.path.exists(lib_path):
-        store_lib(lib, lib_path)
+    # lib = build_lib(mod, params, mydriver.target, lib_path)
+    # if not os.path.exists(lib_path):
+    #     store_lib(lib, lib_path)
 
     for _ in range(test_count):
-        RunModule(lib=lib)
+        RunModule()
 
     # print("with time_evaluator")
     # ftimer = module.module.time_evaluator(

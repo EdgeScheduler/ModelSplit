@@ -4,23 +4,27 @@ from config import Config
 
 model_name = "googlenet"
 
+
 def splitModel():
     print(Config.RawModelFunctionsTextSavePathName(model_name))
     parse = MyParser(Config.RawModelFunctionsTextSavePathName(model_name))
-    
+
     parse.ParseWithFunctionText()
-    parse.ExportToPythonFile(ModelNames[model_name], Config.RawModelFunctionsPythonSavePathName(model_name),clear=True)
+    parse.ExportToPythonFile(
+        ModelNames[model_name], Config.RawModelFunctionsPythonSavePathName(model_name), clear=True)
     parse.BuildGraph()
     convergenceNodes = parse.FindConvergencePoint()
-    for node in convergenceNodes:          
+    for node in convergenceNodes:
         node.PrintNode()
-        
-    # funtionTextPaths, paramsFileSavePath = parse.SplitToFunctionsTextFile([convergenceNodes[5], convergenceNodes[9], convergenceNodes[14]],aimDir=Config.ChildModelFunctionsTextSaveFold(model_name))  
-    funtionTextPaths, paramsFileSavePath = parse.SplitToFunctionsTextFile(convergenceNodes,aimDir=Config.ChildModelFunctionsTextSaveFold(model_name))
+
+    # funtionTextPaths, paramsFileSavePath = parse.SplitToFunctionsTextFile([convergenceNodes[5], convergenceNodes[9], convergenceNodes[14]],aimDir=Config.ChildModelFunctionsTextSaveFold(model_name))
+    funtionTextPaths, paramsFileSavePath = parse.SplitToFunctionsTextFile(
+        convergenceNodes, aimDir=Config.ChildModelFunctionsTextSaveFold(model_name))
     for idx, funtionTextPath in enumerate(funtionTextPaths):
         parse = MyParser(funtionTextPath)
         parse.ParseWithFunctionText()
-        parse.ExportToPythonFile(ModelNames[model_name]+"_"+str(idx), Config.ChildModelFunctionsPythonSavePathName(model_name),clear=True if idx==0 else False)
+        parse.ExportToPythonFile(ModelNames[model_name]+"_"+str(
+            idx), Config.ChildModelFunctionsPythonSavePathName(model_name), clear=True if idx == 0 else False)
     return paramsFileSavePath
 
 
