@@ -12,7 +12,7 @@ from load_data import easy_load_from_onnx
 from SplitToChilds.runtime import FilterParamsAndInput
 from SplitToChilds.transfer import ModelNames
 
-input_shape = (1, 3, 224, 224)
+input_shape = (15, 3, 224, 224)
 mydriver = drivers.GPU()
 input_name = "data_0"
 input_data = torch.rand(*input_shape)
@@ -22,17 +22,19 @@ shape_dict = {input_name: input_data.shape}
 model_name = "googlenet"
 params = {}
 
+
 def run_whole_model_from_onnx():
     global params
     # (N,3,224,224)——need to set input size for tvm
-    mod, params, _ =easy_load_from_onnx(model_name,shape_dict,download_url=OnnxModelUrl.Googlenet,validate_download=False)
+    mod, params, _ = easy_load_from_onnx(
+        model_name, shape_dict, download_url=OnnxModelUrl.Googlenet, validate_download=False)
     print(mod)
     with tvm.transform.PassContext(opt_level=0):
         lib = relay.build(mod, target=mydriver.target, params=params)
     module = graph_executor.GraphModule(lib["default"](mydriver.device))
 
     # tvm model
-    for k, v in input.items(): 
+    for k, v in input.items():
         module.set_input(k, v)
     module.run()
     output = module.get_output(0).numpy().flatten()
@@ -54,14 +56,16 @@ def run_whole_model():
 
 
 def run_split_model(params_dict=None):
-    output=None
+    output = None
     for idx in range(len(params_dict)):
-        print("--run model-%d:"%idx)
-        new_input, new_params = FilterParamsAndInput(params_dict, idx, input, params,pre_output=output)
+        print("--run model-%d:" % idx)
+        new_input, new_params = FilterParamsAndInput(
+            params_dict, idx, input, params, pre_output=output)
         # print("input:",list(new_input.keys()))
         # print("params:",list(new_params.keys()))
-        
-        ir_module = tvm.IRModule.from_expr(globals()[ModelNames[model_name]+"_"+str(idx)]())
+
+        ir_module = tvm.IRModule.from_expr(
+            globals()[ModelNames[model_name]+"_"+str(idx)]())
         with tvm.transform.PassContext(opt_level=0):
             lib = relay.build(ir_module, mydriver.target, params=new_params)
         module = graph_executor.GraphModule(lib["default"](mydriver.device))
@@ -73,7 +77,7 @@ def run_split_model(params_dict=None):
     print("output=>", output.flatten()[:10])
     return output
 
- 
+
 if __name__ == '__main__':
     run_whole_model_from_onnx()
     run_whole_model()

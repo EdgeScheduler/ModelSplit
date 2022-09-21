@@ -1,3 +1,7 @@
+<<<<<<< HEAD
 def @main(%resnetv24_stage3_batchnorm0_running_var: Tensor[(512), float32], %call_99: Tensor[(1, 512, 28, 28), float32], %resnetv24_stage3_batchnorm0_gamma: Tensor[(512), float32], %resnetv24_stage3_batchnorm0_running_mean: Tensor[(512), float32], %resnetv24_stage3_batchnorm0_beta: Tensor[(512), float32] {
+=======
+def @main(%resnetv24_stage3_batchnorm0_beta: Tensor[(512), float32], %resnetv24_stage3_batchnorm0_running_mean: Tensor[(512), float32], %resnetv24_stage3_batchnorm0_running_var: Tensor[(512), float32], %call_99: Tensor[(1, 512, 28, 28), float32], %resnetv24_stage3_batchnorm0_gamma: Tensor[(512), float32] {
+>>>>>>> 13d0412bde7a96006492efe49e5586d42e052bd4
   nn.batch_norm(%99, %resnetv24_stage3_batchnorm0_gamma, %resnetv24_stage3_batchnorm0_beta, %resnetv24_stage3_batchnorm0_running_mean, %resnetv24_stage3_batchnorm0_running_var) /* ty=(Tensor[(1, 512, 28, 28), float32], Tensor[(512), float32], Tensor[(512), float32]) */;
 }

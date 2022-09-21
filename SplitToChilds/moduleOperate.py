@@ -4,9 +4,10 @@ from queue import Queue
 import re
 import argparse
 from sys import prefix
-from typing import List,Tuple,Dict
+from typing import List, Tuple, Dict
 
-InputNameKeys=["data","input","call"]
+InputNameKeys = ["data", "input", "call"]
+
 
 class Layer():
     def __init__(self, name, type, bottoms, tops, params, line):
@@ -24,7 +25,8 @@ class Layer():
 
     def Print(self):
         print("Layer-------------")
-        print("name:{} type:{} params:{}".format(self.name, self.type, self.params))
+        print("name:{} type:{} params:{}".format(
+            self.name, self.type, self.params))
         print("tops:{} bottoms:{}".format(self.tops, self.bottoms))
         print("Layer-------------")
 
@@ -76,13 +78,20 @@ class MyParser:
         self.output_count = 0
         # graph header
         self.header = None
-        self.nodes: Dict[int,GraphNode] = dict()            
+        self.nodes: Dict[int, GraphNode] = dict()
 
     def BuildGraph(self):
+        # add input
+        for idx, data in enumerate(self.net_inputs):
+            if "data" in data:
+                self.nodes[-1] = GraphNode(
+                    Layer("input", "input", dict(), dict(), list(), "input"))
+
         for idx, layer in enumerate(self.layer_list):
             if layer is None:
                 continue
             self.nodes[idx] = GraphNode(layer)
+
         for idx, layer in enumerate(self.layer_list):
             if layer is None:
                 continue
@@ -94,6 +103,11 @@ class MyParser:
                         pre_node = self.nodes[call_num]
                         node.AddPreNode(pre_node)
                         pre_node.AddNextNode(node)
+                    elif "data" in b:
+                        pre_node = self.nodes[-1]
+                        node.AddPreNode(pre_node)
+                        pre_node.AddNextNode(node)
+
         self.header = self.nodes[0]
 
     def BFS(self):
@@ -133,7 +147,7 @@ class MyParser:
         # print(in_total, out_total)
         return in_total == out_total
 
-    def FindConvergencePoint(self)->List[GraphNode]:
+    def FindConvergencePoint(self) -> List[GraphNode]:
         res = list()
         for _, v in self.nodes.items():
             # print("k==", v.layer.name)
@@ -159,15 +173,16 @@ class MyParser:
                 params.append(self.ParseParam(param))
             new_dict[k] = params
         with open(params_file_path, "w") as f:
-            json.dump(new_dict,f,indent=4)
+            json.dump(new_dict, f, indent=4)
 
-    def SplitToFunctionsTextFile(self, nodes: List[Layer],aimDir: str=None)-> Tuple[list, str]:
+    def SplitToFunctionsTextFile(self, nodes: List[Layer], aimDir: str = None) -> Tuple[list, str]:
         file_name = os.path.basename(self.functionTextPath)[:-4]
 
         if aimDir is None:
-            aimDir = os.path.join(os.path.abspath(os.path.dirname(self.functionTextPath)), file_name)
+            aimDir = os.path.join(os.path.abspath(
+                os.path.dirname(self.functionTextPath)), file_name)
 
-        os.makedirs(aimDir,exist_ok=True)
+        os.makedirs(aimDir, exist_ok=True)
         idx = 0
         params_line = ""
         lines = list()
@@ -239,7 +254,8 @@ class MyParser:
         # write split txt file
         file_list = list()
         for k, v in split_txt_files.items():
-            split_file_path = os.path.join(aimDir, "{}_{}.txt".format(file_name, k))
+            split_file_path = os.path.join(
+                aimDir, "{}_{}.txt".format(file_name, k))
             file_list.append(split_file_path)
             with open(split_file_path, "w") as wfp:
                 for _, line in enumerate(v):
@@ -316,6 +332,12 @@ class MyParser:
         return bottoms, shapes
 
     def KeyFunc(self, bottom, line):
+        raw_index = -1
+        if re.match(r"\d", bottom):
+            # fix take  " 0 /*"
+            # print("fix take", " "+bottom+" /*")
+            raw_index = line.find(" "+bottom+" /*")
+            return raw_index
         raw_index = line.find(bottom)
         if raw_index != -1:
             return raw_index
@@ -391,7 +413,8 @@ class MyParser:
                     raise
 
                 elif type == 0:  # 0: "def @main(%INPUT__0..."
-                    self.net_inputs, self.net_input_shapes = self.ParseParamsWithText(line)
+                    self.net_inputs, self.net_input_shapes = self.ParseParamsWithText(
+                        line)
 
                 # 1: "  %0 = (%INPUT_0, %INPUT_1)"
                 # 2: "  %7 = %3.0;\n" or "%99 = (%97, %98);"
@@ -493,10 +516,19 @@ class MyParser:
                     # bottoms += tmp
 
                     # fix : %226 = multiply(1f, %resnetv24_dense0_bias);
+                    # %2 = multiply(%1, 0.458f /* ty=float32 */) /* ty=Tensor[(15, 1, 224, 224), float32] */;
+                    # %10 = add(%5, -0.088f /* ty=float32 */) /* ty=Tensor[(15, 1, 224, 224), float32] */;
+                    #
+                    # consts = re.findall(
+                    #     r"\(\d+f", line) + re.findall(r", \d+f", line)
                     consts = re.findall(
-                        r"\(\d+f", line) + re.findall(r", \d+f", line)
+                        r"\([-+]?\d*[\.]?\d+f", line) + re.findall(r", [-+]?\d*[\.]?\d+f", line)
+                    newconsts = re.findall(r" \d /*", line)
+                    # print("const=", consts)
                     for _, con in enumerate(consts):
                         bottoms += [con.strip("(").strip(", ")]
+                    for _, con in enumerate(newconsts):
+                        bottoms += [con.strip(" /*")]
                     # print("after:", bottoms)
 
                     # handle meta[constant[0]]
@@ -506,6 +538,7 @@ class MyParser:
                     # reorder bottoms(as constant vs var is unordered)
                     bottoms.sort(
                         key=lambda bottom: self.KeyFunc(bottom, line))
+                    # print("bottoms:", bottoms)
 
                     # 'call_1': ['call_0.0']
                     new_bottoms = list()
@@ -525,7 +558,7 @@ class MyParser:
                 elif type == 5:
                     pass
 
-    def ExportToPythonFile(self, function_name:str, modelFunctionSavePath:str, clear=False):
+    def ExportToPythonFile(self, function_name: str, modelFunctionSavePath: str, clear=False):
         """
         export python file after parse IRModule text
 
@@ -548,8 +581,9 @@ class MyParser:
         # print("replace_map", self.replace_map)
         # print("------------------")
 
-        modelFunctionSaveFold=os.path.abspath(os.path.dirname(modelFunctionSavePath))
-        os.makedirs(modelFunctionSaveFold,exist_ok=True)
+        modelFunctionSaveFold = os.path.abspath(
+            os.path.dirname(modelFunctionSavePath))
+        os.makedirs(modelFunctionSaveFold, exist_ok=True)
 
         # create relay_python.py
         type_transform_map = {
@@ -569,24 +603,26 @@ class MyParser:
                 # relay_python.write("    return []\r\r")
 
             # def func
-            relay_python.write("def {}(pre_input=None):\r".format(function_name))
+            relay_python.write(
+                "def {}(pre_input=None):\r".format(function_name))
 
             # import
             relay_python.write("    import tvm\r")
-            # relay_python.write("    import numpy as np\r")
+            relay_python.write("    import numpy as np\r")
             relay_python.write("    from tvm import relay\r\r")
 
             # input & params
             # print(self.net_inputs)
             # print(self.net_input_shapes)
             for index, net_input in enumerate(self.net_inputs):
-                prefix_str=""
+                prefix_str = ""
                 for namekey in InputNameKeys:
                     if net_input.startswith(namekey):
-                        prefix_str="pre_input if pre_input is not None else "
+                        prefix_str = "pre_input if pre_input is not None else "
                         break
 
-                relay_python.write("    {} = {}relay.var(\"{}\", shape=(".format(net_input.replace('.', '_').replace("/", "_").replace("::", "_"), prefix_str, net_input))
+                relay_python.write("    {} = {}relay.var(\"{}\", shape=(".format(net_input.replace(
+                    '.', '_').replace("/", "_").replace("::", "_"), prefix_str, net_input))
                 # for dim in self.net_input_shapes[index]:
                 # relay_python.write("{}, ".format(
                 # "relay.Any()" if dim == '?' else dim))
@@ -647,6 +683,7 @@ class MyParser:
                     if times > 1:
                         flag = True
 
+                print("bottoms", l.bottoms)
                 for i, bottom in enumerate(l.bottoms):
                     # call_9 = relay.nn.relu(relay.Tuple([call_7_0]), )
                     # if isinstance(bottom, list):
@@ -664,9 +701,9 @@ class MyParser:
                                 "relay.const(np.array({}, dtype=\"int64\"))".format(b))  # TODO:type
                             # relay_python.write("{}".format("scale_"+b))
                         # fix : %226 = multiply(1f, %resnetv24_dense0_bias);
-                        if re.match(r"\d+f", b):
+                        elif re.match(r"[-+]?\d*[\.]?\d+f", b):
                             relay_python.write(
-                                "relay.const({}.0, dtype=\"float32\")".format(b.strip("f")))
+                                "relay.const({}, dtype=\"float32\")".format(b.strip("f")))
 
                         else:
                             # fix split call_205_0(with input call_205)
@@ -719,7 +756,8 @@ class MyParser:
             # return & output
             relay_python.write("    return ")
             for i in range(self.output_count):
-                relay_python.write("call_output{} if not isinstance(call_output{},tvm.relay.expr.TupleWrapper) else call_output{}[0]".format(i,i,i))
+                relay_python.write(
+                    "call_output{} if not isinstance(call_output{},tvm.relay.expr.TupleWrapper) else call_output{}[0]".format(i, i, i))
                 if i != self.output_count - 1:
                     relay_python.write(", ")
 

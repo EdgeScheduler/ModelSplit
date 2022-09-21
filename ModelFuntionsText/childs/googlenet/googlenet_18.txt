@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 def @main(%loss3/classifier_b_0: Tensor[(1000), float32], %call_208: Tensor[(1, 1024), float32], %loss3/classifier_w_0: Tensor[(1000, 1024), float32] {
+=======
+def @main(%loss3/classifier_w_0: Tensor[(1000, 1024), float32], %call_208: Tensor[(1, 1024), float32], %loss3/classifier_b_0: Tensor[(1000), float32] {
+>>>>>>> 13d0412bde7a96006492efe49e5586d42e052bd4
   %209 = nn.dense(%208, %loss3/classifier_w_0, units=1000) /* ty=Tensor[(1, 1000), float32] */;
   %210 = multiply(1f /* ty=float32 */, %loss3/classifier_b_0) /* ty=Tensor[(1000), float32] */;
   %211 = add(%209, %210) /* ty=Tensor[(1, 1000), float32] */;

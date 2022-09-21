@@ -1,3 +1,3 @@
-def @main(%call_204: Tensor[(1, 1024, 1, 1), float32] {
-  nn.dropout(%204, rate=0.4f) /* ty=(Tensor[(1, 1024, 1, 1), float32], Tensor[(1, 1024, 1, 1), float32]) */;
+def @main(%call_216: Tensor[(15, 1024, 1, 1), float32] {
+  nn.batch_flatten(%216) /* ty=Tensor[(15, 1024), float32] */;
 }
