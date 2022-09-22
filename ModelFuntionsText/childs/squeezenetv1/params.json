@@ -1,506 +1,506 @@
 {
     "0": [
         {
-            "name": "conv1_b_0",
-            "shape": "(64)",
+            "name": "features.0.weight",
+            "shape": "(96, 3, 7, 7)",
             "type": "float32"
         },
         {
             "name": "data_0",
-            "shape": "(1, 3, 224, 224)",
-            "type": "float32"
-        },
-        {
-            "name": "conv1_w_0",
-            "shape": "(64, 3, 3, 3)",
+            "shape": "(15, 3, 224, 224)",
             "type": "float32"
         }
     ],
     "1": [
         {
-            "name": "call_1",
-            "shape": "(1, 64, 111, 111)",
+            "name": "features.0.bias",
+            "shape": "(96)",
+            "type": "float32"
+        },
+        {
+            "name": "call_0",
+            "shape": "(15, 96, 109, 109)",
             "type": "float32"
         }
     ],
     "2": [
         {
-            "name": "call_2",
-            "shape": "(1, 64, 111, 111)",
+            "name": "call_1",
+            "shape": "(15, 96, 109, 109)",
             "type": "float32"
         }
     ],
     "3": [
         {
-            "name": "fire2/squeeze1x1_w_0",
-            "shape": "(16, 64, 1, 1)",
-            "type": "float32"
-        },
-        {
-            "name": "call_3",
-            "shape": "(1, 64, 55, 55)",
+            "name": "call_2",
+            "shape": "(15, 96, 109, 109)",
             "type": "float32"
         }
     ],
     "4": [
         {
-            "name": "call_4",
-            "shape": "(1, 16, 55, 55)",
+            "name": "call_3",
+            "shape": "(15, 96, 54, 54)",
             "type": "float32"
         },
         {
-            "name": "fire2/squeeze1x1_b_0",
-            "shape": "(16)",
+            "name": "features.3.squeeze.weight",
+            "shape": "(16, 96, 1, 1)",
             "type": "float32"
         }
     ],
     "5": [
         {
-            "name": "call_5",
-            "shape": "(1, 16, 55, 55)",
+            "name": "call_4",
+            "shape": "(15, 16, 54, 54)",
             "type": "float32"
         },
         {
-            "name": "fire2/expand3x3_w_0",
-            "shape": "(64, 16, 3, 3)",
-            "type": "float32"
-        },
-        {
-            "name": "fire2/expand1x1_w_0",
-            "shape": "(64, 16, 1, 1)",
-            "type": "float32"
-        },
-        {
-            "name": "fire2/expand3x3_b_0",
-            "shape": "(64)",
-            "type": "float32"
-        },
-        {
-            "name": "fire2/expand1x1_b_0",
-            "shape": "(64)",
+            "name": "features.3.squeeze.bias",
+            "shape": "(16)",
             "type": "float32"
         }
     ],
     "6": [
         {
-            "name": "fire3/squeeze1x1_w_0",
-            "shape": "(16, 128, 1, 1)",
+            "name": "features.3.expand3x3.bias",
+            "shape": "(64)",
             "type": "float32"
         },
         {
-            "name": "call_14",
-            "shape": "(1, 128, 55, 55)",
+            "name": "features.3.expand1x1.weight",
+            "shape": "(64, 16, 1, 1)",
+            "type": "float32"
+        },
+        {
+            "name": "features.3.expand1x1.bias",
+            "shape": "(64)",
+            "type": "float32"
+        },
+        {
+            "name": "features.3.expand3x3.weight",
+            "shape": "(64, 16, 3, 3)",
+            "type": "float32"
+        },
+        {
+            "name": "call_5",
+            "shape": "(15, 16, 54, 54)",
             "type": "float32"
         }
     ],
     "7": [
         {
-            "name": "call_15",
-            "shape": "(1, 16, 55, 55)",
+            "name": "features.4.squeeze.weight",
+            "shape": "(16, 128, 1, 1)",
             "type": "float32"
         },
         {
-            "name": "fire3/squeeze1x1_b_0",
-            "shape": "(16)",
+            "name": "call_14",
+            "shape": "(15, 128, 54, 54)",
             "type": "float32"
         }
     ],
     "8": [
         {
-            "name": "fire3/expand3x3_b_0",
-            "shape": "(64)",
+            "name": "features.4.squeeze.bias",
+            "shape": "(16)",
             "type": "float32"
         },
         {
-            "name": "call_16",
-            "shape": "(1, 16, 55, 55)",
-            "type": "float32"
-        },
-        {
-            "name": "fire3/expand1x1_w_0",
-            "shape": "(64, 16, 1, 1)",
-            "type": "float32"
-        },
-        {
-            "name": "fire3/expand3x3_w_0",
-            "shape": "(64, 16, 3, 3)",
-            "type": "float32"
-        },
-        {
-            "name": "fire3/expand1x1_b_0",
-            "shape": "(64)",
+            "name": "call_15",
+            "shape": "(15, 16, 54, 54)",
             "type": "float32"
         }
     ],
     "9": [
         {
-            "name": "call_25",
-            "shape": "(1, 128, 55, 55)",
+            "name": "features.4.expand3x3.bias",
+            "shape": "(64)",
+            "type": "float32"
+        },
+        {
+            "name": "features.4.expand1x1.weight",
+            "shape": "(64, 16, 1, 1)",
+            "type": "float32"
+        },
+        {
+            "name": "features.4.expand1x1.bias",
+            "shape": "(64)",
+            "type": "float32"
+        },
+        {
+            "name": "features.4.expand3x3.weight",
+            "shape": "(64, 16, 3, 3)",
+            "type": "float32"
+        },
+        {
+            "name": "call_16",
+            "shape": "(15, 16, 54, 54)",
             "type": "float32"
         }
     ],
     "10": [
         {
-            "name": "call_26",
-            "shape": "(1, 128, 27, 27)",
+            "name": "call_25",
+            "shape": "(15, 128, 54, 54)",
             "type": "float32"
         },
         {
-            "name": "fire4/squeeze1x1_w_0",
+            "name": "features.5.squeeze.weight",
             "shape": "(32, 128, 1, 1)",
             "type": "float32"
         }
     ],
     "11": [
         {
-            "name": "call_27",
-            "shape": "(1, 32, 27, 27)",
+            "name": "call_26",
+            "shape": "(15, 32, 54, 54)",
             "type": "float32"
         },
         {
-            "name": "fire4/squeeze1x1_b_0",
+            "name": "features.5.squeeze.bias",
             "shape": "(32)",
             "type": "float32"
         }
     ],
     "12": [
         {
-            "name": "fire4/expand1x1_w_0",
-            "shape": "(128, 32, 1, 1)",
-            "type": "float32"
-        },
-        {
-            "name": "fire4/expand3x3_b_0",
+            "name": "features.5.expand3x3.bias",
             "shape": "(128)",
             "type": "float32"
         },
         {
-            "name": "fire4/expand3x3_w_0",
+            "name": "call_27",
+            "shape": "(15, 32, 54, 54)",
+            "type": "float32"
+        },
+        {
+            "name": "features.5.expand3x3.weight",
             "shape": "(128, 32, 3, 3)",
             "type": "float32"
         },
         {
-            "name": "fire4/expand1x1_b_0",
+            "name": "features.5.expand1x1.bias",
             "shape": "(128)",
             "type": "float32"
         },
         {
-            "name": "call_28",
-            "shape": "(1, 32, 27, 27)",
+            "name": "features.5.expand1x1.weight",
+            "shape": "(128, 32, 1, 1)",
             "type": "float32"
         }
     ],
     "13": [
         {
-            "name": "fire5/squeeze1x1_w_0",
-            "shape": "(32, 256, 1, 1)",
-            "type": "float32"
-        },
-        {
-            "name": "call_37",
-            "shape": "(1, 256, 27, 27)",
+            "name": "call_36",
+            "shape": "(15, 256, 54, 54)",
             "type": "float32"
         }
     ],
     "14": [
         {
-            "name": "fire5/squeeze1x1_b_0",
-            "shape": "(32)",
+            "name": "call_37",
+            "shape": "(15, 256, 27, 27)",
             "type": "float32"
         },
         {
-            "name": "call_38",
-            "shape": "(1, 32, 27, 27)",
+            "name": "features.7.squeeze.weight",
+            "shape": "(32, 256, 1, 1)",
             "type": "float32"
         }
     ],
     "15": [
         {
-            "name": "fire5/expand1x1_b_0",
-            "shape": "(128)",
+            "name": "call_38",
+            "shape": "(15, 32, 27, 27)",
             "type": "float32"
         },
         {
-            "name": "fire5/expand3x3_b_0",
-            "shape": "(128)",
-            "type": "float32"
-        },
-        {
-            "name": "call_39",
-            "shape": "(1, 32, 27, 27)",
-            "type": "float32"
-        },
-        {
-            "name": "fire5/expand3x3_w_0",
-            "shape": "(128, 32, 3, 3)",
-            "type": "float32"
-        },
-        {
-            "name": "fire5/expand1x1_w_0",
-            "shape": "(128, 32, 1, 1)",
+            "name": "features.7.squeeze.bias",
+            "shape": "(32)",
             "type": "float32"
         }
     ],
     "16": [
         {
-            "name": "call_48",
-            "shape": "(1, 256, 27, 27)",
+            "name": "features.7.expand1x1.bias",
+            "shape": "(128)",
+            "type": "float32"
+        },
+        {
+            "name": "call_39",
+            "shape": "(15, 32, 27, 27)",
+            "type": "float32"
+        },
+        {
+            "name": "features.7.expand3x3.weight",
+            "shape": "(128, 32, 3, 3)",
+            "type": "float32"
+        },
+        {
+            "name": "features.7.expand1x1.weight",
+            "shape": "(128, 32, 1, 1)",
+            "type": "float32"
+        },
+        {
+            "name": "features.7.expand3x3.bias",
+            "shape": "(128)",
             "type": "float32"
         }
     ],
     "17": [
         {
-            "name": "fire6/squeeze1x1_w_0",
-            "shape": "(48, 256, 1, 1)",
+            "name": "call_48",
+            "shape": "(15, 256, 27, 27)",
             "type": "float32"
         },
         {
-            "name": "call_49",
-            "shape": "(1, 256, 13, 13)",
+            "name": "features.8.squeeze.weight",
+            "shape": "(48, 256, 1, 1)",
             "type": "float32"
         }
     ],
     "18": [
         {
-            "name": "call_50",
-            "shape": "(1, 48, 13, 13)",
+            "name": "call_49",
+            "shape": "(15, 48, 27, 27)",
             "type": "float32"
         },
         {
-            "name": "fire6/squeeze1x1_b_0",
+            "name": "features.8.squeeze.bias",
             "shape": "(48)",
             "type": "float32"
         }
     ],
     "19": [
         {
-            "name": "fire6/expand3x3_w_0",
+            "name": "features.8.expand1x1.bias",
+            "shape": "(192)",
+            "type": "float32"
+        },
+        {
+            "name": "call_50",
+            "shape": "(15, 48, 27, 27)",
+            "type": "float32"
+        },
+        {
+            "name": "features.8.expand3x3.bias",
+            "shape": "(192)",
+            "type": "float32"
+        },
+        {
+            "name": "features.8.expand3x3.weight",
             "shape": "(192, 48, 3, 3)",
             "type": "float32"
         },
         {
-            "name": "fire6/expand3x3_b_0",
-            "shape": "(192)",
-            "type": "float32"
-        },
-        {
-            "name": "call_51",
-            "shape": "(1, 48, 13, 13)",
-            "type": "float32"
-        },
-        {
-            "name": "fire6/expand1x1_w_0",
+            "name": "features.8.expand1x1.weight",
             "shape": "(192, 48, 1, 1)",
-            "type": "float32"
-        },
-        {
-            "name": "fire6/expand1x1_b_0",
-            "shape": "(192)",
             "type": "float32"
         }
     ],
     "20": [
         {
-            "name": "fire7/squeeze1x1_w_0",
-            "shape": "(48, 384, 1, 1)",
+            "name": "call_59",
+            "shape": "(15, 384, 27, 27)",
             "type": "float32"
         },
         {
-            "name": "call_60",
-            "shape": "(1, 384, 13, 13)",
+            "name": "features.9.squeeze.weight",
+            "shape": "(48, 384, 1, 1)",
             "type": "float32"
         }
     ],
     "21": [
         {
-            "name": "fire7/squeeze1x1_b_0",
+            "name": "features.9.squeeze.bias",
             "shape": "(48)",
             "type": "float32"
         },
         {
-            "name": "call_61",
-            "shape": "(1, 48, 13, 13)",
+            "name": "call_60",
+            "shape": "(15, 48, 27, 27)",
             "type": "float32"
         }
     ],
     "22": [
         {
-            "name": "fire7/expand3x3_w_0",
+            "name": "call_61",
+            "shape": "(15, 48, 27, 27)",
+            "type": "float32"
+        },
+        {
+            "name": "features.9.expand3x3.weight",
             "shape": "(192, 48, 3, 3)",
             "type": "float32"
         },
         {
-            "name": "fire7/expand1x1_b_0",
-            "shape": "(192)",
-            "type": "float32"
-        },
-        {
-            "name": "call_62",
-            "shape": "(1, 48, 13, 13)",
-            "type": "float32"
-        },
-        {
-            "name": "fire7/expand3x3_b_0",
-            "shape": "(192)",
-            "type": "float32"
-        },
-        {
-            "name": "fire7/expand1x1_w_0",
+            "name": "features.9.expand1x1.weight",
             "shape": "(192, 48, 1, 1)",
+            "type": "float32"
+        },
+        {
+            "name": "features.9.expand1x1.bias",
+            "shape": "(192)",
+            "type": "float32"
+        },
+        {
+            "name": "features.9.expand3x3.bias",
+            "shape": "(192)",
             "type": "float32"
         }
     ],
     "23": [
         {
-            "name": "call_71",
-            "shape": "(1, 384, 13, 13)",
+            "name": "call_70",
+            "shape": "(15, 384, 27, 27)",
             "type": "float32"
         },
         {
-            "name": "fire8/squeeze1x1_w_0",
+            "name": "features.10.squeeze.weight",
             "shape": "(64, 384, 1, 1)",
             "type": "float32"
         }
     ],
     "24": [
         {
-            "name": "fire8/squeeze1x1_b_0",
+            "name": "features.10.squeeze.bias",
             "shape": "(64)",
             "type": "float32"
         },
         {
-            "name": "call_72",
-            "shape": "(1, 64, 13, 13)",
+            "name": "call_71",
+            "shape": "(15, 64, 27, 27)",
             "type": "float32"
         }
     ],
     "25": [
         {
-            "name": "call_73",
-            "shape": "(1, 64, 13, 13)",
-            "type": "float32"
-        },
-        {
-            "name": "fire8/expand3x3_w_0",
-            "shape": "(256, 64, 3, 3)",
-            "type": "float32"
-        },
-        {
-            "name": "fire8/expand1x1_b_0",
+            "name": "features.10.expand3x3.bias",
             "shape": "(256)",
             "type": "float32"
         },
         {
-            "name": "fire8/expand1x1_w_0",
+            "name": "features.10.expand1x1.weight",
             "shape": "(256, 64, 1, 1)",
             "type": "float32"
         },
         {
-            "name": "fire8/expand3x3_b_0",
+            "name": "features.10.expand1x1.bias",
             "shape": "(256)",
+            "type": "float32"
+        },
+        {
+            "name": "call_72",
+            "shape": "(15, 64, 27, 27)",
+            "type": "float32"
+        },
+        {
+            "name": "features.10.expand3x3.weight",
+            "shape": "(256, 64, 3, 3)",
             "type": "float32"
         }
     ],
     "26": [
         {
-            "name": "call_82",
-            "shape": "(1, 512, 13, 13)",
-            "type": "float32"
-        },
-        {
-            "name": "fire9/squeeze1x1_w_0",
-            "shape": "(64, 512, 1, 1)",
+            "name": "call_81",
+            "shape": "(15, 512, 27, 27)",
             "type": "float32"
         }
     ],
     "27": [
         {
-            "name": "fire9/squeeze1x1_b_0",
-            "shape": "(64)",
+            "name": "call_82",
+            "shape": "(15, 512, 13, 13)",
             "type": "float32"
         },
         {
-            "name": "call_83",
-            "shape": "(1, 64, 13, 13)",
+            "name": "features.12.squeeze.weight",
+            "shape": "(64, 512, 1, 1)",
             "type": "float32"
         }
     ],
     "28": [
         {
-            "name": "call_84",
-            "shape": "(1, 64, 13, 13)",
+            "name": "call_83",
+            "shape": "(15, 64, 13, 13)",
             "type": "float32"
         },
         {
-            "name": "fire9/expand1x1_w_0",
-            "shape": "(256, 64, 1, 1)",
-            "type": "float32"
-        },
-        {
-            "name": "fire9/expand3x3_w_0",
-            "shape": "(256, 64, 3, 3)",
-            "type": "float32"
-        },
-        {
-            "name": "fire9/expand3x3_b_0",
-            "shape": "(256)",
-            "type": "float32"
-        },
-        {
-            "name": "fire9/expand1x1_b_0",
-            "shape": "(256)",
+            "name": "features.12.squeeze.bias",
+            "shape": "(64)",
             "type": "float32"
         }
     ],
     "29": [
         {
-            "name": "call_93",
-            "shape": "(1, 512, 13, 13)",
+            "name": "call_84",
+            "shape": "(15, 64, 13, 13)",
+            "type": "float32"
+        },
+        {
+            "name": "features.12.expand3x3.weight",
+            "shape": "(256, 64, 3, 3)",
+            "type": "float32"
+        },
+        {
+            "name": "features.12.expand3x3.bias",
+            "shape": "(256)",
+            "type": "float32"
+        },
+        {
+            "name": "features.12.expand1x1.weight",
+            "shape": "(256, 64, 1, 1)",
+            "type": "float32"
+        },
+        {
+            "name": "features.12.expand1x1.bias",
+            "shape": "(256)",
             "type": "float32"
         }
     ],
     "30": [
         {
-            "name": "call_94",
-            "shape": "(1, 512, 13, 13)",
+            "name": "call_93",
+            "shape": "(15, 512, 13, 13)",
             "type": "float32"
         },
         {
-            "name": "conv10_w_0",
+            "name": "classifier.1.weight",
             "shape": "(1000, 512, 1, 1)",
             "type": "float32"
         }
     ],
     "31": [
         {
-            "name": "call_96",
-            "shape": "(1, 1000, 13, 13)",
+            "name": "call_94",
+            "shape": "(15, 1000, 13, 13)",
             "type": "float32"
         },
         {
-            "name": "conv10_b_0",
+            "name": "classifier.1.bias",
             "shape": "(1000)",
             "type": "float32"
         }
     ],
     "32": [
         {
-            "name": "call_97",
-            "shape": "(1, 1000, 13, 13)",
+            "name": "call_95",
+            "shape": "(15, 1000, 13, 13)",
             "type": "float32"
         }
     ],
     "33": [
         {
-            "name": "call_98",
-            "shape": "(1, 1000, 13, 13)",
+            "name": "call_96",
+            "shape": "(15, 1000, 13, 13)",
             "type": "float32"
         }
     ],
     "34": [
         {
-            "name": "call_101",
-            "shape": "(1, 1000, 1, 1)",
+            "name": "call_97",
+            "shape": "(15, 1000, 1, 1)",
             "type": "float32"
         }
     ]

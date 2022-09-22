@@ -1,5 +1,3 @@
-def @main(%call_98: Tensor[(1, 1000, 13, 13), float32] {
-  %99 = nn.global_avg_pool2d(%98) /* ty=Tensor[(1, 1000, 1, 1), float32] */;
-  %100 = max(%99, axis=[1, 2, 3], keepdims=True) /* ty=Tensor[(1, 1, 1, 1), float32] */;
-  subtract(%99, %100) /* ty=Tensor[(1, 1000, 1, 1), float32] */;
+def @main(%call_96: Tensor[(15, 1000, 13, 13), float32] {
+  nn.global_avg_pool2d(%96) /* ty=Tensor[(15, 1000, 1, 1), float32] */;
 }

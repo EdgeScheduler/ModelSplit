@@ -1,5 +1,5 @@
-from SplitToChilds.support import SupportedModels
-from SplitToChilds.experience import split
+from SplitOnnxToChilds.support import SupportedModels
+from SplitOnnxToChilds import split
 
 if __name__ == "__main__":
     print("run split:")

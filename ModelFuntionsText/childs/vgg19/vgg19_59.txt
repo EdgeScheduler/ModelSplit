@@ -1,5 +1,5 @@
-def @main(%vgg0_dense1_bias: Tensor[(4096), float32], %call_62: Tensor[(1, 4096), float32], %vgg0_dense1_weight: Tensor[(4096, 4096), float32] {
-  %63 = nn.dense(%62, %vgg0_dense1_weight, units=4096) /* ty=Tensor[(1, 4096), float32] */;
-  %64 = multiply(1f /* ty=float32 */, %vgg0_dense1_bias) /* ty=Tensor[(4096), float32] */;
-  add(%63, %64) /* ty=Tensor[(1, 4096), float32] */;
+def @main(%call_60: Tensor[(15, 4096), float32], %classifier.3.weight: Tensor[(4096, 4096), float32], %classifier.3.bias: Tensor[(4096), float32] {
+  %61 = nn.dense(%60, %classifier.3.weight, units=4096) /* ty=Tensor[(15, 4096), float32] */;
+  %62 = multiply(1f /* ty=float32 */, %classifier.3.bias) /* ty=Tensor[(4096), float32] */;
+  add(%61, %62) /* ty=Tensor[(15, 4096), float32] */;
 }

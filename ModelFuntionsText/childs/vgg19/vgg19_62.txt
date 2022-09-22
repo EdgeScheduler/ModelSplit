@@ -1,4 +1,5 @@
-def @main(%call_67: (Tensor[(1, 4096), float32], Tensor[(1, 4096), float32]) {
-  %68 = %67.0;
-  nn.batch_flatten(%68) /* ty=Tensor[(1, 4096), float32] */;
+def @main(%classifier.6.bias: Tensor[(1000), float32]) -> Tensor[(15, 1000), float32], %call_65: Tensor[(15, 4096), float32], %classifier.6.weight: Tensor[(1000, 4096), float32] {
+  %66 = nn.dense(%65, %classifier.6.weight, units=1000) /* ty=Tensor[(15, 1000), float32] */;
+  %67 = multiply(1f /* ty=float32 */, %classifier.6.bias) /* ty=Tensor[(1000), float32] */;
+  add(%66, %67) /* ty=Tensor[(15, 1000), float32] */
 }

@@ -1,3 +1,3 @@
-def @main(%call_57: Tensor[(1, 4096), float32] {
-  nn.relu(%57) /* ty=Tensor[(1, 4096), float32] */;
+def @main(%call_54: Tensor[(15, 25088), float32] {
+  nn.batch_flatten(%54) /* ty=Tensor[(15, 25088), float32] */;
 }

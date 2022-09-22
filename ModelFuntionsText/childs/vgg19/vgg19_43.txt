@@ -1,3 +1,3 @@
-def @main(%call_43: Tensor[(1, 512, 14, 14), float32], %vgg0_conv13_bias: Tensor[(512), float32] {
-  nn.bias_add(%43, %vgg0_conv13_bias) /* ty=Tensor[(1, 512, 14, 14), float32] */;
+def @main(%call_42: Tensor[(15, 512, 14, 14), float32], %features.30.weight: Tensor[(512, 512, 3, 3), float32] {
+  nn.conv2d(%42, %features.30.weight, padding=[1, 1, 1, 1], channels=512, kernel_size=[3, 3]) /* ty=Tensor[(15, 512, 14, 14), float32] */;
 }

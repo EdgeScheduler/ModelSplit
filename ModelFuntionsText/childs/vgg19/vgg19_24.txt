@@ -1,3 +1,3 @@
-def @main(%call_24: Tensor[(1, 256, 56, 56), float32] {
-  nn.relu(%24) /* ty=Tensor[(1, 256, 56, 56), float32] */;
+def @main(%features.16.bias: Tensor[(256), float32], %call_23: Tensor[(15, 256, 56, 56), float32] {
+  nn.bias_add(%23, %features.16.bias) /* ty=Tensor[(15, 256, 56, 56), float32] */;
 }

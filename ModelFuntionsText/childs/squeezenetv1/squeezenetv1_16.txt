@@ -1,3 +1,11 @@
-def @main(%call_48: Tensor[(1, 256, 27, 27), float32] {
-  nn.max_pool2d(%48, pool_size=[3, 3], strides=[2, 2], padding=[0, 0, 0, 0]) /* ty=Tensor[(1, 256, 13, 13), float32] */;
+def @main(%features.7.expand1x1.bias: Tensor[(128), float32], %call_39: Tensor[(15, 32, 27, 27), float32], %features.7.expand3x3.weight: Tensor[(128, 32, 3, 3), float32], %features.7.expand1x1.weight: Tensor[(128, 32, 1, 1), float32], %features.7.expand3x3.bias: Tensor[(128), float32] {
+  %40 = nn.relu(%39) /* ty=Tensor[(15, 32, 27, 27), float32] */;
+  %41 = nn.conv2d(%40, %features.7.expand1x1.weight, padding=[0, 0, 0, 0], channels=128, kernel_size=[1, 1]) /* ty=Tensor[(15, 128, 27, 27), float32] */;
+  %42 = nn.bias_add(%41, %features.7.expand1x1.bias) /* ty=Tensor[(15, 128, 27, 27), float32] */;
+  %43 = nn.conv2d(%40, %features.7.expand3x3.weight, padding=[1, 1, 1, 1], channels=128, kernel_size=[3, 3]) /* ty=Tensor[(15, 128, 27, 27), float32] */;
+  %44 = nn.bias_add(%43, %features.7.expand3x3.bias) /* ty=Tensor[(15, 128, 27, 27), float32] */;
+  %45 = nn.relu(%42) /* ty=Tensor[(15, 128, 27, 27), float32] */;
+  %46 = nn.relu(%44) /* ty=Tensor[(15, 128, 27, 27), float32] */;
+  %47 = (%45, %46);
+  concatenate(%47, axis=1) /* ty=Tensor[(15, 256, 27, 27), float32] */;
 }

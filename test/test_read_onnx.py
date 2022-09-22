@@ -1,8 +1,6 @@
 import onnx
+from config import Config
 
-model = onnx.load('whole_model.onnx')
-graph=model.graph
+model = onnx.load(Config.ModelSavePathName("resnet50"))
 # print(model)
-for node in graph.node:
-    print(type(node))
-    break
+print(model.graph.node[0])

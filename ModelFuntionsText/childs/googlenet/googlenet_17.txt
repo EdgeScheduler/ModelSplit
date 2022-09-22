@@ -1,4 +1,4 @@
-def @main(%fc.bias: Tensor[(1000), float32], %fc.weight: Tensor[(1000, 1024), float32], %call_218: Tensor[(15, 1024), float32] {
+def @main(%call_218: Tensor[(15, 1024), float32], %fc.weight: Tensor[(1000, 1024), float32], %fc.bias: Tensor[(1000), float32] {
   %219 = nn.dense(%218, %fc.weight, units=1000) /* ty=Tensor[(15, 1000), float32] */;
   %220 = multiply(1f /* ty=float32 */, %fc.bias) /* ty=Tensor[(1000), float32] */;
   add(%219, %220) /* ty=Tensor[(15, 1000), float32] */

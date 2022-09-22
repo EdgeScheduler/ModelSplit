@@ -1,3 +1,5 @@
-def @main(%call_58: Tensor[(1, 4096), float32] {
-  nn.dropout(%58) /* ty=(Tensor[(1, 4096), float32], Tensor[(1, 4096), float32]) */;
+def @main(%classifier.0.bias: Tensor[(4096), float32], %classifier.0.weight: Tensor[(4096, 25088), float32], %call_55: Tensor[(15, 25088), float32] {
+  %56 = nn.dense(%55, %classifier.0.weight, units=4096) /* ty=Tensor[(15, 4096), float32] */;
+  %57 = multiply(1f /* ty=float32 */, %classifier.0.bias) /* ty=Tensor[(4096), float32] */;
+  add(%56, %57) /* ty=Tensor[(15, 4096), float32] */;
 }

@@ -1,3 +1,3 @@
-def @main(%call_4: Tensor[(1, 16, 55, 55), float32], %fire2/squeeze1x1_b_0: Tensor[(16), float32] {
-  nn.bias_add(%4, %fire2/squeeze1x1_b_0) /* ty=Tensor[(1, 16, 55, 55), float32] */;
+def @main(%call_3: Tensor[(15, 96, 54, 54), float32], %features.3.squeeze.weight: Tensor[(16, 96, 1, 1), float32] {
+  nn.conv2d(%3, %features.3.squeeze.weight, padding=[0, 0, 0, 0], channels=16, kernel_size=[1, 1]) /* ty=Tensor[(15, 16, 54, 54), float32] */;
 }

@@ -1,0 +1,3 @@
+def @main(%call_170: Tensor[(15, 2048, 7, 7), float32] {
+  nn.relu(%170) /* ty=Tensor[(15, 2048, 7, 7), float32] */;
+}

@@ -1,11 +1,11 @@
-def @main(%call_73: Tensor[(1, 64, 13, 13), float32], %fire8/expand3x3_w_0: Tensor[(256, 64, 3, 3), float32], %fire8/expand1x1_b_0: Tensor[(256), float32], %fire8/expand1x1_w_0: Tensor[(256, 64, 1, 1), float32], %fire8/expand3x3_b_0: Tensor[(256), float32] {
-  %74 = nn.relu(%73) /* ty=Tensor[(1, 64, 13, 13), float32] */;
-  %75 = nn.conv2d(%74, %fire8/expand1x1_w_0, padding=[0, 0, 0, 0], channels=256, kernel_size=[1, 1]) /* ty=Tensor[(1, 256, 13, 13), float32] */;
-  %76 = nn.bias_add(%75, %fire8/expand1x1_b_0) /* ty=Tensor[(1, 256, 13, 13), float32] */;
-  %77 = nn.conv2d(%74, %fire8/expand3x3_w_0, padding=[1, 1, 1, 1], channels=256, kernel_size=[3, 3]) /* ty=Tensor[(1, 256, 13, 13), float32] */;
-  %78 = nn.bias_add(%77, %fire8/expand3x3_b_0) /* ty=Tensor[(1, 256, 13, 13), float32] */;
-  %79 = nn.relu(%76) /* ty=Tensor[(1, 256, 13, 13), float32] */;
-  %80 = nn.relu(%78) /* ty=Tensor[(1, 256, 13, 13), float32] */;
-  %81 = (%79, %80);
-  concatenate(%81, axis=1) /* ty=Tensor[(1, 512, 13, 13), float32] */;
+def @main(%features.10.expand3x3.bias: Tensor[(256), float32], %features.10.expand1x1.weight: Tensor[(256, 64, 1, 1), float32], %features.10.expand1x1.bias: Tensor[(256), float32], %call_72: Tensor[(15, 64, 27, 27), float32], %features.10.expand3x3.weight: Tensor[(256, 64, 3, 3), float32] {
+  %73 = nn.relu(%72) /* ty=Tensor[(15, 64, 27, 27), float32] */;
+  %74 = nn.conv2d(%73, %features.10.expand1x1.weight, padding=[0, 0, 0, 0], channels=256, kernel_size=[1, 1]) /* ty=Tensor[(15, 256, 27, 27), float32] */;
+  %75 = nn.bias_add(%74, %features.10.expand1x1.bias) /* ty=Tensor[(15, 256, 27, 27), float32] */;
+  %76 = nn.conv2d(%73, %features.10.expand3x3.weight, padding=[1, 1, 1, 1], channels=256, kernel_size=[3, 3]) /* ty=Tensor[(15, 256, 27, 27), float32] */;
+  %77 = nn.bias_add(%76, %features.10.expand3x3.bias) /* ty=Tensor[(15, 256, 27, 27), float32] */;
+  %78 = nn.relu(%75) /* ty=Tensor[(15, 256, 27, 27), float32] */;
+  %79 = nn.relu(%77) /* ty=Tensor[(15, 256, 27, 27), float32] */;
+  %80 = (%78, %79);
+  concatenate(%80, axis=1) /* ty=Tensor[(15, 512, 27, 27), float32] */;
 }
