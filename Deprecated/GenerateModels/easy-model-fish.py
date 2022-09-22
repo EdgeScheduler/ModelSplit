@@ -50,6 +50,15 @@ class Model(nn.Module):
         return F.relu(self.linear(torch.reshape(output,(1,4*1*6*6))))
         # return output
 
+class Model(nn.Module):
+    def __init__(self):
+        super(Model, self).__init__()
+
+    def forward(self, x):                            # x: (4,3,14,14)        1, 11
+        y = F.relu(self.conv1(x))                    # y1: (4,1,6,6)
+      
+        return y
+
 def main():
     model=Model()
     model.eval()        # 设置为推理模型

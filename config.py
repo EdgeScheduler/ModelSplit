@@ -79,6 +79,15 @@ class Config:
         return os.path.join(Config.OnnxSaveFold, name, name+".onnx")
 
     @staticmethod
+    def ChildModelSavePathName(name,idx) -> str:
+        '''
+        name is given when you create the data. Return "$project_path/Onnxs/$name/childs/$name-$idx.onnx"
+        '''
+        
+        os.makedirs(os.path.join(Config.OnnxSaveFold, name,"childs"),exist_ok=True)
+        return os.path.join(Config.OnnxSaveFold, name, "childs/{}-{}.onnx".format(name,str(idx)))
+
+    @staticmethod
     def TvmLibSavePathByName(name, target, idx: int=-1) -> str:
         '''
         name is given when you create the data. Return "$project_path/RunLib/$target/$name/$name-$idx.tar", "$project_path/RunLib/$target/$name/$idx/$name-$idx-input_shape.json"
